@@ -23,6 +23,7 @@ typedef struct s_token_iter
 }	t_token_iter;
 
 t_token_iter	token_iter_value(t_token *self, size_t len);
+t_token			*token_iter_cursor(t_token_iter *self);
 bool			token_iter_has_next(t_token_iter *self);
 void			token_iter_next(t_token_iter *self);
 t_token_type	token_iter_peek(t_token_iter *self);

@@ -22,6 +22,11 @@ t_token_iter	token_iter_value(t_token *self, size_t len)
 
 }
 
+t_token	*token_iter_cursor(t_token_iter *self)
+{
+	return (self->start);
+}
+
 bool	token_iter_has_next(t_token_iter *self)
 {
 	bool	has_next;
