@@ -6,16 +6,11 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 13:48:54 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/06 15:13:55 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/07 12:47:30 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "token_iter.h"
-
-void	parse_string(char **dst, t_token **token, char *read_line);
-void	parse_dollar(char **dst, t_token **token, char *read_line);
-void	parse_dquote(char **dst, t_token **token, char *read_line);
 
 void	ft_realloc_array(char ***args, size_t size)
 {
@@ -54,123 +49,124 @@ int	ft_substr_custom(char **dst, char const *s, char *start, size_t len)
 	*dst = ptr;
 	return (0);
 }
-
-/* int	expand_env(char **dst, char *read_line, t_token *token)
+int	ft_strjoin_custom(char **dst, char const *s1, char const *s2)
 {
-	char	*env;
-	char	*expand;
+	size_t	flen;
+	char	*ptr;
 
-	ft_substr_custom(&env, read_line, \
-	token->location.start, token->location.len);
-	expand = getenv(env);
-	if (!expand)
-		expand = "";
-	*dst = ft_strdup(expand);
-	free(env);
+	if (s1 == NULL || s2 == NULL)
+		return (-1);
+	flen = ft_strlen(s1) + ft_strlen(s2);
+	ptr = malloc(flen +1);
+	if (!ptr)
+		return (-1);
+	ft_memmove(ptr, s1, ft_strlen(s1));
+	ft_memmove(ptr + ft_strlen(s1), s2, ft_strlen(s2));
+	ptr[flen] = 0;
+	*dst = ptr;
 	return (0);
-} */
-
-/* void	parse(char *read_line, t_token **token_ptr_add)
-{
-	size_t			i;
-	size_t			size;
-	t_token			*token;
-	char			**args;
-
-	token = *token_ptr_add;
-	args = ft_calloc(1, sizeof(char *));
-	token = *token_ptr_add;
-	i = 0;
-	size = 0;
-	while (token[i].type != EOL_TOKEN)
-	{
-		if (token[i].location.len > 0)
-		{
-			if (token[i].type == DOLLAR_TOKEN)
-				expand_env(&args[size], read_line, &token[i]);
-			else
-				ft_substr_custom(&args[size], read_line, \
-				token[i].location.start, token[i].location.len);
-			size++;
-			ft_realloc_array(&args, size + 1);
-		}
-		i++;
-	}
-	args[size] = NULL;
-	size = 0;
-	while (args[size] != 0)
-	{
-		printf("args[%zu]:%s\n", size, args[size]);
-		size++;
-	}
-	printf("args[%zu]:%s\n", size, args[size]);
-} */
-
-void	parse_string(char **dst, t_token **token_ptr_add, char *read_line)
-{
-	t_token	*token;
-
-	token = *token_ptr_add;
-	ft_substr_custom(dst, read_line, token->location.start, token->location.len);
 }
 
-void	parse_dquote(char **dst, t_token **token_ptr_add, char *read_line)
+void	token_print(t_token *token)
 {
-	t_token_iter	iter;
+	size_t	i;
+
+	i = 0;
+	while (token[i].type != EOL_TOKEN)
+	{
+		printf("token[%zu]:%d\n", i, token[i].type);
+		printf("token[%zu]:%zu\n", i, token[i].location.len);
+		printf("token[%zu]:%s\n", i, token[i].location.start);
+		i++;
+	}
+}
+
+void	parse_string(char **dst, t_token **token_ptr_add, \
+char *read_line, t_token_iter *iter_ptr)
+{
+	t_token			*token;
+	t_token_iter	*iter;
+
+	token = *token_ptr_add;
+	iter = iter_ptr;
+	ft_substr_custom(dst, read_line, \
+	token->location.start, token->location.len);
+	token_iter_next(iter_ptr);
+	iter_ptr = iter;
+}
+
+void	parse_dollar(char **dst, t_token **token_ptr_add, \
+char *read_line, t_token_iter *iter_ptr)
+{
+	char			*env_str;
+	char			*expand_str;
+	t_token			*token;
+	t_token_iter	*iter;
+
+	token = *token_ptr_add;
+	iter = iter_ptr;
+	ft_substr_custom(&env_str, read_line, \
+	token->location.start, token->location.len);
+	expand_str = getenv(env_str);
+	if (!expand_str)
+		expand_str = "";
+	*dst = ft_strdup(expand_str);
+	free(env_str);
+	token_iter_next(iter);
+	iter_ptr = iter;
+}
+
+void	parse_dquote(char **dst, t_token **token_ptr_add, \
+char *read_line, t_token_iter *iter_ptr)
+{
 	size_t			size;
 	t_token			*token;
+	t_token_iter	*iter;
+	t_token_iter	*iter_out;
+	t_token_iter	iter_dquote;
 	char			*dollar_str;
 	char			*string_str;
 	char			*quote_str;
 	char			*tmp;
 
 	token = *token_ptr_add;
+	iter = iter_ptr;
+	iter_out = iter_ptr;
 	quote_str = ft_strdup("");
 	size = 0;
-	while (token[size].type != CLOSE_DQUOTE_TOKEN)
+	while(token[size].type != CLOSE_DQUOTE_TOKEN)
 		size++;
-	iter = token_iter_value(token, size);
-	while (token_iter_cursor(&iter) != iter.end)
+	iter_dquote = token_iter_value(token, size);
+	// token_print(token);
+	while (token_iter_cursor(iter) != iter->end
+		&& token_iter_cursor(iter) <= iter_dquote.end)
 	{
 		tmp = quote_str;
-		if (token_iter_cursor(&iter)->location.len > 0)
+		if (token_iter_cursor(iter)->location.len > 0)
 		{
-			if (token_iter_peek(&iter) == DOLLAR_TOKEN)
+			if (token_iter_peek(iter) == DOLLAR_TOKEN)
 			{
-				token = token_iter_cursor(&iter);
-				parse_dollar(&dollar_str, &token, read_line);
+				token = token_iter_cursor(iter);
+				parse_dollar(&dollar_str, &token, read_line, iter_out);
 				quote_str = ft_strjoin(tmp, dollar_str);
 				free(dollar_str);
 				free(tmp);
 			}
 			else
 			{
-				token = token_iter_cursor(&iter);
-				parse_string(&string_str, &token, read_line);
+				token = token_iter_cursor(iter);
+				parse_string(&string_str, &token, read_line, iter_out);
 				quote_str = ft_strjoin(tmp, string_str);
 				free(string_str);
 				free(tmp);
 			}
 		}
-		token_iter_next(&iter);
+		else
+			token_iter_next(iter);
+		iter = iter_out;
 	}
-	token_iter_next(&iter);
+	iter_ptr = iter;
 	*dst = quote_str;
-}
-
-void	parse_dollar(char **dst, t_token **token_ptr_add, char *read_line)
-{
-	char	*env_str;
-	char	*expand_str;
-	t_token	*token;
-
-	token = *token_ptr_add;
-	ft_substr_custom(&env_str, read_line, token->location.start, token->location.len);
-	expand_str = getenv(env_str);
-	if (!expand_str)
-		expand_str = "";
-	*dst = ft_strdup(expand_str);	
-	free(env_str);
 }
 
 void	parse(char *read_line, t_token **token_ptr_add)
@@ -180,6 +176,7 @@ void	parse(char *read_line, t_token **token_ptr_add)
 	t_token			*token;
 	t_token_iter	iter;
 	char			**args;
+	t_token_iter	iter_ptr;
 
 	token = *token_ptr_add;
 	args = ft_calloc(1, sizeof(char *));
@@ -188,29 +185,24 @@ void	parse(char *read_line, t_token **token_ptr_add)
 	while (token[size].type != EOL_TOKEN)
 		size++;
 	iter = token_iter_value(token, size);
+	iter_ptr = iter;
 	while (token_iter_cursor(&iter) != iter.end)
 	{
-		if (token_iter_cursor(&iter)->location.len > 0)
+		token = token_iter_cursor(&iter);
+		if (token_iter_peek(&iter) != SPACE_TOKEN)
 		{
 			if (token_iter_peek(&iter) == DOLLAR_TOKEN)
-			{
-				token = token_iter_cursor(&iter);
-				parse_dollar(&args[i], &token, read_line);
-			}
+				parse_dollar(&args[i], &token, read_line, &iter_ptr);
 			else if (token_iter_peek(&iter) == OPEN_DQUOTE_TOKEN)
-			{
-				token = token_iter_cursor(&iter);
-				parse_dquote(&args[i], &token, read_line);
-			}
+				parse_dquote(&args[i], &token, read_line, &iter_ptr);
 			else
-			{
-				token = token_iter_cursor(&iter);
-				parse_string(&args[i], &token, read_line);
-			}
+				parse_string(&args[i], &token, read_line, &iter_ptr);
 			i++;
 			ft_realloc_array(&args, i + 1);
-		}	
-		token_iter_next(&iter);
+		}
+		else
+			token_iter_next(&iter_ptr);
+		iter = iter_ptr;
 	}
 	args[i] = NULL;
 	size = 0;
@@ -220,5 +212,6 @@ void	parse(char *read_line, t_token **token_ptr_add)
 		size++;
 	}
 	printf("args[%zu]:%s\n", size, args[size]);
+	free(args[0]);
+	free(args);
 }
-	

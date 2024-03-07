@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 11:24:18 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/06 10:46:40 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/07 09:46:55 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ t_token_iter	token_iter_value(t_token *self, size_t len)
 	iter.start = self;
 	iter.end = self + len;
 	return (iter);
-
 }
 
 t_token	*token_iter_cursor(t_token_iter *self)
