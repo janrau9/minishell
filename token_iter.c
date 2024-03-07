@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 11:24:18 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/07 09:46:55 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/07 13:59:56 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,16 @@ t_token	*token_iter_cursor(t_token_iter *self)
 	return (self->start);
 }
 
-bool	token_iter_has_next(t_token_iter *self)
+t_token	*token_iter_find(t_token *self, t_token_type type)
 {
-	bool	has_next;
+	size_t			size;
+	t_token_iter	iter;
 
-	has_next = false;
-	if (self->start + 1 != self->end)
-		has_next = true;
-	return (has_next);
+	size = 0;
+	while (self[size].type != type)
+		size++;
+	iter = token_iter_value(self, size);
+	return (iter.end);
 }
 
 void	token_iter_next(t_token_iter *self)

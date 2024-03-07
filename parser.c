@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 13:48:54 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/07 12:47:30 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/07 14:47:52 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@ int	ft_substr_custom(char **dst, char const *s, char *start, size_t len)
 	*dst = ptr;
 	return (0);
 }
-int	ft_strjoin_custom(char **dst, char const *s1, char const *s2)
+
+int	ft_strjoin_custom(char **dst, char *s1, char *s2)
 {
 	size_t	flen;
 	char	*ptr;
@@ -63,6 +64,8 @@ int	ft_strjoin_custom(char **dst, char const *s1, char const *s2)
 	ft_memmove(ptr, s1, ft_strlen(s1));
 	ft_memmove(ptr + ft_strlen(s1), s2, ft_strlen(s2));
 	ptr[flen] = 0;
+	free(s1);
+	free(s2);
 	*dst = ptr;
 	return (0);
 }
@@ -116,57 +119,43 @@ char *read_line, t_token_iter *iter_ptr)
 	iter_ptr = iter;
 }
 
+/*
+	** str[0] = string result
+	** str[1] = parsed string
+	** str[2] = temporary string to free
+*/
+
 void	parse_dquote(char **dst, t_token **token_ptr_add, \
 char *read_line, t_token_iter *iter_ptr)
 {
-	size_t			size;
 	t_token			*token;
 	t_token_iter	*iter;
 	t_token_iter	*iter_out;
-	t_token_iter	iter_dquote;
-	char			*dollar_str;
-	char			*string_str;
-	char			*quote_str;
-	char			*tmp;
+	char			*str[3];
 
 	token = *token_ptr_add;
 	iter = iter_ptr;
 	iter_out = iter_ptr;
-	quote_str = ft_strdup("");
-	size = 0;
-	while(token[size].type != CLOSE_DQUOTE_TOKEN)
-		size++;
-	iter_dquote = token_iter_value(token, size);
-	// token_print(token);
-	while (token_iter_cursor(iter) != iter->end
-		&& token_iter_cursor(iter) <= iter_dquote.end)
+	str[0] = ft_strdup("");
+	while (token_iter_cursor(iter) \
+		<= token_iter_find(token, CLOSE_DQUOTE_TOKEN))
 	{
-		tmp = quote_str;
+		str[2] = str[0];
+		token = token_iter_cursor(iter);
 		if (token_iter_cursor(iter)->location.len > 0)
 		{
 			if (token_iter_peek(iter) == DOLLAR_TOKEN)
-			{
-				token = token_iter_cursor(iter);
-				parse_dollar(&dollar_str, &token, read_line, iter_out);
-				quote_str = ft_strjoin(tmp, dollar_str);
-				free(dollar_str);
-				free(tmp);
-			}
+				parse_dollar(&str[1], &token, read_line, iter_out);
 			else
-			{
-				token = token_iter_cursor(iter);
-				parse_string(&string_str, &token, read_line, iter_out);
-				quote_str = ft_strjoin(tmp, string_str);
-				free(string_str);
-				free(tmp);
-			}
+				parse_string(&str[1], &token, read_line, iter_out);
+			ft_strjoin_custom(&str[0], str[2], str[1]);
 		}
 		else
 			token_iter_next(iter);
 		iter = iter_out;
 	}
 	iter_ptr = iter;
-	*dst = quote_str;
+	*dst = str[0];
 }
 
 void	parse(char *read_line, t_token **token_ptr_add)
@@ -180,24 +169,23 @@ void	parse(char *read_line, t_token **token_ptr_add)
 
 	token = *token_ptr_add;
 	args = ft_calloc(1, sizeof(char *));
-	i = 0;
 	size = 0;
 	while (token[size].type != EOL_TOKEN)
 		size++;
 	iter = token_iter_value(token, size);
 	iter_ptr = iter;
+	i = 0;
 	while (token_iter_cursor(&iter) != iter.end)
 	{
 		token = token_iter_cursor(&iter);
 		if (token_iter_peek(&iter) != SPACE_TOKEN)
 		{
 			if (token_iter_peek(&iter) == DOLLAR_TOKEN)
-				parse_dollar(&args[i], &token, read_line, &iter_ptr);
+				parse_dollar(&args[i++], &token, read_line, &iter_ptr);
 			else if (token_iter_peek(&iter) == OPEN_DQUOTE_TOKEN)
-				parse_dquote(&args[i], &token, read_line, &iter_ptr);
+				parse_dquote(&args[i++], &token, read_line, &iter_ptr);
 			else
-				parse_string(&args[i], &token, read_line, &iter_ptr);
-			i++;
+				parse_string(&args[i++], &token, read_line, &iter_ptr);
 			ft_realloc_array(&args, i + 1);
 		}
 		else

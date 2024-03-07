@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:33:19 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/06 11:39:02 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/07 15:02:39 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	tokenizer(char *read_line, t_token	**token_ptr_add)
 	while (char_iter_cursor(&iter) != iter.end)
 	{
 		peek = char_iter_peek(&iter);
-		if (peek == '<' && d_flag % 2 == 0)
+		if (char_iter_peek(&iter) == '<' && d_flag % 2 == 0)
 			take_redir_in(&iter, &token[i]);
 		else if (peek == '>' && d_flag % 2 == 0)
 			take_redir_out(&iter, &token[i]);
