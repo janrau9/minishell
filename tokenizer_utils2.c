@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 09:48:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/07 11:44:21 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/08 12:08:42 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,12 +80,15 @@ void	take_dquote(t_char_iter *iter, t_token *token, int *d_flag)
 			char_iter_next(iter);
 			token->location.len++;
 		}
+		if (char_iter_cursor(iter) == iter->end)
+		{
+			take_error(iter, token);
+			return ;
+		}
+		return ;
 	}
-	else
-	{
-		token->type = CLOSE_DQUOTE_TOKEN;
-		char_iter_next(iter);
-	}
+	token->type = CLOSE_DQUOTE_TOKEN;
+	char_iter_next(iter);
 }
 
 void	take_squote(t_char_iter *iter, t_token *token)
@@ -100,6 +103,11 @@ void	take_squote(t_char_iter *iter, t_token *token)
 		char_iter_next(iter);
 		token->location.len++;
 	}
-	if (char_iter_peek(iter) == '\'')
+	if (char_iter_cursor(iter) == iter->end)
+	{
+		take_error(iter, token);
+		return ;
+	}
+	else
 		char_iter_next(iter);
 }

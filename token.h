@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 09:02:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/06 11:37:24 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/08 14:07:21 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void		take_string(t_char_iter *iter, t_token *token, int *d_flag);
 void		take_dollar(t_char_iter *iter, t_token *token);
 void		take_space(t_char_iter *iter, t_token *token);
 void		take_eol(t_char_iter *iter, t_token *token);
+void		take_pipe(t_char_iter *iter, t_token *token);
 void		take_error(t_char_iter *iter, t_token *token);
 
 int			tokenizer(char *read_line, t_token **token_ptr_add);

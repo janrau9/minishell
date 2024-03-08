@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/06 13:35:14 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/08 12:52:08 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,12 +111,36 @@
 // }
 
 // parsing part
-void	parse(char *read_line, t_token **token);
+
+/*remove consecutive quotes*/
+char	*remove_quotes(char *readline)
+{
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	while (readline[i] != 0)
+	{
+		if ((readline[i] == '\'' && readline[i + 1] == '\'')
+			|| (readline[i] == '"' && readline[i + 1] == '"'))
+		{
+			i++;
+			i++;
+		}
+		readline[j] = readline[i];
+		i++;
+		j++;
+	}
+	while (i > j)
+		readline[j++] = 0;
+	return (readline);
+}
 
 int	main(int argc, char **argv, char **envp)
 {
 	char	*read_line;
-	t_token	*token;
+	t_cmd	cmds;
 
 	(void)argc;
 	(void)argv;
@@ -131,10 +155,20 @@ int	main(int argc, char **argv, char **envp)
 			exit (0);
 		}
 		add_history(read_line);
-		tokenizer(read_line, &token);
-		parse(read_line, &token);
+		read_line = remove_quotes(read_line);
+		tokenizer(read_line, &cmds.token);
+		parse(&cmds, read_line);
+
+		size_t size = 0;
+		while (cmds.cmd[size] != 0)
+		{
+			printf("args[%zu]:%s\n", size, cmds.cmd[size]);
+			size++;
+		}
+		printf("args[%zu]:%s\n", size, cmds.cmd[size]);
+		token_print(cmds.token);
 		free(read_line);
-		free(token);
+		free(cmds.token);
 	}
 	return (0);
 }

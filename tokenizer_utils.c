@@ -6,11 +6,19 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 09:46:54 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/06 10:06:15 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/08 08:49:29 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	take_pipe(t_char_iter *iter, t_token *token)
+{
+	token->type = PIPE_TOKEN;
+	token->location.start = char_iter_cursor(iter);
+	token->location.len = 1;
+	char_iter_next(iter);
+}
 
 void	take_redir_append(t_char_iter *iter, t_token *token)
 {

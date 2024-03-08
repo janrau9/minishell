@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 08:07:35 by jberay            #+#    #+#             */
-/*   Updated: 2023/11/01 15:50:42 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/08 08:48:25 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ static char	*putint(long n, int sign, char *ptr, int noz);
 char	*ft_itoa(int n)
 {
 	long	x;
-	int		i;
 	char	*ptr;
 	int		sign;
 	int		noz;
@@ -31,7 +30,6 @@ char	*ft_itoa(int n)
 		sign = -1;
 	}
 	noz = get_digit(x, sign);
-	i = 0;
 	ptr = malloc((noz + 1));
 	if (!ptr)
 		return (0);

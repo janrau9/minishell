@@ -1,32 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_lstnew_double.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/08 12:38:06 by jberay           ###   ########.fr       */
+/*   Created: 2023/11/01 17:38:09 by jberay            #+#    #+#             */
+/*   Updated: 2024/03/08 14:13:59 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "libft.h"
 
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include "libft/libft.h"
-# include "token.h"
-# include "parser.h"
-
-typedef struct s_cmd
+t_dlist	*ft_lstnew_double(void *content)
 {
-	char	**cmd;
-	char	**redirection;
-	t_token	*token;
-}	t_cmd;
+	t_dlist	*plst;
 
-void	parse(t_cmd *cmds, char *read_line);
-
-#endif
+	plst = malloc(sizeof(t_dlist));
+	if (!plst)
+		return (NULL);
+	plst->content = content;
+	plst->next = NULL;
+	plst->prev = NULL;
+	return (plst);
+}

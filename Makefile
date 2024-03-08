@@ -6,7 +6,7 @@
 #    By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/07 11:38:23 by jberay            #+#    #+#              #
-#    Updated: 2024/03/07 09:46:15 by jberay           ###   ########.fr        #
+#    Updated: 2024/03/08 09:06:02 by jberay           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRCS 			=	minishell.c \
 					tokenizer_utils.c \
 					tokenizer_utils2.c \
 					parser.c \
+					parser_utils.c \
 					token_iter.c \
 						
 OBJS			=	$(SRCS:%.c=%.o)

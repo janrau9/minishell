@@ -6,18 +6,22 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 11:24:18 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/07 13:59:56 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/08 09:16:06 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "token_iter.h"
 
-t_token_iter	token_iter_value(t_token *self, size_t len)
+t_token_iter	token_iter_value(t_token *self, t_token_type type)
 {
 	t_token_iter	iter;
+	size_t			size;
 
+	size = 0;
+	while (self[size].type != type)
+		size++;
 	iter.start = self;
-	iter.end = self + len;
+	iter.end = self + size;
 	return (iter);
 }
 
@@ -28,13 +32,9 @@ t_token	*token_iter_cursor(t_token_iter *self)
 
 t_token	*token_iter_find(t_token *self, t_token_type type)
 {
-	size_t			size;
 	t_token_iter	iter;
 
-	size = 0;
-	while (self[size].type != type)
-		size++;
-	iter = token_iter_value(self, size);
+	iter = token_iter_value(self, type);
 	return (iter.end);
 }
 
