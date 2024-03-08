@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:32:17 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/07 19:27:47 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/08 15:01:52 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,21 @@ typedef struct s_util
 	int		pipes;
 	int		exit_code;
 }	t_util;
+
+typedef enum s_error
+{
+	NO_ERROR,
+	WRONG_ARGC,
+	PIPE_FAIL,
+	FORK_FAIL,
+	DUP_FAIL,
+	OPEN_FAIL,
+	MALLOC_FAIL,
+	WRONG_FILE,
+	CMD_NOT_FOUND,
+	NO_PATH,
+	NO_PERMISSION,
+	EXECVE_FAIL
+}	t_error;
 
 #endif
