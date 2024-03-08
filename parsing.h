@@ -35,39 +35,41 @@
 
 typedef enum e_node_type
 {
+	STRING_NODE,
+	PIPE_NODE,
+	REDIR_IN_NODE,
+	REDIR_OUT_NODE,
+	REDIR_APPEND_NODE,
+	REDIR_HEREDOC_NODE,
 	ERROR_NODE,
-	ARR_STR_NODE,
-	DOLLAR_NODE,
-	REDIR_NODE,
-	CMD_ARGS_NODE,
-	DOUBLEQ_NODE,
-	SINGGLEQ_NODE,
 }	t_node_type;
 
-typedef struct nod	t_node;
+typedef struct node	t_node;
 
 typedef struct quote_value
 {
 	t_node			*quote_value;
 }	t_quote_value;
 
-
+typedef char		*t_string_value;
+typedef char		*t_pipe_value;
+typedef char		*t_redir_in_value;
+typedef char		*t_redir_out_value;
+typedef char		*t_redir_append_value;
+typedef char		*t_redir_heredoc_value;
 typedef char		*t_error_value;
-typedef char		*t_cmd_value; // cmd string
-typedef char		*t_args_value; // args string
-typedef char		*t_dollar_value;
-typedef char		**t_redir_value;
 
 typedef union u_node_value
 {
-	t_error_value	error_value;
-	t_cmd_value		cmd_value;
-	t_args_value	args_value;
-	t_dollar_value	dollar_value;
-	t_redir_value	redir_value;
-	t_quote_value	double_value;
-	t_quote_value	single_value;
+	t_string_value			string_value;
+	t_pipe_value			pipe_value;
+	t_redir_in_value		redir_in_value;
+	t_redir_out_value		redir_out_value;
+	t_redir_append_value	redir_append_value;
+	t_redir_heredoc_value	redir_heredoc_value;
+	t_error_value			error_value;
 }	t_node_value;
+
 
 typedef struct s_node
 {

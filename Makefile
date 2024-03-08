@@ -15,7 +15,7 @@ GREEN = \033[0;92m
 NAME			=	minishell
 
 CC				=	cc
-CFLAGS			=	-Wall -Wextra -Werror 
+CFLAGS			=	-Wall -Wextra -Werror -L/home/linuxbrew/.linuxbrew/opt/readline/lib -I/home/linuxbrew/.linuxbrew/opt/readline/include -I./includes -I./libft/includes -g
 RM				=	rm -rf
 
 SRCS 			=	minishell.c \
@@ -35,7 +35,7 @@ LIBFT			=	$(LIBFT_PATH)/libft.a
 all:				$(NAME)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					@$(CC) $(CFLAGS) -lreadline $(OBJS) $(LIBFT) -o $(NAME) 
+					@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -lreadline -o $(NAME) 
 					@echo "$(GREEN)Minishell compiled!$(DEF_COLOR)"
 					
 %.o:%.c

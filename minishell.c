@@ -113,29 +113,6 @@
 // parsing part
 
 /*remove consecutive quotes*/
-char	*remove_quotes(char *readline)
-{
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	j = 0;
-	while (readline[i] != 0)
-	{
-		if ((readline[i] == '\'' && readline[i + 1] == '\'')
-			|| (readline[i] == '"' && readline[i + 1] == '"'))
-		{
-			i++;
-			i++;
-		}
-		readline[j] = readline[i];
-		i++;
-		j++;
-	}
-	while (i > j)
-		readline[j++] = 0;
-	return (readline);
-}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -155,7 +132,6 @@ int	main(int argc, char **argv, char **envp)
 			exit (0);
 		}
 		add_history(read_line);
-		read_line = remove_quotes(read_line);
 		tokenizer(read_line, &cmds.token);
 		parse(&cmds, read_line);
 
@@ -166,7 +142,7 @@ int	main(int argc, char **argv, char **envp)
 			size++;
 		}
 		printf("args[%zu]:%s\n", size, cmds.cmd[size]);
-		token_print(cmds.token);
+		//token_print(cmds.token);
 		free(read_line);
 		free(cmds.token);
 	}

@@ -13,14 +13,48 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "token_iter.h"
+typedef enum e_node_type
+{
+	STRING_NODE,
+	PIPE_NODE,
+	REDIR_IN_NODE,
+	REDIR_OUT_NODE,
+	REDIR_APPEND_NODE,
+	REDIR_HEREDOC_NODE,
+	ERROR_NODE,
+}	t_node_type;
 
-void	parse_string(char **dst, t_token **token, \
-char *read_line, t_token_iter *iter_ptr);
-void	parse_dollar(char **dst, t_token **token, \
-char *read_line, t_token_iter *iter_ptr);
-void	parse_dquote(char **dst, t_token **token, \
-char *read_line, t_token_iter *iter_ptr);
+typedef char		*t_string_value;
+typedef char		*t_pipe_value;
+typedef char		*t_redir_in_value;
+typedef char		*t_redir_out_value;
+typedef char		*t_redir_append_value;
+typedef char		*t_redir_heredoc_value;
+typedef char		*t_error_value;
+
+typedef union u_node_value
+{
+	t_string_value			string_value;
+	t_pipe_value			pipe_value;
+	t_redir_in_value		redir_in_value;
+	t_redir_out_value		redir_out_value;
+	t_redir_append_value	redir_append_value;
+	t_redir_heredoc_value	redir_heredoc_value;
+	t_error_value			error_value;
+}	t_node_value;
+
+typedef struct s_node
+{
+	t_node_type		type;
+	t_node_value	value;
+}	t_node;
+
+void	parse_string(char **dst, t_token *token, \
+char *read_line, size_t *iter);
+void	parse_dollar(char **dst, t_token *token, \
+char *read_line, size_t *iter);
+void	parse_dquote(char **dst, t_token *token, \
+char *read_line, size_t *iter);
 
 
 /*parser utils*/

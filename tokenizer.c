@@ -55,7 +55,7 @@ void	tokenizer_loop(t_token *token, t_char_iter *iter, int *d_flag)
 		take_dquote(iter, token, d_flag);
 	else if (iter->start[0] == '$')
 		take_dollar(iter, token);
-	else if (iter->start[0] == '|')
+	else if (iter->start[0] == '|' && *d_flag % 2 == 0)
 		take_pipe(iter, token);
 	else
 		take_string(iter, token, d_flag);
@@ -71,18 +71,18 @@ int	tokenizer(char *read_line, t_token	**token_ptr_add)
 	token = malloc (sizeof(t_token));
 	if (!token)
 		return (1);
-	ft_lstnew_double(token);
 	iter = char_iter_constructor(read_line, ft_strlen(read_line));
 	i = 0;
 	d_flag = 0;
 	while (char_iter_cursor(&iter) != iter.end)
 	{
-		tokenizer_loop(&token[i++], &iter, &d_flag);
+		tokenizer_loop(&token[i], &iter, &d_flag);
 		if (token[i].type == ERROR_TOKEN)
 		{
 			printf("Error with token\n");
 			exit(1);
 		}
+		i++;
 		if (ft_realloc(&token, i + 1))
 			return (1);
 	}
