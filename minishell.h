@@ -36,7 +36,7 @@ typedef struct s_data
 	size_t	redir_iter;
 }	t_data;
 
-void	parse(t_list **cmds_lst, t_cmd *cmd, t_data *data, char *read_line);
+void	parse(t_cmd **cmd, t_data *data, char *read_line);
 
 void	parse_redir(char **dst, t_data *data);
 void	parse_string(char **dst, t_data *data);

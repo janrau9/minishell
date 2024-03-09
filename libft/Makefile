@@ -106,7 +106,7 @@ $(NAME): $(OBJS) $(FT_PRINTF_OBJS)
 bonus: .bonus
 
 .bonus: $(BONUS_OBJS)
-	@ar -rus $(NAME) $(BONUS_OBJS)
+	@ar -rcs $(NAME) $(BONUS_OBJS)
 	@touch .bonus
 
 all: $(NAME) compiling

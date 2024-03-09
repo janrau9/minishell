@@ -20,6 +20,8 @@ void	parse_redir(char **dst, t_data *data)
 	data->token_iter = data->token_iter + 1;
 	data->redir_iter = data->redir_iter + 1;
 
+	ft_realloc_array(&data->cmd->redir, data->redir_iter + 1);
+
 	if (data->token[data->token_iter].type == SPACE_TOKEN)
 		data->token_iter = data->token_iter + 1;
 	parse_dquote(&data->cmd->redir[data->redir_iter], data);
@@ -106,41 +108,58 @@ void	parser_loop(t_cmd *cmd, t_data *data)
 			parse_string(&cmd->cmd[data->cmds_iter], data);
 		data->cmds_iter = data->cmds_iter + 1;
 		ft_realloc_array(&cmd->cmd, data->cmds_iter + 1);
-		ft_realloc_array(&cmd->redir, data->redir_iter + 2);
+		ft_realloc_array(&cmd->redir, data->redir_iter + 1);
 	}
 	else
 		data->token_iter = data->token_iter + 1;
 }
 
 /*iterates through the token array and create simple command linked list*/
-void	parse(t_list **cmds_lst, t_cmd *cmd, t_data *data, char *read_line)
+void	parse(t_cmd **cmd_head, t_data *data, char *read_line)
 {
-	size_t	i;
-	t_list	*tmp;
+	size_t i;
+	size_t pipe_count;
+	size_t cmd_count;
+	t_cmd *cmd;
 
-	cmd->redir = ft_calloc(2, sizeof(char *));
-	cmd->cmd = ft_calloc(1, sizeof(char *));
-	data->token_iter = 0;
-	data->cmds_iter = 0;
-	data->redir_iter = 0;
-	data->read_line = read_line;
+	cmd = *cmd_head;
 	i = 0;
-	tmp = NULL;
+	pipe_count = 0;
 	while (data->token[i].type != EOL_TOKEN)
 	{
-		
-		while (data->token[data->token_iter].type != EOL_TOKEN)
-			//|| data->token[data->token_iter].type != PIPE_TOKEN)
-			parser_loop(cmd, data);
-		cmd->cmd[data->cmds_iter] = NULL;
-		cmd->redir[data->redir_iter] = NULL;
-		tmp = ft_lstnew(cmd);
-		
-		if (!tmp)
-			return ;
-		ft_lstadd_back(cmds_lst, tmp);
+		if (data->token[i].type == PIPE_TOKEN)
+			pipe_count++;
 		i++;
 	}
+
+	data->token_iter = 0;
+	
+	data->read_line = read_line;
+
+	cmd = ft_calloc(pipe_count + 2, sizeof(t_cmd));
+
+	cmd_count = 0;
+	while (cmd_count < pipe_count + 1)
+	{
+		data->cmds_iter = 0;
+		data->redir_iter = 0;
+		cmd[cmd_count].redir = ft_calloc(2, sizeof(char *));
+		cmd[cmd_count].cmd = ft_calloc(1, sizeof(char *));
+		while (data->token[data->token_iter].type != EOL_TOKEN
+			&& data->token[data->token_iter].type != PIPE_TOKEN)
+			parser_loop(&cmd[cmd_count], data);
+		cmd[cmd_count].cmd[data->cmds_iter] = NULL;
+		cmd[cmd_count].redir[data->redir_iter] = NULL;
+		if (data->token[data->token_iter].type == PIPE_TOKEN)
+			data->token_iter = data->token_iter + 1;
+		cmd_count++;
+	}
+
+	cmd[cmd_count].cmd = NULL;
+	cmd[cmd_count].redir = NULL;
+
+	*cmd_head = cmd;
+
 }
 
 /* void	parse(t_cmd *cmd, t_data *data, char *read_line)
