@@ -119,10 +119,12 @@ int	main(int argc, char **argv, char **envp)
 	char	*read_line;
 	t_cmd	cmd;
 	t_data	data;
+	t_list	*cmds_lst;
 
 	(void)argc;
 	(void)argv;
 	(void)envp;
+	cmds_lst = NULL;
 	while (1)
 	{
 		read_line = readline ("janrau:~$");
@@ -134,10 +136,32 @@ int	main(int argc, char **argv, char **envp)
 		}
 		add_history(read_line);
 		tokenizer(read_line, &data.token);
-		token_print(data.token);
-		parse(&cmd, &data, read_line);
+		//token_print(data.token);
+		parse(&cmds_lst, &cmd, &data, read_line);
 
-		size_t size = 0;
+		while (cmds_lst)
+		{
+			printf("her	\n");
+			cmd = *(t_cmd *)cmds_lst->content;
+			size_t size = 0;
+			while (cmd.cmd[size] != 0)
+			{
+				printf("cmd[%zu]:%s\n", size, cmd.cmd[size]);
+				size++;
+			}
+			printf("cmd[%zu]:%s\n", size, cmd.cmd[size]);
+
+			size = 0;
+			while (cmd.redir[size] != 0)
+			{
+				printf("redir[%zu]:%s\n", size, cmd.redir[size]);
+				size++;
+			}
+			printf("redir[%zu]:%s\n", size, cmd.redir[size]);
+			cmds_lst = cmds_lst->next;
+		}
+
+	/* 	size_t size = 0;
 		while (cmd.cmd[size] != 0)
 		{
 			printf("cmd[%zu]:%s\n", size, cmd.cmd[size]);
@@ -151,7 +175,7 @@ int	main(int argc, char **argv, char **envp)
 			printf("redir[%zu]:%s\n", size, cmd.redir[size]);
 			size++;
 		}
-		printf("redir[%zu]:%s\n", size, cmd.redir[size]);
+		printf("redir[%zu]:%s\n", size, cmd.redir[size]); */
 		//token_print(cmds.token);
 		free(read_line);
 		free(data.token);

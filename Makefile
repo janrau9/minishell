@@ -42,7 +42,7 @@ $(NAME):			$(LIBFT) $(OBJS)
 					@$(CC) $(CFLAGS) -c $< -o $@		
 							
 $(LIBFT):
-					@make -C $(LIBFT_PATH) all
+					@make -C $(LIBFT_PATH) all bonus
 
 clean:
 					@make -C $(LIBFT_PATH) clean

@@ -88,7 +88,6 @@ void	take_dquote(t_char_iter *iter, t_token *token, int *d_flag)
 		return ;
 	}
 	token->type = CLOSE_DQUOTE_TOKEN;
-	//token->location.start++;
 	char_iter_next(iter);
 }
 
