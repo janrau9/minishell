@@ -49,13 +49,6 @@ typedef struct s_node
 	t_node_value	value;
 }	t_node;
 
-void	parse_string(char **dst, t_token *token, \
-char *read_line, size_t *iter);
-void	parse_dollar(char **dst, t_token *token, \
-char *read_line, size_t *iter);
-void	parse_dquote(char **dst, t_token *token, \
-char *read_line, size_t *iter);
-
 
 /*parser utils*/
 void	ft_realloc_array(char ***args, size_t size);

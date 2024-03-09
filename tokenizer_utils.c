@@ -40,12 +40,12 @@ void	take_redir_heredoc(t_char_iter *iter, t_token *token)
 
 void	take_redir_in(t_char_iter *iter, t_token *token)
 {
-	char	peek;
+	char	peek_next;
 
-	if (char_iter_has_next(iter))
+	if (char_iter_cursor(iter) != iter->end)
 	{
-		peek = char_iter_peek(iter + 1);
-		if (peek == '<')
+		peek_next = *(iter->start + 1);
+		if (peek_next == '<')
 		{
 			take_redir_heredoc(iter, token);
 			return ;
@@ -59,12 +59,13 @@ void	take_redir_in(t_char_iter *iter, t_token *token)
 
 void	take_redir_out(t_char_iter *iter, t_token *token)
 {
-	char	peek;
+	char	peek_next;
 
-	if (char_iter_has_next(iter))
+	if (char_iter_cursor(iter) != iter->end)
 	{
-		peek = char_iter_peek(iter + 1);
-		if (peek == '>')
+		
+		peek_next = *(iter->start + 1);
+		if (peek_next == '>')
 		{
 			take_redir_append(iter, token);
 			return ;

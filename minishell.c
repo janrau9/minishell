@@ -117,7 +117,8 @@
 int	main(int argc, char **argv, char **envp)
 {
 	char	*read_line;
-	t_cmd	cmds;
+	t_cmd	cmd;
+	t_data	data;
 
 	(void)argc;
 	(void)argv;
@@ -132,19 +133,28 @@ int	main(int argc, char **argv, char **envp)
 			exit (0);
 		}
 		add_history(read_line);
-		tokenizer(read_line, &cmds.token);
-		parse(&cmds, read_line);
+		tokenizer(read_line, &data.token);
+		token_print(data.token);
+		parse(&cmd, &data, read_line);
 
 		size_t size = 0;
-		while (cmds.cmd[size] != 0)
+		while (cmd.cmd[size] != 0)
 		{
-			printf("args[%zu]:%s\n", size, cmds.cmd[size]);
+			printf("cmd[%zu]:%s\n", size, cmd.cmd[size]);
 			size++;
 		}
-		printf("args[%zu]:%s\n", size, cmds.cmd[size]);
+		printf("cmd[%zu]:%s\n", size, cmd.cmd[size]);
+
+		size = 0;
+		while (cmd.redir[size] != 0)
+		{
+			printf("redir[%zu]:%s\n", size, cmd.redir[size]);
+			size++;
+		}
+		printf("redir[%zu]:%s\n", size, cmd.redir[size]);
 		//token_print(cmds.token);
 		free(read_line);
-		free(cmds.token);
+		free(data.token);
 	}
 	return (0);
 }

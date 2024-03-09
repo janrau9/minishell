@@ -19,7 +19,8 @@ void	ft_realloc_array(char ***args, size_t size)
 	size_t		i;
 
 	tmp = *args;
-	new = malloc(sizeof(char *) * (size));
+	new = ft_calloc(size ,sizeof(char *));
+	//new = malloc(size * sizeof(char *));
 	if (!new)
 	{
 		printf("Error with malloc\n");
@@ -77,9 +78,9 @@ void	token_print(t_token *token)
 	i = 0;
 	while (token[i].type != EOL_TOKEN)
 	{
-		printf("token[%zu]:%d\n", i, token[i].type);
-		printf("token[%zu]:%zu\n", i, token[i].location.len);
-		printf("token[%zu]:%s\n", i, token[i].location.start);
+		printf("token typ[%zu]:%d\n", i, token[i].type);
+		printf("token len[%zu]:%zu\n", i, token[i].location.len);
+		printf("token sta[%zu]:%s\n", i, token[i].location.start);
 		i++;
 	}
 }

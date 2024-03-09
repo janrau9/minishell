@@ -23,10 +23,24 @@
 typedef struct s_cmd
 {
 	char	**cmd;
-	char	**redirection;
-	t_token	*token;
+	char	**redir;
 }	t_cmd;
 
-void	parse(t_cmd *cmds, char *read_line);
+typedef struct s_data
+{
+	t_cmd	*cmd;
+	char	*read_line;
+	t_token	*token;
+	size_t	token_iter;
+	size_t	cmds_iter;
+	size_t	redir_iter;
+}	t_data;
+
+void	parse(t_cmd *cmd, t_data *data, char *read_line);
+
+void	parse_redir(char **dst, t_data *data);
+void	parse_string(char **dst, t_data *data);
+void	parse_dollar(char **dst, t_data *data);
+void	parse_dquote(char **dst, t_data *data);
 
 #endif

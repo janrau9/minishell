@@ -12,89 +12,109 @@
 
 #include "minishell.h"
 
-void	parse_string(char **dst, t_token *token, \
-char *read_line, size_t *iter)
+void	parse_redir(char **dst, t_data *data)
 {
-	ft_substr_custom(dst, read_line, \
-	token[*iter].location.start, token[*iter].location.len);
-	*iter += 1;
+	ft_substr_custom(dst, data->read_line, \
+	data->token[data->token_iter].location.start, \
+	data->token[data->token_iter].location.len);
+	data->token_iter = data->token_iter + 1;
+	data->redir_iter = data->redir_iter + 1;
+
+	if (data->token[data->token_iter].type == SPACE_TOKEN)
+		data->token_iter = data->token_iter + 1;
+	parse_dquote(&data->cmd->redir[data->redir_iter], data);
+	data->redir_iter = data->redir_iter + 1;
+	data->cmds_iter = data->cmds_iter - 1;
 }
 
-void	parse_dollar(char **dst, t_token *token, \
-char *read_line, size_t *iter)
+/*Malloc substring from char* start and len in t_token struct*/
+void	parse_string(char **dst, t_data *data)
+{
+	ft_substr_custom(dst, data->read_line, \
+	data->token[data->token_iter].location.start, \
+	data->token[data->token_iter].location.len);
+	data->token_iter = data->token_iter + 1;
+}
+/*Malloc substring and  expand $ variable*/
+void	parse_dollar(char **dst, t_data *data)
 {
 	char			*env_str;
 	char			*expand_str;
 
-	ft_substr_custom(&env_str, read_line, \
-	token[*iter].location.start, token[*iter].location.len);
+	ft_substr_custom(&env_str, data->read_line, \
+	data->token[data->token_iter].location.start, \
+	data->token[data->token_iter].location.len);
 	expand_str = getenv(env_str);
 	if (!expand_str)
 		expand_str = "";
 	*dst = ft_strdup(expand_str);
 	free(env_str);
-	*iter += 1;
+	data->token_iter = data->token_iter + 1;
 }
-
 /*
+	** Malloc substring until space or EOL_TOKEN
 	** str[0] = string result
 	** str[1] = parsed string
 	** str[2] = temporary string to free
 	** iter[0] = iter to iterate through tokens
 	** iter[1] = iter pointer to pass to functions
 */
-
-void	parse_dquote(char **dst, t_token *token, \
-char *read_line, size_t *iter)
+void	parse_dquote(char **dst, t_data *data)
 {
-	size_t			i;
-	char			*str[3];
+	size_t 	quote;
+	char	*str[3];
 
+	quote = data->token_iter;
 	str[0] = ft_strdup("");
-	i = *iter;
-	size_t j = i;
-	while (token[j].type != EOL_TOKEN && token[j].type != SPACE_TOKEN)
-	{
-		j++;
-	}
-	while (i < j)
+	while (data->token[quote].type != EOL_TOKEN 
+		&& data->token[quote].type != SPACE_TOKEN)
+		quote++;
+	while (data->token_iter < quote)
 	{
 		str[2] = str[0];
-		if (token[i].type == DOLLAR_TOKEN)
-			parse_dollar(&str[1], token, read_line, &i);
+		if (data->token[data->token_iter].type == DOLLAR_TOKEN)
+			parse_dollar(&str[1], data);
 		else
-			parse_string(&str[1], token, read_line, &i);
+			parse_string(&str[1], data);
 		ft_strjoin_custom(&str[0], str[2], str[1]);
 	}
-	*iter = i;
 	*dst = str[0];
 }
-
-void	parse(t_cmd *cmds, char *read_line)
+/*iterates through the token array and create */
+void	parse(t_cmd *cmd, t_data *data, char *read_line)
 {
-	size_t			i;
-	size_t			t_iter;
-	t_token			*token;
-	t_list			*head;
-
-	token = cmds->token;
-	cmds->cmd = ft_calloc(1, sizeof(char *));
-	i = 0;
-	t_iter = 0;
-	while (token[t_iter].type != EOL_TOKEN)
+	cmd->redir = ft_calloc(2, sizeof(char *));
+	cmd->cmd = ft_calloc(1, sizeof(char *));
+	data->token_iter = 0;
+	data->cmds_iter = 0;
+	data->redir_iter = 0;
+	data->read_line = read_line;
+	while (data->token[data->token_iter].type != EOL_TOKEN)
 	{
-		if (token[t_iter].type != SPACE_TOKEN)
+		if (data->token[data->token_iter].type != SPACE_TOKEN)
 		{
-			if (token[t_iter].type == DOLLAR_TOKEN)
-				parse_dollar(&cmds->cmd[i++], token, read_line, &t_iter);
-			else if (token[t_iter].type == OPEN_DQUOTE_TOKEN)
-				parse_dquote(&cmds->cmd[i++], token, read_line, &t_iter);
+			
+			if (data->token[data->token_iter].type == DOLLAR_TOKEN)
+				parse_dollar(&cmd->cmd[data->cmds_iter], data);
+			else if (data->token[data->token_iter].type == OPEN_DQUOTE_TOKEN)
+				parse_dquote(&cmd->cmd[data->cmds_iter], data);
+			else if (data->token[data->token_iter].type == REDIR_APPEND_TOKEN
+				|| data->token[data->token_iter].type == REDIR_IN_TOKEN
+				|| data->token[data->token_iter].type == REDIR_OUT_TOKEN
+				|| data->token[data->token_iter].type == REDIR_HEREDOC_TOKEN)
+			{
+				data->cmd = cmd;
+				parse_redir(&cmd->redir[data->redir_iter], data);
+			}
 			else
-				parse_string(&cmds->cmd[i++], token, read_line, &t_iter);
-			ft_realloc_array(&cmds->cmd, i + 1);
+				parse_string(&cmd->cmd[data->cmds_iter], data);
+			data->cmds_iter = data->cmds_iter + 1;
+			ft_realloc_array(&cmd->cmd, data->cmds_iter + 1);
+			ft_realloc_array(&cmd->redir, data->redir_iter + 2);
 		}
 		else
-			t_iter = t_iter + 1;
+			data->token_iter = data->token_iter + 1;
 	}
-	cmds->cmd[i] = NULL;
+	cmd->cmd[data->cmds_iter] = NULL;
+	cmd->redir[data->redir_iter] = NULL;
 }
