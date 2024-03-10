@@ -29,11 +29,12 @@ typedef struct s_cmd
 typedef struct s_data
 {
 	t_cmd	*cmd;
-	char	*read_line;
 	t_token	*token;
+	char	*read_line;
 	size_t	token_iter;
 	size_t	cmds_iter;
 	size_t	redir_iter;
+	size_t	pipe_count;
 }	t_data;
 
 void	parse(t_cmd **cmd, t_data *data, char *read_line);

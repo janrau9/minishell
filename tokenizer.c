@@ -44,6 +44,7 @@ int	ft_realloc(t_token **token, size_t size)
 /*
 	checking for unclosed quotes
 	check for redirection file name
+	pipe with no command
 */
 
 void	check_syntax(t_token *token)
@@ -109,11 +110,6 @@ int	tokenizer(char *read_line, t_token	**token_ptr_add)
 	while (char_iter_cursor(&iter) != iter.end)
 	{
 		tokenizer_loop(&token[i], &iter, &d_flag);
-		if (token[i].type == ERROR_TOKEN)
-		{
-			printf("Error with token\n");
-			exit(1);
-		}
 		i++;
 		if (ft_realloc(&token, i + 1))
 			return (1);

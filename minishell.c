@@ -122,10 +122,9 @@ void print_cmd(t_cmd **cmd_ptr)
 
 	j = 0;
 	i = 0;
-	printf("scmd[%zu] cmd[%zu]:%s\n", j, i, cmd[j].cmd[i]);
 	while (cmd[j].cmd != NULL)
 	{
-		printf("Printing cmd\n");
+		printf("Printing cmd array\n");
 		i = 0;
 		while (cmd[j].cmd[i] != 0)
 		{

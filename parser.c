@@ -114,15 +114,13 @@ void	parser_loop(t_cmd *cmd, t_data *data)
 		data->token_iter = data->token_iter + 1;
 }
 
-/*iterates through the token array and create simple command linked list*/
-void	parse(t_cmd **cmd_head, t_data *data, char *read_line)
+void init_data(t_data *data, char *read_line)
 {
 	size_t i;
 	size_t pipe_count;
-	size_t cmd_count;
-	t_cmd *cmd;
 
-	cmd = *cmd_head;
+	data->token_iter = 0;
+	data->read_line = read_line;
 	i = 0;
 	pipe_count = 0;
 	while (data->token[i].type != EOL_TOKEN)
@@ -131,15 +129,20 @@ void	parse(t_cmd **cmd_head, t_data *data, char *read_line)
 			pipe_count++;
 		i++;
 	}
+	data->pipe_count = pipe_count;
+}
 
-	data->token_iter = 0;
-	
-	data->read_line = read_line;
+/*iterates through the token array and create simple command array splits on pipe*/
+void	parse(t_cmd **cmd_arr, t_data *data, char *read_line)
+{
+	size_t cmd_count;
+	t_cmd *cmd;
 
-	cmd = ft_calloc(pipe_count + 2, sizeof(t_cmd));
-
+	cmd = *cmd_arr;
+	init_data(data, read_line);
+	cmd = ft_calloc(data->pipe_count + 2, sizeof(t_cmd));
 	cmd_count = 0;
-	while (cmd_count < pipe_count + 1)
+	while (cmd_count < data->pipe_count + 1)
 	{
 		data->cmds_iter = 0;
 		data->redir_iter = 0;
@@ -154,12 +157,9 @@ void	parse(t_cmd **cmd_head, t_data *data, char *read_line)
 			data->token_iter = data->token_iter + 1;
 		cmd_count++;
 	}
-
 	cmd[cmd_count].cmd = NULL;
 	cmd[cmd_count].redir = NULL;
-
-	*cmd_head = cmd;
-
+	*cmd_arr = cmd;
 }
 
 /* void	parse(t_cmd *cmd, t_data *data, char *read_line)
