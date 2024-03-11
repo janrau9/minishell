@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 09:25:34 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/06 10:04:33 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/08 09:13:46 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@ typedef struct s_token_iter
 	t_token		*end;
 }	t_token_iter;
 
-t_token_iter	token_iter_value(t_token *self, size_t len);
-bool			token_iter_has_next(t_token_iter *self);
+t_token_iter	token_iter_value(t_token *self, t_token_type type);
+t_token			*token_iter_cursor(t_token_iter *self);
+t_token			*token_iter_find(t_token *self, t_token_type type);
 void			token_iter_next(t_token_iter *self);
 t_token_type	token_iter_peek(t_token_iter *self);
 

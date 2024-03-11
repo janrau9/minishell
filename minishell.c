@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/06 13:35:14 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/08 12:52:08 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,16 +111,48 @@
 // }
 
 // parsing part
-void	parse(char *read_line, t_token **token);
+
+void print_cmd(t_cmd **cmd_ptr)
+{
+	size_t i;
+	size_t j;
+	t_cmd *cmd;
+
+	cmd = *cmd_ptr;
+
+	j = 0;
+	i = 0;
+	while (cmd[j].cmd != NULL)
+	{
+		printf("Printing cmd array\n");
+		i = 0;
+		while (cmd[j].cmd[i] != 0)
+		{
+			printf("scmd[%zu] cmd[%zu]:%s\n", j, i, cmd[j].cmd[i]);
+			i++;
+		}
+		printf("scmd[%zu] cmd[%zu]:%s\n", j, i, cmd[j].cmd[i]);
+		i = 0;
+		while (cmd[j].redir[i] != 0)
+		{
+			printf("sredir[%zu] redir[%zu]:%s\n", j, i, cmd[j].redir[i]);
+			i++;
+		}
+		printf("sredir[%zu] redir[%zu]:%s\n", j, i, cmd[j].redir[i]);
+		j++;
+	}
+}
 
 int	main(int argc, char **argv, char **envp)
 {
 	char	*read_line;
-	t_token	*token;
+	t_data	data;
+	t_cmd	*cmd;
 
 	(void)argc;
 	(void)argv;
 	(void)envp;
+
 	while (1)
 	{
 		read_line = readline ("janrau:~$");
@@ -131,10 +163,13 @@ int	main(int argc, char **argv, char **envp)
 			exit (0);
 		}
 		add_history(read_line);
-		tokenizer(read_line, &token);
-		parse(read_line, &token);
+		tokenizer(read_line, &data.token);
+		//token_print(data.token);
+		parse(&cmd, &data, read_line);
+		print_cmd(&cmd);
+		
 		free(read_line);
-		free(token);
+		free(data.token);
 	}
 	return (0);
 }

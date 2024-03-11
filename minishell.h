@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/05 15:18:03 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/08 12:38:06 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,5 +18,30 @@
 # include <readline/history.h>
 # include "libft/libft.h"
 # include "token.h"
+# include "parser.h"
+
+typedef struct s_cmd
+{
+	char	**cmd;
+	char	**redir;
+}	t_cmd;
+
+typedef struct s_data
+{
+	t_cmd	*cmd;
+	t_token	*token;
+	char	*read_line;
+	size_t	token_iter;
+	size_t	cmds_iter;
+	size_t	redir_iter;
+	size_t	pipe_count;
+}	t_data;
+
+void	parse(t_cmd **cmd, t_data *data, char *read_line);
+
+void	parse_redir(char **dst, t_data *data);
+void	parse_string(char **dst, t_data *data);
+void	parse_dollar(char **dst, t_data *data);
+void	parse_dquote(char **dst, t_data *data);
 
 #endif

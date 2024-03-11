@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/26 10:21:02 by jberay            #+#    #+#             */
-/*   Updated: 2024/02/02 16:14:40 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/08 14:20:20 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdarg.h>
+# include <stdint.h>
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 2
@@ -34,6 +35,13 @@ typedef struct s_print
 	va_list	ap;
 
 }					t_print;
+
+typedef struct s_dlist
+{
+	void			*content;
+	struct s_dlist	*next;
+	struct s_dlist	*prev;
+}					t_dlist;
 
 void	ft_print_char(int c, t_print *sp_ap);
 void	ft_print_str(char *str, t_print *sp_ap);
@@ -85,6 +93,9 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *));
 void	ft_lstclear(t_list **lst, void (*del)(void *));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
+
+t_dlist	*ft_lstnew_double(void *content);
+void	ft_lstadd_back_double(t_dlist **lst, t_dlist *new);
 
 char	*get_next_line(int fd);
 #endif

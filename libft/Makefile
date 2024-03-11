@@ -6,7 +6,7 @@
 #    By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/24 09:33:34 by jberay            #+#    #+#              #
-#    Updated: 2024/02/08 14:56:55 by jberay           ###   ########.fr        #
+#    Updated: 2024/03/08 14:17:16 by jberay           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,7 +56,9 @@ SRCS = ft_isalpha.c \
 	ft_putstr_fd.c \
 	ft_putendl_fd.c \
 	ft_putnbr_fd.c \
-	get_next_line.c
+	get_next_line.c \
+	ft_lstnew_double.c \
+	ft_lstadd_back_double.c \
 
 BONUS_SRC = ft_lstnew_bonus.c \
 	ft_lstadd_front_bonus.c \
@@ -104,7 +106,7 @@ $(NAME): $(OBJS) $(FT_PRINTF_OBJS)
 bonus: .bonus
 
 .bonus: $(BONUS_OBJS)
-	@ar -rus $(NAME) $(BONUS_OBJS)
+	@ar -rcs $(NAME) $(BONUS_OBJS)
 	@touch .bonus
 
 all: $(NAME) compiling
