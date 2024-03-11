@@ -6,13 +6,11 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/08 12:52:08 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/11 15:22:53 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "char_iter.h"
-#include "token.h"
 
 // #define PROCESS_NUM 1
 // #define RD 0
@@ -112,11 +110,11 @@
 
 // parsing part
 
-void print_cmd(t_cmd **cmd_ptr)
+void	print_cmd(t_cmd **cmd_ptr)
 {
-	size_t i;
-	size_t j;
-	t_cmd *cmd;
+	size_t	i;
+	size_t	j;
+	t_cmd	*cmd;
 
 	cmd = *cmd_ptr;
 
@@ -143,9 +141,48 @@ void print_cmd(t_cmd **cmd_ptr)
 	}
 }
 
+void	check_command_after_pipe(t_data *data, char **read_line_add)
+{
+	char	*tmp;
+	char	*add_space;
+	size_t	i;
+	int		cmd_flag;
+	char	*read_line;
+
+	read_line = *read_line_add;
+	cmd_flag = 0;
+	while (cmd_flag == 0)
+	{
+		if (tokenizer(read_line, &data->token))
+		{
+			printf("error tokenizing\n");
+			exit(1);
+		}
+		i = ft_strlen(read_line) - 1;
+		while (read_line[i] != '|' && i > 0)
+		{
+			--i;
+			if (read_line[i] != ' ' && read_line[i] != '|')
+				cmd_flag = 1;
+		}
+		if (cmd_flag == 0)
+		{
+			readline("> ");
+			add_space = read_line;
+			tmp = ft_strjoin(add_space, " ");
+			free(add_space);
+			read_line = ft_strjoin(tmp, rl_line_buffer);
+			free(tmp);
+			add_history(read_line);
+			*read_line_add = read_line;
+		}
+	}
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char	*read_line;
+
 	t_data	data;
 	t_cmd	*cmd;
 
@@ -163,13 +200,28 @@ int	main(int argc, char **argv, char **envp)
 			exit (0);
 		}
 		add_history(read_line);
-		tokenizer(read_line, &data.token);
+		check_command_after_pipe(&data, &read_line);
+		rl_replace_line("janrau", 0);
+		rl_redisplay();
+
+		// printf("result read_line: %s\n", read_line);
+		
+	
+		
+		// printf("replace %s\n", rl_line_buffer);
+		// printf("replace %s\n", read_line);
+		
+		// printf("redisplay %s\n", rl_line_buffer);
+		// printf("redisplay %s\n", read_line);
+		
+		
+		// tokenizer(read_line, &data.token);
 		//token_print(data.token);
 		parse(&cmd, &data, read_line);
 		print_cmd(&cmd);
 		
-		free(read_line);
-		free(data.token);
+		// free(read_line);
+		// free(data.token);
 	}
 	return (0);
 }

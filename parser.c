@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 13:48:54 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/08 12:53:45 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/11 09:45:14 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ void	parse_string(char **dst, t_data *data)
 	data->token[data->token_iter].location.len);
 	data->token_iter = data->token_iter + 1;
 }
+
+
 /*Malloc substring and  expand $ variable*/
 void	parse_dollar(char **dst, t_data *data)
 {
@@ -53,6 +55,7 @@ void	parse_dollar(char **dst, t_data *data)
 	free(env_str);
 	data->token_iter = data->token_iter + 1;
 }
+
 /*
 	** Malloc substring until space or EOL_TOKEN
 	** str[0] = string result
@@ -63,12 +66,12 @@ void	parse_dollar(char **dst, t_data *data)
 */
 void	parse_dquote(char **dst, t_data *data)
 {
-	size_t 	quote;
+	size_t	quote;
 	char	*str[3];
 
 	quote = data->token_iter;
 	str[0] = ft_strdup("");
-	while (data->token[quote].type != EOL_TOKEN 
+	while (data->token[quote].type != EOL_TOKEN
 		&& data->token[quote].type != SPACE_TOKEN
 		&& data->token[quote].type != REDIR_APPEND_TOKEN
 		&& data->token[quote].type != REDIR_IN_TOKEN
@@ -116,8 +119,8 @@ void	parser_loop(t_cmd *cmd, t_data *data)
 
 void init_data(t_data *data, char *read_line)
 {
-	size_t i;
-	size_t pipe_count;
+	size_t	i;
+	size_t	pipe_count;
 
 	data->token_iter = 0;
 	data->read_line = read_line;
@@ -135,8 +138,8 @@ void init_data(t_data *data, char *read_line)
 /*iterates through the token array and create simple command array splits on pipe*/
 void	parse(t_cmd **cmd_arr, t_data *data, char *read_line)
 {
-	size_t cmd_count;
-	t_cmd *cmd;
+	size_t	cmd_count;
+	t_cmd	*cmd;
 
 	cmd = *cmd_arr;
 	init_data(data, read_line);
@@ -161,41 +164,3 @@ void	parse(t_cmd **cmd_arr, t_data *data, char *read_line)
 	cmd[cmd_count].redir = NULL;
 	*cmd_arr = cmd;
 }
-
-/* void	parse(t_cmd *cmd, t_data *data, char *read_line)
-{
-	cmd->redir = ft_calloc(2, sizeof(char *));
-	cmd->cmd = ft_calloc(1, sizeof(char *));
-	data->token_iter = 0;
-	data->cmds_iter = 0;
-	data->redir_iter = 0;
-	data->read_line = read_line;
-	while (data->token[data->token_iter].type != EOL_TOKEN)
-	{
-		if (data->token[data->token_iter].type != SPACE_TOKEN)
-		{
-			
-			if (data->token[data->token_iter].type == DOLLAR_TOKEN)
-				parse_dollar(&cmd->cmd[data->cmds_iter], data);
-			else if (data->token[data->token_iter].type == OPEN_DQUOTE_TOKEN)
-				parse_dquote(&cmd->cmd[data->cmds_iter], data);
-			else if (data->token[data->token_iter].type == REDIR_APPEND_TOKEN
-				|| data->token[data->token_iter].type == REDIR_IN_TOKEN
-				|| data->token[data->token_iter].type == REDIR_OUT_TOKEN
-				|| data->token[data->token_iter].type == REDIR_HEREDOC_TOKEN)
-			{
-				data->cmd = cmd;
-				parse_redir(&cmd->redir[data->redir_iter], data);
-			}
-			else
-				parse_string(&cmd->cmd[data->cmds_iter], data);
-			data->cmds_iter = data->cmds_iter + 1;
-			ft_realloc_array(&cmd->cmd, data->cmds_iter + 1);
-			ft_realloc_array(&cmd->redir, data->redir_iter + 2);
-		}
-		else
-			data->token_iter = data->token_iter + 1;
-	}
-	cmd->cmd[data->cmds_iter] = NULL;
-	cmd->redir[data->redir_iter] = NULL;
-} */

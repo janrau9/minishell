@@ -6,7 +6,7 @@
 #    By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/07 11:38:23 by jberay            #+#    #+#              #
-#    Updated: 2024/03/08 09:06:02 by jberay           ###   ########.fr        #
+#    Updated: 2024/03/11 12:05:22 by jberay           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,10 @@ GREEN = \033[0;92m
 NAME			=	minishell
 
 CC				=	cc
-CFLAGS			=	-Wall -Wextra -Werror -L/home/linuxbrew/.linuxbrew/opt/readline/lib -I/home/linuxbrew/.linuxbrew/opt/readline/include -I./includes -I./libft/includes -g
+CFLAGS			=	-Wall -Wextra -Werror
 RM				=	rm -rf
+READLINE_HEADER = ~/.brew/opt/readline/include
+READLINE_LIB = ~/.brew/opt/readline/lib
 
 SRCS 			=	minishell.c \
 					char_iter.c \
@@ -25,7 +27,7 @@ SRCS 			=	minishell.c \
 					tokenizer_utils2.c \
 					parser.c \
 					parser_utils.c \
-					token_iter.c \
+					
 						
 OBJS			=	$(SRCS:%.c=%.o)
 
@@ -35,7 +37,7 @@ LIBFT			=	$(LIBFT_PATH)/libft.a
 all:				$(NAME)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -lreadline -o $(NAME) 
+					@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -L $(READLINE_LIB) -I $(READLINE_HEADER) -lreadline -o $(NAME) 
 					@echo "$(GREEN)Minishell compiled!$(DEF_COLOR)"
 					
 %.o:%.c

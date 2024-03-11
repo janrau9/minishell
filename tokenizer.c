@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:33:19 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/08 14:16:40 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/11 15:27:11 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,11 @@ void	take_error(t_char_iter *iter, t_token *token)
 {
 	token->type = ERROR_TOKEN;
 	token->location.start = char_iter_cursor(iter);
+	while (char_iter_cursor(iter) != iter->end)
+	{
+		char_iter_next(iter);
+		token->location.len++;
+	}
 	token->location.len = 0;
 }
 
@@ -42,36 +47,54 @@ int	ft_realloc(t_token **token, size_t size)
 }
 
 /*
-	checking for unclosed quotes
+	checking for unclosed quotes ok
 	check for redirection file name
 	pipe with no command
 */
 
-void	check_syntax(t_token *token)
+bool	is_redir_pipe_eol(t_token *token)
+{
+	if (token->type == REDIR_IN_TOKEN
+		|| token->type == REDIR_OUT_TOKEN
+		|| token->type == REDIR_APPEND_TOKEN
+		|| token->type == REDIR_HEREDOC_TOKEN
+		|| token->type == PIPE_TOKEN
+		|| token->type == EOL_TOKEN)
+		return (true);
+	return (false);
+}
+
+int	check_syntax(t_token *token, int d_flag)
 {
 	size_t	i;
 
 	i = 0;
+	if (d_flag % 2 != 0)
+	{
+		printf("unclosed quotes\n");
+		return (1);
+	}
+	if 
 	while (token[i].type != EOL_TOKEN)
 	{
-		if (token[i].type == PIPE_TOKEN)
+		if (token[i].type == ERROR_TOKEN)
 		{
-			if (token[i + 1].type == PIPE_TOKEN || token[i + 1].type == EOL_TOKEN)
-			{
-				printf("syntax error near unexpected token `||'\n");
-				exit(1);
-			}
+			printf("error token\n");
+			return (1);
 		}
-		if (token[i].type == REDIR_IN_TOKEN)
+		if (is_redir_pipe_eol(&token[i]))
 		{
-			if (token[i + 1].type == REDIR_IN_TOKEN)
+			if (token[i + 1].type == SPACE_TOKEN)
+				i++;
+			if (is_redir_pipe_eol(&token[i + 1]))
 			{
-				printf("syntax error near unexpected token `<<'\n");
-				exit(1);
+				printf("redirection file name\n");
+				return (1);
 			}
 		}
 		i++;
 	}
+	return (0);
 }
 
 void	tokenizer_loop(t_token *token, t_char_iter *iter, int *d_flag)
@@ -115,7 +138,8 @@ int	tokenizer(char *read_line, t_token	**token_ptr_add)
 			return (1);
 	}
 	take_eol(&iter, &token[i]);
-	//check_syntax(token);
+	if (check_syntax(token, d_flag))
+		return (1);
 	*token_ptr_add = token;
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 09:03:58 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/08 11:20:32 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/11 10:05:29 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,21 @@ void	ft_realloc_array(char ***args, size_t size)
 {
 	char		**new;
 	char		**tmp;
+	size_t 		s;
 	size_t		i;
 
 	tmp = *args;
-	new = ft_calloc(size ,sizeof(char *));
-	//new = malloc(size * sizeof(char *));
+	new = ft_calloc(size, sizeof(char *));
 	if (!new)
 	{
 		printf("Error with malloc\n");
+		s = 0;
+		while(tmp[s])
+		{
+			free(tmp[s]);
+			s++;
+		}
+		free(tmp);
 		exit(1);
 	}
 	i = 0;
