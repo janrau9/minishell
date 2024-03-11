@@ -16,12 +16,13 @@ void	take_error(t_char_iter *iter, t_token *token)
 {
 	token->type = ERROR_TOKEN;
 	token->location.start = char_iter_cursor(iter);
+		token->location.len = 0;
 	while (char_iter_cursor(iter) != iter->end)
 	{
 		char_iter_next(iter);
 		token->location.len++;
 	}
-	token->location.len = 0;
+
 }
 
 int	ft_realloc(t_token **token, size_t size)
@@ -52,14 +53,12 @@ int	ft_realloc(t_token **token, size_t size)
 	pipe with no command
 */
 
-bool	is_redir_pipe_eol(t_token *token)
+bool	is_redir(t_token *token)
 {
 	if (token->type == REDIR_IN_TOKEN
 		|| token->type == REDIR_OUT_TOKEN
 		|| token->type == REDIR_APPEND_TOKEN
-		|| token->type == REDIR_HEREDOC_TOKEN
-		|| token->type == PIPE_TOKEN
-		|| token->type == EOL_TOKEN)
+		|| token->type == REDIR_HEREDOC_TOKEN)
 		return (true);
 	return (false);
 }
@@ -74,7 +73,10 @@ int	check_syntax(t_token *token, int d_flag)
 		printf("unclosed quotes\n");
 		return (1);
 	}
-	if 
+	if (token[i].type == SPACE_TOKEN)
+		i++;
+	if (token[i].type == PIPE_TOKEN)
+		return (1);
 	while (token[i].type != EOL_TOKEN)
 	{
 		if (token[i].type == ERROR_TOKEN)
@@ -82,13 +84,26 @@ int	check_syntax(t_token *token, int d_flag)
 			printf("error token\n");
 			return (1);
 		}
-		if (is_redir_pipe_eol(&token[i]))
+		if (is_redir(&token[i]))
 		{
 			if (token[i + 1].type == SPACE_TOKEN)
 				i++;
-			if (is_redir_pipe_eol(&token[i + 1]))
+			if (is_redir(&token[i + 1])
+				|| token[i + 1].type == EOL_TOKEN
+				|| token[i + 1].type == PIPE_TOKEN)
 			{
 				printf("redirection file name\n");
+				return (1);
+			}
+		}
+		if (token[i].type == PIPE_TOKEN)
+		{
+			if (token[i + 1].type == SPACE_TOKEN)
+				i++;
+			if (token[i + 1].type == PIPE_TOKEN
+				|| token[i + 1].type == SPACE_TOKEN)
+			{
+				printf("pipe with no command\n");
 				return (1);
 			}
 		}
@@ -110,7 +125,7 @@ void	tokenizer_loop(t_token *token, t_char_iter *iter, int *d_flag)
 	else if (iter->start[0] == '"')
 		take_dquote(iter, token, d_flag);
 	else if (iter->start[0] == '$')
-		take_dollar(iter, token);
+		take_dollar(iter, token, d_flag);
 	else if (iter->start[0] == '|' && *d_flag % 2 == 0)
 		take_pipe(iter, token);
 	else
@@ -138,8 +153,8 @@ int	tokenizer(char *read_line, t_token	**token_ptr_add)
 			return (1);
 	}
 	take_eol(&iter, &token[i]);
+	*token_ptr_add = token;
 	if (check_syntax(token, d_flag))
 		return (1);
-	*token_ptr_add = token;
 	return (0);
 }

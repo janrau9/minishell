@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	take_dollar(t_char_iter *iter, t_token *token)
+void	take_dollar(t_char_iter *iter, t_token *token, int *d_flag)
 {
 	token->type = DOLLAR_TOKEN;
 	token->location.start = char_iter_cursor(iter) + 1;
@@ -23,6 +23,13 @@ void	take_dollar(t_char_iter *iter, t_token *token)
 	{
 		char_iter_next(iter);
 		token->location.len++;
+	}
+	if (char_iter_cursor(iter) == iter->end && *d_flag % 2 == 1)
+	{
+		token->type = ERROR_TOKEN;
+		token->location.start--;
+		token->location.len++;
+		return ;
 	}
 }
 
@@ -52,8 +59,17 @@ void	take_string(t_char_iter *iter, t_token *token, int *d_flag)
 			token->location.len++;
 		}
 		if (char_iter_peek(iter) == '"')
+		{
 			char_iter_next(iter);
-		return ;
+			return ;
+		}
+		else if (char_iter_cursor(iter) == iter->end)
+		{
+			token->type = ERROR_TOKEN;
+			token->location.start--;
+			token->location.len++;
+			return ;
+		}
 	}
 	while (char_iter_cursor(iter) != iter->end
 		&& !ft_strchr(DELIMITER, char_iter_peek(iter)))
@@ -65,11 +81,11 @@ void	take_string(t_char_iter *iter, t_token *token, int *d_flag)
 
 void	take_dquote(t_char_iter *iter, t_token *token, int *d_flag)
 {
-	*d_flag += 1;
 	token->location.len = 0;
 	token->location.start = char_iter_cursor(iter);
-	if (*d_flag % 2 == 1)
+	if (*d_flag % 2 == 0)
 	{
+		*d_flag += 1;
 		token->location.start++;
 		token->type = OPEN_DQUOTE_TOKEN;
 		char_iter_next(iter);
@@ -82,12 +98,15 @@ void	take_dquote(t_char_iter *iter, t_token *token, int *d_flag)
 		}
 		if (char_iter_cursor(iter) == iter->end)
 		{
-			take_error(iter, token);
+			token->type = ERROR_TOKEN;
+			token->location.start--;
+			token->location.len++;
 			return ;
 		}
 		return ;
 	}
 	token->type = CLOSE_DQUOTE_TOKEN;
+	*d_flag += 1;
 	char_iter_next(iter);
 }
 
@@ -105,7 +124,9 @@ void	take_squote(t_char_iter *iter, t_token *token)
 	}
 	if (char_iter_cursor(iter) == iter->end)
 	{
-		take_error(iter, token);
+		token->type = ERROR_TOKEN;
+		token->location.start--;
+		token->location.len++;
 		return ;
 	}
 	else

@@ -83,6 +83,7 @@ void	token_print(t_token *token)
 	size_t	i;
 
 	i = 0;
+	printf("Printing token array\n");
 	while (token[i].type != EOL_TOKEN)
 	{
 		printf("token typ[%zu]:%d\n", i, token[i].type);

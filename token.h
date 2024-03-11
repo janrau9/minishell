@@ -57,7 +57,7 @@ void		take_redir_out(t_char_iter *iter, t_token *token);
 void		take_dquote(t_char_iter *iter, t_token *token, int *d_flag);
 void		take_squote(t_char_iter *iter, t_token *token);
 void		take_string(t_char_iter *iter, t_token *token, int *d_flag);
-void		take_dollar(t_char_iter *iter, t_token *token);
+void		take_dollar(t_char_iter *iter, t_token *token, int *d_flag);
 void		take_space(t_char_iter *iter, t_token *token);
 void		take_eol(t_char_iter *iter, t_token *token);
 void		take_pipe(t_char_iter *iter, t_token *token);

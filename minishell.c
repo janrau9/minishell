@@ -155,10 +155,11 @@ void	check_command_after_pipe(t_data *data, char **read_line_add)
 	{
 		if (tokenizer(read_line, &data->token))
 		{
+			token_print(data->token);
 			printf("error tokenizing\n");
 			exit(1);
 		}
-		i = ft_strlen(read_line) - 1;
+		i = ft_strlen(read_line);
 		while (read_line[i] != '|' && i > 0)
 		{
 			--i;
