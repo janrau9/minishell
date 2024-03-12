@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:20:47 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/06 10:46:23 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 08:16:36 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,18 @@ t_char_iter	char_iter_constructor(char *start, size_t len)
 	iter.end = start + len; //null terminator
 	return (iter);
 
+}
+
+char	*char_find_dq(t_char_iter *self)
+{
+	size_t	len;
+
+	len = 1;
+	while (*(self->end - len) != '"')
+	{
+		len++;
+	}
+	return (self->end - len);
 }
 
 char	*char_iter_cursor(t_char_iter *self)

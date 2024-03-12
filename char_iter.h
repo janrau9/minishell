@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 09:20:31 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/06 10:46:30 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 08:04:20 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ char			*char_iter_cursor(t_char_iter *self);
 
 /* returns true when next char is not null*/
 
-bool			char_iter_has_next(t_char_iter *self);
+
+char	*char_find_dq(t_char_iter *self);
 
 /*	
 	peek and return next character

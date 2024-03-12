@@ -6,18 +6,11 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:33:19 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/08 14:16:40 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 10:20:12 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	take_error(t_char_iter *iter, t_token *token)
-{
-	token->type = ERROR_TOKEN;
-	token->location.start = char_iter_cursor(iter);
-	token->location.len = 0;
-}
 
 int	ft_realloc(t_token **token, size_t size)
 {
@@ -42,36 +35,68 @@ int	ft_realloc(t_token **token, size_t size)
 }
 
 /*
-	checking for unclosed quotes
+	checking for unclosed quotes ok
 	check for redirection file name
 	pipe with no command
 */
 
-void	check_syntax(t_token *token)
+bool	is_redir(t_token *token)
+{
+	if (token->type == REDIR_IN_TOKEN
+		|| token->type == REDIR_OUT_TOKEN
+		|| token->type == REDIR_APPEND_TOKEN
+		|| token->type == REDIR_HEREDOC_TOKEN)
+		return (true);
+	return (false);
+}
+
+int	check_syntax(t_token *token, int d_flag)
 {
 	size_t	i;
 
 	i = 0;
+	if (d_flag % 2 != 0)
+	{
+		printf("unclosed quotes\n");
+		return (1);
+	}
+	if (token[i].type == SPACE_TOKEN)
+		i++;
+	if (token[i].type == PIPE_TOKEN)
+		return (1);
 	while (token[i].type != EOL_TOKEN)
 	{
-		if (token[i].type == PIPE_TOKEN)
+		if (token[i].type == ERROR_TOKEN)
 		{
-			if (token[i + 1].type == PIPE_TOKEN || token[i + 1].type == EOL_TOKEN)
+			printf("error token\n");
+			return (1);
+		}
+		if (is_redir(&token[i]))
+		{
+			if (token[i + 1].type == SPACE_TOKEN)
+				i++;
+			if (is_redir(&token[i + 1])
+				|| token[i + 1].type == EOL_TOKEN
+				|| token[i + 1].type == PIPE_TOKEN)
 			{
-				printf("syntax error near unexpected token `||'\n");
-				exit(1);
+				printf("redirection file name\n");
+				return (1);
 			}
 		}
-		if (token[i].type == REDIR_IN_TOKEN)
+		if (token[i].type == PIPE_TOKEN)
 		{
-			if (token[i + 1].type == REDIR_IN_TOKEN)
+			if (token[i + 1].type == SPACE_TOKEN)
+				i++;
+			if (token[i + 1].type == PIPE_TOKEN
+				|| token[i + 1].type == SPACE_TOKEN)
 			{
-				printf("syntax error near unexpected token `<<'\n");
-				exit(1);
+				printf("pipe with no command\n");
+				return (1);
 			}
 		}
 		i++;
 	}
+	return (0);
 }
 
 void	tokenizer_loop(t_token *token, t_char_iter *iter, int *d_flag)
@@ -87,7 +112,7 @@ void	tokenizer_loop(t_token *token, t_char_iter *iter, int *d_flag)
 	else if (iter->start[0] == '"')
 		take_dquote(iter, token, d_flag);
 	else if (iter->start[0] == '$')
-		take_dollar(iter, token);
+		take_dollar(iter, token, d_flag);
 	else if (iter->start[0] == '|' && *d_flag % 2 == 0)
 		take_pipe(iter, token);
 	else
@@ -115,7 +140,8 @@ int	tokenizer(char *read_line, t_token	**token_ptr_add)
 			return (1);
 	}
 	take_eol(&iter, &token[i]);
-	//check_syntax(token);
 	*token_ptr_add = token;
+	if (check_syntax(token, d_flag))
+		return (1);
 	return (0);
 }
