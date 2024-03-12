@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 09:20:31 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 08:04:20 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 14:10:26 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,14 @@ typedef struct s_char_iter
 	char	*end;
 }	t_char_iter;
 
-/*
-	constructor
-*/
+/* constructor */
 t_char_iter		char_iter_constructor(char *start, size_t	len);
 
-/*
-	returns a pointer to the current location of iterator's cursor
-*/
+/* returns a pointer to the current location of iterator's cursor */
 char			*char_iter_cursor(t_char_iter *self);
 
-/* returns true when next char is not null*/
-
-
-char	*char_find_dq(t_char_iter *self);
+/* returns quotes*/
+char			*char_find_dq(t_char_iter *self);
 
 /*	
 	peek and return next character
@@ -44,10 +38,7 @@ char	*char_find_dq(t_char_iter *self);
 */
 char			char_iter_peek(t_char_iter *self);
 
-/*
-	read next character and advances cursor
-	check for null
-*/
+/* read next character and advances cursor check for null */
 char			char_iter_next(t_char_iter *self);
 
 #endif

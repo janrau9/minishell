@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/08 09:03:58 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/11 10:05:29 by jberay           ###   ########.fr       */
+/*   Created: 2024/03/12 14:12:01 by jberay            #+#    #+#             */
+/*   Updated: 2024/03/12 14:12:03 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,19 @@
 
 void	ft_realloc_array(char ***args, size_t size)
 {
-	char		**new;
-	char		**tmp;
-	size_t 		s;
-	size_t		i;
+	char	**new;
+	char	**tmp;
+	size_t	i;
 
 	tmp = *args;
+	i = 0;
 	new = ft_calloc(size, sizeof(char *));
 	if (!new)
 	{
-		printf("Error with malloc\n");
-		s = 0;
-		while(tmp[s])
+		while (tmp[i])
 		{
-			free(tmp[s]);
-			s++;
+			free(tmp[i]);
+			i++;
 		}
 		free(tmp);
 		exit(1);
@@ -76,6 +74,24 @@ int	ft_strjoin_custom(char **dst, char *s1, char *s2)
 	free(s2);
 	*dst = ptr;
 	return (0);
+}
+
+void	init_data(t_data *data, char *read_line)
+{
+	size_t	i;
+	size_t	pipe_count;
+
+	data->token_iter = 0;
+	data->read_line = read_line;
+	i = 0;
+	pipe_count = 0;
+	while (data->token[i].type != EOL_TOKEN)
+	{
+		if (data->token[i].type == PIPE_TOKEN)
+			pipe_count++;
+		i++;
+	}
+	data->pipe_count = pipe_count;
 }
 
 void	token_print(t_token *token)

@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:20:47 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 08:16:36 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 14:10:36 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_char_iter	char_iter_constructor(char *start, size_t len)
 	t_char_iter	iter;
 
 	iter.start = start;
-	iter.end = start + len; //null terminator
+	iter.end = start + len;
 	return (iter);
 
 }

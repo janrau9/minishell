@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 10:53:49 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/08 12:36:09 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 14:15:37 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ typedef struct s_node
 	t_node_type		type;
 	t_node_value	value;
 }	t_node;
-
 
 /*parser utils*/
 void	ft_realloc_array(char ***args, size_t size);

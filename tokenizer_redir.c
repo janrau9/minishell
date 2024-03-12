@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/05 09:46:54 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 10:20:03 by jberay           ###   ########.fr       */
+/*   Created: 2024/03/12 14:11:41 by jberay            #+#    #+#             */
+/*   Updated: 2024/03/12 14:11:42 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,6 @@
 
 void	take_redir_append(t_char_iter *iter, t_token *token)
 {
-	char	peek_next;
-
-	peek_next = *(iter->start + 2);
-	if (peek_next != *iter->end)
-	{
-		if (peek_next == '<'
-			|| peek_next == '>'
-			|| peek_next == *iter->end)
-		{
-			take_error(iter, token, 0);
-			return ;
-		}
-	}
 	token->type = REDIR_APPEND_TOKEN;
 	token->location.start = char_iter_cursor(iter);
 	token->location.len = 2;
@@ -36,19 +23,6 @@ void	take_redir_append(t_char_iter *iter, t_token *token)
 
 void	take_redir_heredoc(t_char_iter *iter, t_token *token)
 {
-	char	peek_next;
-
-	peek_next = *(iter->start + 2);
-	if (peek_next != *iter->end)
-	{
-		if (peek_next == '<'
-			|| peek_next == '>'
-			|| peek_next == *iter->end)
-		{
-			take_error(iter, token, 0);
-			return ;
-		}
-	}
 	token->type = REDIR_HEREDOC_TOKEN;
 	token->location.start = char_iter_cursor(iter);
 	token->location.len = 2;

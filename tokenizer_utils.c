@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/12 10:19:37 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 10:20:15 by jberay           ###   ########.fr       */
+/*   Created: 2024/03/12 14:11:18 by jberay            #+#    #+#             */
+/*   Updated: 2024/03/12 14:11:19 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	take_pipe(t_char_iter *iter, t_token *token)
 	char_iter_next(iter);
 }
 
+/*error token representing syntax error*/
 void	take_error(t_char_iter *iter, t_token *token, int d_flag)
 {
 	token->type = ERROR_TOKEN;
@@ -44,4 +45,26 @@ void	take_error(t_char_iter *iter, t_token *token, int d_flag)
 		char_iter_next(iter);
 		token->location.len++;
 	}
+}
+
+/*Re allocation of token array*/
+void	ft_realloc(t_token **token, size_t size)
+{
+	t_token		*new;
+	size_t		i;
+
+	new = ft_calloc(size, sizeof(t_token));
+	if (!new)
+	{
+		printf("Error with malloc\n");
+		exit (2);
+	}
+	i = 0;
+	while (i < size)
+	{
+		new[i] = (*token)[i];
+		i++;
+	}
+	free(*token);
+	*token = new;
 }

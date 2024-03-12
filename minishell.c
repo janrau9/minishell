@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 10:26:39 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 15:37:02 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,29 +122,54 @@ void	print_cmd(t_cmd **cmd_ptr)
 	i = 0;
 	while (cmd[j].cmd != NULL)
 	{
-		printf("Printing cmd array\n");
+		printf("\nsimple command[%zu]\n", j);
 		i = 0;
 		while (cmd[j].cmd[i] != 0)
 		{
-			printf("scmd[%zu] cmd[%zu]:%s\n", j, i, cmd[j].cmd[i]);
+			printf("cmd[%zu]:%s\n", i, cmd[j].cmd[i]);
 			i++;
 		}
-		printf("scmd[%zu] cmd[%zu]:%s\n", j, i, cmd[j].cmd[i]);
+		printf("cmd[%zu]:%s\n", i, cmd[j].cmd[i]);
 		i = 0;
 		while (cmd[j].redir[i] != 0)
 		{
-			printf("sredir[%zu] redir[%zu]:%s\n", j, i, cmd[j].redir[i]);
+			printf("redir[%zu]:%s\n", i, cmd[j].redir[i]);
 			i++;
 		}
-		printf("sredir[%zu] redir[%zu]:%s\n", j, i, cmd[j].redir[i]);
+		printf("redir[%zu]:%s\n\n", i, cmd[j].redir[i]);
 		j++;
 	}
 }
 
-void	check_command_after_pipe(t_data *data, char **read_line_add)
+void	re_promt(char **read_line_add)
 {
+	char	*read_line;
 	char	*tmp;
 	char	*add_space;
+
+	read_line = *read_line_add;
+	readline("> ");
+	add_space = read_line;
+	tmp = ft_strjoin(add_space, " ");
+	if (!tmp)
+	{
+		free(add_space);
+		exit (2);
+	}
+	free(add_space);
+	read_line = ft_strjoin(tmp, rl_line_buffer);
+	if (!read_line)
+	{
+		free(tmp);
+		exit (2);
+	}
+	free(tmp);
+	add_history(read_line);
+	*read_line_add = read_line;
+}
+
+int	check_command_after_pipe(t_data *data, char **read_line_add)
+{
 	size_t	i;
 	int		cmd_flag;
 	char	*read_line;
@@ -154,11 +179,7 @@ void	check_command_after_pipe(t_data *data, char **read_line_add)
 	while (cmd_flag == 0)
 	{
 		if (tokenizer(read_line, &data->token))
-		{
-			token_print(data->token);
-			printf("error tokenizing\n");
-			exit(1);
-		}
+			return (1);
 		i = ft_strlen(read_line);
 		while (read_line[i] != '|' && i > 0)
 		{
@@ -167,23 +188,53 @@ void	check_command_after_pipe(t_data *data, char **read_line_add)
 				cmd_flag = 1;
 		}
 		if (cmd_flag == 0)
-		{
-			readline("> ");
-			add_space = read_line;
-			tmp = ft_strjoin(add_space, " ");
-			free(add_space);
-			read_line = ft_strjoin(tmp, rl_line_buffer);
-			free(tmp);
-			add_history(read_line);
-			*read_line_add = read_line;
-		}
+			re_promt(&read_line);
 	}
+	return (0);
+}
+
+void	heredoc(t_cmd **cmd_add)
+{
+	t_cmd	*cmd;
+	size_t	i;
+	size_t	j;
+	int		fd;
+	char	*heredoc;
+
+	cmd = *cmd_add;
+	i = 0;
+	while (cmd[i].redir != NULL)
+	{
+		j = 0;
+		while (cmd[i].redir[j] != NULL)
+		{
+			if (ft_strncmp(cmd[i].redir[j], "<<", 2) == 0)
+			{
+				printf("heredoc %s\n", cmd[i].redir[j + 1]);
+				printf("%zu\n", ft_strlen(cmd[i].redir[j + 1]));
+				fd = open("/tmp/heredoc.txt", O_TRUNC | O_CREAT | O_RDWR, 0666);
+				while (1)
+				{
+					heredoc = readline("heredoc> ");
+					if (ft_strncmp(cmd[i].redir[j + 1], heredoc, ft_strlen(heredoc) == 0))
+						break ;
+					write(fd, heredoc, ft_strlen(heredoc));
+					write(fd, "\n", 1);
+				}
+				close(fd);
+				// unlink("/tmp/heredoc.txt");
+				// heredoc(cmd[i].redir[j]);
+			}
+			j++;
+		}
+		i++;
+	}
+	*cmd_add = cmd;
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	char	*read_line;
-
 	t_data	data;
 	t_cmd	*cmd;
 
@@ -193,34 +244,23 @@ int	main(int argc, char **argv, char **envp)
 
 	while (1)
 	{
-		read_line = readline ("janrau:~$");
-		if (ft_strncmp(read_line, "exit", 4) == 0)
+		read_line = readline ("jjsh-1.0$ ");
+		if (ft_strncmp(read_line, "exit", ft_strlen(read_line)) == 0)
 		{
 			free(read_line);
 			printf("Exiting minishell\n");
 			exit (0);
 		}
-		add_history(read_line);
-		check_command_after_pipe(&data, &read_line);
-		// rl_replace_line("janrau", 0);
-		// rl_redisplay();
-
-		// printf("result read_line: %s\n", read_line);
-		
-	
-		
-		// printf("replace %s\n", rl_line_buffer);
-		// printf("replace %s\n", read_line);
-		
-		// printf("redisplay %s\n", rl_line_buffer);
-		// printf("redisplay %s\n", read_line);
-		
-		
-		// tokenizer(read_line, &data.token);
-		//token_print(data.token);
-		parse(&cmd, &data, read_line);
-		print_cmd(&cmd);
-		
+		if (*read_line != '\0')
+		{
+			add_history(read_line);
+			if (!check_command_after_pipe(&data, &read_line))
+			{
+				parse(&cmd, &data, read_line);
+				print_cmd(&cmd);
+				heredoc(&cmd);
+			}
+		}
 		// free(read_line);
 		// free(data.token);
 	}

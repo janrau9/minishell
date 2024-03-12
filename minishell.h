@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/11 12:02:57 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 15:20:48 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include "token.h"
 # include "parser.h"
 # include "char_iter.h"
+# include <fcntl.h>
 
 typedef struct s_cmd
 {
@@ -40,12 +41,13 @@ typedef struct s_data
 
 void	rl_replace_line(const char *text, int clear_undo);
 
-
+/* parser */
 void	parse(t_cmd **cmd, t_data *data, char *read_line);
 
 void	parse_redir(char **dst, t_data *data);
 void	parse_string(char **dst, t_data *data);
 void	parse_dollar(char **dst, t_data *data);
 void	parse_dquote(char **dst, t_data *data);
+void	init_data(t_data *data, char *read_line);
 
 #endif

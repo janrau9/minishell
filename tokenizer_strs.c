@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 09:48:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 10:21:47 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 10:42:34 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ void	take_string(t_char_iter *iter, t_token *token, int *d_flag)
 			char_iter_next(iter);
 			token->location.len++;
 		}
+		if (char_iter_cursor(iter) == iter->end)
+			take_error(iter, token, *d_flag);
 	}
 }
 
