@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:32:17 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/08 15:01:52 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/11 13:20:43 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,13 @@
 
 # include "../libft/libft.h"
 # include "../minishell.h"
+# include <fcntl.h>
 
-typedef struct s_cmd
-{
-	char	**cmd;
-	char	**redirection;
-}	t_cmd;
+// typedef struct s_cmd
+// {
+// 	char	**cmd;
+// 	char	**redirection;
+// }	t_cmd;
 
 typedef struct s_util
 {
