@@ -6,7 +6,7 @@
 #    By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/07 11:38:23 by jberay            #+#    #+#              #
-#    Updated: 2024/03/11 12:05:22 by jberay           ###   ########.fr        #
+#    Updated: 2024/03/12 10:22:00 by jberay           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,8 +23,9 @@ READLINE_LIB = ~/.brew/opt/readline/lib
 SRCS 			=	minishell.c \
 					char_iter.c \
 					tokenizer.c \
+					tokenizer_strs.c \
+					tokenizer_redir.c \
 					tokenizer_utils.c \
-					tokenizer_utils2.c \
 					parser.c \
 					parser_utils.c \
 					

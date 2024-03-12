@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tokenizer_utils2.c                                 :+:      :+:    :+:   */
+/*   tokenizer_strs.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 09:48:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/08 12:08:42 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 10:21:47 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,7 @@ void	take_dollar(t_char_iter *iter, t_token *token, int *d_flag)
 	}
 	if (char_iter_cursor(iter) == iter->end && *d_flag % 2 == 1)
 	{
-		token->type = ERROR_TOKEN;
-		token->location.start--;
-		token->location.len++;
+		take_error(iter, token, *d_flag);
 		return ;
 	}
 }
@@ -48,34 +46,24 @@ void	take_string(t_char_iter *iter, t_token *token, int *d_flag)
 	token->location.start = char_iter_cursor(iter);
 	token->location.len = 0;
 	token->type = STRING_TOKEN;
-	if (*d_flag % 2 == 1)
+	if (*d_flag % 2 == 0)
 	{
-		*d_flag += 1;
-		token->type = CLOSE_DQUOTE_TOKEN;
 		while (char_iter_cursor(iter) != iter->end
-			&& char_iter_peek(iter) != '"')
+			&& !ft_strchr(DELIMITER, char_iter_peek(iter)))
 		{
 			char_iter_next(iter);
 			token->location.len++;
-		}
-		if (char_iter_peek(iter) == '"')
-		{
-			char_iter_next(iter);
-			return ;
-		}
-		else if (char_iter_cursor(iter) == iter->end)
-		{
-			token->type = ERROR_TOKEN;
-			token->location.start--;
-			token->location.len++;
-			return ;
 		}
 	}
-	while (char_iter_cursor(iter) != iter->end
-		&& !ft_strchr(DELIMITER, char_iter_peek(iter)))
+	else
 	{
-		char_iter_next(iter);
-		token->location.len++;
+		while (char_iter_cursor(iter) != iter->end
+			&& char_iter_peek(iter) != '"'
+			&& char_iter_peek(iter) != '$')
+		{
+			char_iter_next(iter);
+			token->location.len++;
+		}
 	}
 }
 
@@ -97,12 +85,7 @@ void	take_dquote(t_char_iter *iter, t_token *token, int *d_flag)
 			token->location.len++;
 		}
 		if (char_iter_cursor(iter) == iter->end)
-		{
-			token->type = ERROR_TOKEN;
-			token->location.start--;
-			token->location.len++;
-			return ;
-		}
+			take_error(iter, token, *d_flag);
 		return ;
 	}
 	token->type = CLOSE_DQUOTE_TOKEN;

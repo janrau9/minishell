@@ -6,24 +6,11 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:33:19 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/11 15:27:11 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 10:20:12 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	take_error(t_char_iter *iter, t_token *token)
-{
-	token->type = ERROR_TOKEN;
-	token->location.start = char_iter_cursor(iter);
-		token->location.len = 0;
-	while (char_iter_cursor(iter) != iter->end)
-	{
-		char_iter_next(iter);
-		token->location.len++;
-	}
-
-}
 
 int	ft_realloc(t_token **token, size_t size)
 {

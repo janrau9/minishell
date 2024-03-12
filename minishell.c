@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/11 15:22:53 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 10:26:39 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,8 +202,8 @@ int	main(int argc, char **argv, char **envp)
 		}
 		add_history(read_line);
 		check_command_after_pipe(&data, &read_line);
-		rl_replace_line("janrau", 0);
-		rl_redisplay();
+		// rl_replace_line("janrau", 0);
+		// rl_redisplay();
 
 		// printf("result read_line: %s\n", read_line);
 		
