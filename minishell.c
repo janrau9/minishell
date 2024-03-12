@@ -193,6 +193,23 @@ int	check_command_after_pipe(t_data *data, char **read_line_add)
 	return (0);
 }
 
+void	create_heredoc_name(char **heredoc_name, int child)
+{
+	char	*tmp;
+
+	tmp = ft_itoa(child);
+	if (!tmp)
+		exit (2);
+	*heredoc_name = ft_strjoin("/tmp/heredoc", tmp);
+	if (!*heredoc_name)
+	{
+		free(tmp);
+		exit (2);
+	}
+	free(tmp);
+	unlink(*heredoc_name);
+}
+
 void	heredoc(t_cmd **cmd_add)
 {
 	t_cmd	*cmd;
@@ -200,6 +217,8 @@ void	heredoc(t_cmd **cmd_add)
 	size_t	j;
 	int		fd;
 	char	*heredoc;
+	char	*heredoc_name;
+	char	*tmp;
 
 	cmd = *cmd_add;
 	i = 0;
@@ -210,20 +229,23 @@ void	heredoc(t_cmd **cmd_add)
 		{
 			if (ft_strncmp(cmd[i].redir[j], "<<", 2) == 0)
 			{
-				printf("heredoc %s\n", cmd[i].redir[j + 1]);
-				printf("%zu\n", ft_strlen(cmd[i].redir[j + 1]));
-				fd = open("/tmp/heredoc.txt", O_TRUNC | O_CREAT | O_RDWR, 0666);
+				create_heredoc_name(&heredoc_name, i);
+				fd = open(heredoc_name, O_TRUNC | O_CREAT | O_RDWR, 0666);
 				while (1)
 				{
 					heredoc = readline("heredoc> ");
-					if (ft_strncmp(cmd[i].redir[j + 1], heredoc, ft_strlen(heredoc) == 0))
+					if (ft_strncmp(heredoc, cmd[i].redir[j + 1], ft_strlen(heredoc)) == 0)
 						break ;
 					write(fd, heredoc, ft_strlen(heredoc));
 					write(fd, "\n", 1);
+					free(heredoc);
 				}
+				tmp = cmd[i].redir[j + 1];
+				cmd[i].redir[j + 1] = heredoc_name;
+				free(tmp);
+				print_cmd(&cmd);
 				close(fd);
 				// unlink("/tmp/heredoc.txt");
-				// heredoc(cmd[i].redir[j]);
 			}
 			j++;
 		}
