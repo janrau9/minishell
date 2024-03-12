@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/11 12:02:57 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 12:20:01 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,13 @@
 # include "token.h"
 # include "parser.h"
 # include "char_iter.h"
+# include "executor/executor.h"
 
 typedef struct s_cmd
 {
 	char	**cmd;
 	char	**redir;
+	int		exit_code;
 }	t_cmd;
 
 typedef struct s_data
@@ -32,6 +34,7 @@ typedef struct s_data
 	char	*read_line;
 	t_cmd	*cmd;
 	t_token	*token;
+
 	size_t	token_iter;
 	size_t	cmds_iter;
 	size_t	redir_iter;
@@ -47,5 +50,12 @@ void	parse_redir(char **dst, t_data *data);
 void	parse_string(char **dst, t_data *data);
 void	parse_dollar(char **dst, t_data *data);
 void	parse_dquote(char **dst, t_data *data);
+
+//exector
+void	executor(t_cmd *parsed_cmd, t_data *data, char **envp);
+void	error_exit(t_error error, char *s);
+void	free_arr(char **arr);
+void	error_free_exit(char **s);
+
 
 #endif

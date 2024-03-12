@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 10:26:39 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/12 11:15:28 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,21 +206,22 @@ int	main(int argc, char **argv, char **envp)
 		// rl_redisplay();
 
 		// printf("result read_line: %s\n", read_line);
-		
-	
-		
+
+
+
 		// printf("replace %s\n", rl_line_buffer);
 		// printf("replace %s\n", read_line);
-		
+
 		// printf("redisplay %s\n", rl_line_buffer);
 		// printf("redisplay %s\n", read_line);
-		
-		
+
+
 		// tokenizer(read_line, &data.token);
 		//token_print(data.token);
 		parse(&cmd, &data, read_line);
+		executor(cmd, &data, envp);
 		print_cmd(&cmd);
-		
+
 		// free(read_line);
 		// free(data.token);
 	}

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+         #
+#    By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/07 11:38:23 by jberay            #+#    #+#              #
-#    Updated: 2024/03/12 10:22:00 by jberay           ###   ########.fr        #
+#    Updated: 2024/03/12 10:55:01 by jtu              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,8 +28,9 @@ SRCS 			=	minishell.c \
 					tokenizer_utils.c \
 					parser.c \
 					parser_utils.c \
-					
-						
+					executor/executor.c
+
+
 OBJS			=	$(SRCS:%.c=%.o)
 
 LIBFT_PATH		=	./libft
@@ -38,12 +39,12 @@ LIBFT			=	$(LIBFT_PATH)/libft.a
 all:				$(NAME)
 
 $(NAME):			$(LIBFT) $(OBJS)
-					@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -L $(READLINE_LIB) -I $(READLINE_HEADER) -lreadline -o $(NAME) 
+					@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -L $(READLINE_LIB) -I $(READLINE_HEADER) -lreadline -o $(NAME)
 					@echo "$(GREEN)Minishell compiled!$(DEF_COLOR)"
-					
+
 %.o:%.c
-					@$(CC) $(CFLAGS) -c $< -o $@		
-							
+					@$(CC) $(CFLAGS) -c $< -o $@
+
 $(LIBFT):
 					@make -C $(LIBFT_PATH) all bonus
 
@@ -54,7 +55,7 @@ clean:
 fclean:				clean
 					@make -C $(LIBFT_PATH) fclean
 					@$(RM) $(NAME)
-					
+
 re:					fclean all
 
 .PHONY:				all bonus clean fclean re libft

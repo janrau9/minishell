@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:32:17 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/11 13:20:43 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/12 10:59:33 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define EXECUTOR_H
 
 # include "../libft/libft.h"
-# include "../minishell.h"
+// # include "../minishell.h"
 # include <fcntl.h>
 
 // typedef struct s_cmd
@@ -45,5 +45,7 @@ typedef enum s_error
 	NO_PERMISSION,
 	EXECVE_FAIL
 }	t_error;
+
+// void	executor(t_cmd *parsed_cmd, t_util *util, char **envp);
 
 #endif
