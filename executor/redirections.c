@@ -6,17 +6,17 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 12:31:06 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/11 14:59:51 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/13 19:14:42 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "../minishell.h"
 
 void	handle_outfile(char *redir, char *file)
 {
 	int	fd_out;
 
-	if (redir == ">>")
+	if (ft_strncmp(redir, ">>", 3))
 		fd_out = open(file, O_CREAT | O_RDWR | O_APPEND, 0644);
 	else
 		fd_out = open(file, O_CREAT | O_RDWR | O_TRUNC, 0644);
@@ -39,7 +39,6 @@ void	handle_infile(char *file)
 	close(fd_in);
 }
 
-
 void	check_redirections(t_cmd *parsed_cmd)
 {
 	int	i;
@@ -51,17 +50,13 @@ void	check_redirections(t_cmd *parsed_cmd)
 		i = 0;
 		while (parsed_cmd[j].redir[i] != NULL)
 		{
-			if (parsed_cmd[j].redir[i] == "<")
+			if (ft_strncmp(parsed_cmd[j].redir[i], "<", 2) || ft_strncmp(parsed_cmd[j].redir[i], "<<", 3))
 			{
 				handle_infile(parsed_cmd[j].redir[i + 1]);
 			}
-			if (parsed_cmd[j].redir[i] == ">" || parsed_cmd[j].redir[i] == ">>")
+			if (ft_strncmp(parsed_cmd[j].redir[i], ">", 2) || ft_strncmp(parsed_cmd[j].redir[i], ">>", 3))
 			{
 				handle_outfile(parsed_cmd[j].redir[i], parsed_cmd[j].redir[i + 1]);
-			}
-			if (parsed_cmd[j].redir[i] == "<<")
-			{
-				here_doc();
 			}
 			i++;
 		}
