@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:11:18 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 14:11:19 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/13 09:39:46 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ void	take_error(t_char_iter *iter, t_token *token, int d_flag)
 		token->location.start = char_find_dq(iter);
 		*iter = char_iter_constructor(token->location.start, \
 		ft_strlen(token->location.start));
+		token->location.len = 1;
+		return ;
 	}
 	printf("error token %s\n", token->location.start);
 	token->location.len = 0;

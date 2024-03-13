@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 15:20:48 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/13 13:47:38 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@
 # include "char_iter.h"
 # include <fcntl.h>
 
+# include <signal.h>
+# include <termios.h>
+
 typedef struct s_cmd
 {
 	char	**cmd;
@@ -31,7 +34,6 @@ typedef struct s_cmd
 typedef struct s_data
 {
 	char	*read_line;
-	t_cmd	*cmd;
 	t_token	*token;
 	size_t	token_iter;
 	size_t	cmds_iter;
@@ -39,15 +41,33 @@ typedef struct s_data
 	size_t	pipe_count;
 }	t_data;
 
+typedef struct s_exec
+{
+	t_cmd	*cmd;
+	size_t	cmd_count;
+	char	**envp;
+	int		exit_code;
+}	t_exec;
+
+
 void	rl_replace_line(const char *text, int clear_undo);
 
 /* parser */
-void	parse(t_cmd **cmd, t_data *data, char *read_line);
+void	parse(t_cmd **cmd, t_data *data);
 
 void	parse_redir(char **dst, t_data *data);
 void	parse_string(char **dst, t_data *data);
 void	parse_dollar(char **dst, t_data *data);
 void	parse_dquote(char **dst, t_data *data);
-void	init_data(t_data *data, char *read_line);
+void	init_data(t_data *data);
+
+bool	is_redir(t_token *token);
+
+void	builtin(t_exec *exec);
+void	ft_export(t_exec *exec);
+size_t	ft_arrlen(char **arr);
+void	ft_arrdup(char ***dst_add, char **src);
+void	ft_arrcpy(char ***dst_add, char **src);
+
 
 #endif

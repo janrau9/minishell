@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 13:48:54 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 14:13:40 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/13 11:32:00 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,15 @@ void	parser_loop(t_cmd *cmd, t_data *data)
 			parse_dollar(&cmd->cmd[data->cmds_iter], data);
 		else if (data->token[data->token_iter].type == OPEN_DQUOTE_TOKEN)
 			parse_dquote(&cmd->cmd[data->cmds_iter], data);
-		else if (data->token[data->token_iter].type == REDIR_APPEND_TOKEN
-			|| data->token[data->token_iter].type == REDIR_IN_TOKEN
-			|| data->token[data->token_iter].type == REDIR_OUT_TOKEN
-			|| data->token[data->token_iter].type == REDIR_HEREDOC_TOKEN)
+		else if (is_redir(&data->token[data->token_iter]))
 		{
-			data->cmd = cmd;
 			parse_redir(&cmd->redir[data->redir_iter], data);
+			ft_realloc_array(&cmd->redir, data->redir_iter + 1);
+			if (data->token[data->token_iter].type == SPACE_TOKEN)
+				data->token_iter = data->token_iter + 1;
+			parse_dquote(&cmd->redir[data->redir_iter], data);
+			data->redir_iter = data->redir_iter + 1;
+			data->cmds_iter = data->cmds_iter - 1;
 		}
 		else
 			parse_string(&cmd->cmd[data->cmds_iter], data);
@@ -41,12 +43,12 @@ void	parser_loop(t_cmd *cmd, t_data *data)
 /* 
 	iterates through the token array 
 	and create simple command array splits on pipe	*/
-void	parse(t_cmd **cmd_arr, t_data *data, char *read_line)
+void	parse(t_cmd **cmd_arr, t_data *data)
 {
 	size_t	cmd_count;
 	t_cmd	*cmd;
 
-	init_data(data, read_line);
+	init_data(data);
 	cmd = ft_calloc(data->pipe_count + 2, sizeof(t_cmd));
 	if (!cmd)
 		exit (1);

@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 09:48:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 10:42:34 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/13 09:41:27 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void	take_squote(t_char_iter *iter, t_token *token)
 	{
 		token->type = ERROR_TOKEN;
 		token->location.start--;
-		token->location.len++;
+		token->location.len = 1;
 		return ;
 	}
 	else

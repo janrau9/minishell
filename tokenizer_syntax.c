@@ -6,13 +6,13 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 11:46:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 13:55:39 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/13 09:22:46 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static bool	is_redir(t_token *token)
+bool	is_redir(t_token *token)
 {
 	if (token->type == REDIR_IN_TOKEN
 		|| token->type == REDIR_OUT_TOKEN

@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:12:01 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 14:12:03 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/13 09:33:06 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,13 +76,12 @@ int	ft_strjoin_custom(char **dst, char *s1, char *s2)
 	return (0);
 }
 
-void	init_data(t_data *data, char *read_line)
+void	init_data(t_data *data)
 {
 	size_t	i;
 	size_t	pipe_count;
 
 	data->token_iter = 0;
-	data->read_line = read_line;
 	i = 0;
 	pipe_count = 0;
 	while (data->token[i].type != EOL_TOKEN)

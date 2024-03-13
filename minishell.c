@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 15:37:02 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/13 13:49:06 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,18 @@ void	print_cmd(t_cmd **cmd_ptr)
 	}
 }
 
+void	print_array(char **array)
+{
+	size_t	i;
+
+	i = 0;
+	while (array[i] != NULL)
+	{
+		printf("env[%zu]:%s\n", i, array[i]);
+		i++;
+	}
+}
+
 void	re_promt(char **read_line_add)
 {
 	char	*read_line;
@@ -168,13 +180,13 @@ void	re_promt(char **read_line_add)
 	*read_line_add = read_line;
 }
 
-int	check_command_after_pipe(t_data *data, char **read_line_add)
+int	check_command_after_pipe(t_data *data)
 {
 	size_t	i;
 	int		cmd_flag;
 	char	*read_line;
 
-	read_line = *read_line_add;
+	read_line = data->read_line;
 	cmd_flag = 0;
 	while (cmd_flag == 0)
 	{
@@ -254,37 +266,157 @@ void	heredoc(t_cmd **cmd_add)
 	*cmd_add = cmd;
 }
 
+void	signal_handler(int signum)
+{
+	if (signum == SIGINT)
+	{
+		printf("\n");
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
+	if (signum == SIGQUIT)
+	{
+		rl_redisplay();
+	}
+}
+
+void enablerawmode(void)
+{
+	struct termios	raw;
+
+	tcgetattr(STDIN_FILENO, &raw);
+	raw.c_lflag &= ~(ECHOCTL);
+	tcsetattr(STDIN_FILENO, TCSANOW, &raw);
+}
+
+size_t	ft_arrlen(char **arr)
+{
+	size_t	i;
+
+	i = 0;
+	while (arr[i] != NULL)
+		i++;
+	return (i);
+}
+
+void	ft_arrcpy(char ***dst_add, char **src)
+{
+	size_t	src_size;
+	size_t	i;
+	char	**dst;
+
+	dst = *dst_add;
+	src_size = ft_arrlen(src);
+	i = 0;
+	while (i < src_size)
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	*dst_add = dst;
+}
+
+void	ft_arrdup(char ***dst_add, char **src)
+{
+	size_t	src_size;
+	size_t	i;
+	char	**dst;
+
+	if (!src)
+		return ;
+	src_size = ft_arrlen(src);
+	dst = ft_calloc(src_size + 1, sizeof(char *));
+	if (!dst)
+		exit (2);
+	i = 0;
+	while (i < src_size)
+	{
+		dst[i] = ft_strdup(src[i]);
+		if (!dst[i])
+			exit (2);
+		i++;
+	}
+	dst[i] = NULL;
+	*dst_add = dst;
+}
+void	ft_freearr(char ***array)
+{
+	size_t	i;
+	char	**tmp;
+
+	i = 0;
+	tmp = *array;
+	while (tmp[i] != NULL)
+	{
+		free(tmp[i]);
+		i++;
+	}
+	free(tmp);
+	*array = NULL;
+}
+
+void	ft_freestruct(t_cmd **cmd)
+{
+	t_cmd	*tmp;
+	size_t	i;
+
+	tmp = *cmd;
+	i = 0;
+	while (tmp[i].cmd != NULL)
+	{
+		ft_freearr(&tmp[i].cmd);
+		ft_freearr(&tmp[i].redir);
+		i++;
+	}
+	free(tmp);
+}
 int	main(int argc, char **argv, char **envp)
 {
-	char	*read_line;
 	t_data	data;
 	t_cmd	*cmd;
+	t_exec	exec;
 
 	(void)argc;
 	(void)argv;
 	(void)envp;
-
+	enablerawmode();
+	signal(SIGQUIT, signal_handler);
+	signal(SIGINT, signal_handler);
 	while (1)
 	{
-		read_line = readline ("jjsh-1.0$ ");
-		if (ft_strncmp(read_line, "exit", ft_strlen(read_line)) == 0)
+		data.read_line = readline ("jjsh-1.0$ ");
+		if (!data.read_line)
 		{
-			free(read_line);
 			printf("Exiting minishell\n");
 			exit (0);
 		}
-		if (*read_line != '\0')
+		if (!ft_strncmp(data.read_line, "exit", 5))
 		{
-			add_history(read_line);
-			if (!check_command_after_pipe(&data, &read_line))
+			free(data.read_line);
+			printf("Exiting minishell\n");
+			exit (0);
+		}
+		if (*data.read_line != '\0')
+		{
+			add_history(data.read_line);
+			if (!check_command_after_pipe(&data))
 			{
-				parse(&cmd, &data, read_line);
+				parse(&cmd, &data);
+				exec.cmd = cmd;
+				exec.cmd_count = data.pipe_count + 1;
+				heredoc(&exec.cmd);
+				// exec.envp = NULL;
+				// ft_arrdup(&exec.envp, envp);
+				// builtin(&exec);
 				print_cmd(&cmd);
-				heredoc(&cmd);
+				// print_array(exec.envp);
+				// ft_freearr(&exec.envp);
+				// ft_freestruct(&cmd);
 			}
 		}
-		// free(read_line);
-		// free(data.token);
+		free(data.read_line);
+		free(data.token);
 	}
 	return (0);
 }

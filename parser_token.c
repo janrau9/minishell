@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:13:00 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 14:13:01 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/13 09:19:26 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,6 @@ void	parse_redir(char **dst, t_data *data)
 	data->token[data->token_iter].location.len);
 	data->token_iter = data->token_iter + 1;
 	data->redir_iter = data->redir_iter + 1;
-	ft_realloc_array(&data->cmd->redir, data->redir_iter + 1);
-	if (data->token[data->token_iter].type == SPACE_TOKEN)
-		data->token_iter = data->token_iter + 1;
-	parse_dquote(&data->cmd->redir[data->redir_iter], data);
-	data->redir_iter = data->redir_iter + 1;
-	data->cmds_iter = data->cmds_iter - 1;
 }
 
 /*Malloc substring from char* start and len in t_token struct*/
