@@ -373,11 +373,20 @@ void	ft_freestruct(t_cmd **cmd)
 	}
 	free(tmp);
 }
+void	initialize_data(t_data *data)
+{
+	data->read_line = NULL;
+	data->token = NULL;
+	data->token_iter = 0;
+	data->cmds_iter = 0;
+	data->redir_iter = 0;
+	data->pipe_count = 0;
+	data->exec.cmd = NULL;
+	data->exec.envp = NULL;
+}
 int	main(int argc, char **argv, char **envp)
 {
 	t_data	data;
-	t_cmd	*cmd;
-	t_exec	exec;
 
 	(void)argc;
 	(void)argv;
@@ -385,6 +394,7 @@ int	main(int argc, char **argv, char **envp)
 	enablerawmode();
 	signal(SIGQUIT, signal_handler);
 	signal(SIGINT, signal_handler);
+	ft_arrdup(&data.exec.envp, envp);
 	while (1)
 	{
 		data.read_line = readline ("jjsh-1.0$ ");
@@ -404,17 +414,12 @@ int	main(int argc, char **argv, char **envp)
 			add_history(data.read_line);
 			if (!check_command_after_pipe(&data))
 			{
-				parse(&cmd, &data);
-				exec.cmd = cmd;
-				exec.cmd_count = data.pipe_count + 1;
+				parse(&data);
 				// heredoc(&exec.cmd);
-				exec.envp = NULL;
-				ft_arrdup(&exec.envp, envp);
-				builtin(&exec);
-				print_cmd(&cmd);
-				print_array(exec.envp);
-				ft_freearr(&exec.envp);
-				ft_freestruct(&cmd);
+				builtin(&data);
+				print_cmd(&data.exec.cmd);
+				print_array(data.exec.envp);
+				ft_freestruct(&data.exec.cmd);
 				free(data.token);
 				free(data.read_line);
 			}

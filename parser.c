@@ -43,7 +43,7 @@ void	parser_loop(t_cmd *cmd, t_data *data)
 /* 
 	iterates through the token array 
 	and create simple command array splits on pipe	*/
-void	parse(t_cmd **cmd_arr, t_data *data)
+void	parse(t_data *data)
 {
 	size_t	cmd_count;
 	t_cmd	*cmd;
@@ -69,5 +69,5 @@ void	parse(t_cmd **cmd_arr, t_data *data)
 	}
 	cmd[cmd_count].cmd = NULL;
 	cmd[cmd_count].redir = NULL;
-	*cmd_arr = cmd;
+	data->exec.cmd = cmd;
 }
