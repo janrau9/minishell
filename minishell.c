@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/13 13:49:06 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/13 15:37:33 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -346,6 +346,8 @@ void	ft_freearr(char ***array)
 	char	**tmp;
 
 	i = 0;
+	if (!*array || !array)
+		return ;
 	tmp = *array;
 	while (tmp[i] != NULL)
 	{
@@ -405,18 +407,18 @@ int	main(int argc, char **argv, char **envp)
 				parse(&cmd, &data);
 				exec.cmd = cmd;
 				exec.cmd_count = data.pipe_count + 1;
-				heredoc(&exec.cmd);
-				// exec.envp = NULL;
-				// ft_arrdup(&exec.envp, envp);
-				// builtin(&exec);
+				// heredoc(&exec.cmd);
+				exec.envp = NULL;
+				ft_arrdup(&exec.envp, envp);
+				builtin(&exec);
 				print_cmd(&cmd);
-				// print_array(exec.envp);
-				// ft_freearr(&exec.envp);
-				// ft_freestruct(&cmd);
+				print_array(exec.envp);
+				ft_freearr(&exec.envp);
+				ft_freestruct(&cmd);
+				free(data.token);
+				free(data.read_line);
 			}
 		}
-		free(data.read_line);
-		free(data.token);
 	}
 	return (0);
 }

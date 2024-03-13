@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:12:01 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/13 09:33:06 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/13 15:08:08 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	ft_realloc_array(char ***args, size_t size)
 		exit(1);
 	}
 	i = 0;
-	while (i < size)
+	while (i < size - 1)
 	{
 		new[i] = tmp[i];
 		i++;

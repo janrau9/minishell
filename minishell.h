@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/13 13:47:38 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/13 14:04:08 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,5 +69,5 @@ size_t	ft_arrlen(char **arr);
 void	ft_arrdup(char ***dst_add, char **src);
 void	ft_arrcpy(char ***dst_add, char **src);
 
-
+void	ft_freearr(char ***array);
 #endif

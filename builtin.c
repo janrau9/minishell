@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 10:23:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/13 13:46:50 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/13 15:43:16 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	builtin(t_exec *exec)
 	// 	ft_env(cmd);
 	// else if (ft_strncmp(cmd->cmd[0], "exit", 5) == 0)
 	// 	ft_exit(cmd);
+	return ;
 }
 
 void	ft_export(t_exec *exec)
@@ -35,9 +36,11 @@ void	ft_export(t_exec *exec)
 	size_t	c;
 	size_t	size;
 	char	**env;
+	char	**env_copy;
 	char	*exp_arg;
 
 	c = 0;
+	env_copy = exec->envp;
 	exp_arg = exec->cmd[0].cmd[1];
 	while (exp_arg[c])
 	{
@@ -54,9 +57,11 @@ void	ft_export(t_exec *exec)
 	env = ft_calloc(size + 1, sizeof(char *));
 	if (!env)
 		exit(2);
-	env = exec->envp;
-	ft_strchr(exec->cmd[0].cmd[1], '=');
-	env[size] = (exec->cmd[0].cmd[1]);
-	env[size + 1] = 0;
+	ft_arrdup(&env, env_copy);
+	ft_freearr(&exec->envp);
+	printf("%s\n", env[size]);
+	env[size] = ft_strdup(exec->cmd[0].cmd[1]);
+	printf("%s\n", env[size]);
+	env[size + 1] = NULL;
 	exec->envp = env;
 }

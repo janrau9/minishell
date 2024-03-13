@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:11:18 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/13 09:39:46 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/13 15:05:56 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	ft_realloc(t_token **token, size_t size)
 		exit (2);
 	}
 	i = 0;
-	while (i < size)
+	while (i < size - 1)
 	{
 		new[i] = (*token)[i];
 		i++;
