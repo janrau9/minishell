@@ -6,7 +6,7 @@
 #    By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/07 11:38:23 by jberay            #+#    #+#              #
-#    Updated: 2024/03/13 14:02:08 by jtu              ###   ########.fr        #
+#    Updated: 2024/03/14 14:25:43 by jtu              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ GREEN = \033[0;92m
 NAME			=	minishell
 
 CC				=	cc
-CFLAGS			=	-Wall -Wextra -Werror -L/home/linuxbrew/.linuxbrew/opt/readline/lib -I/home/linuxbrew/.linuxbrew/opt/readline/include -I./includes -I./libft/includes -g
+CFLAGS			=	-Wall -Wextra -Werror
 RM				=	rm -rf
 READLINE_HEADER = ~/.brew/opt/readline/include
 READLINE_LIB = ~/.brew/opt/readline/lib
@@ -26,9 +26,12 @@ SRCS 			=	minishell.c \
 					tokenizer_strs.c \
 					tokenizer_redir.c \
 					tokenizer_utils.c \
+					tokenizer_syntax.c \
 					parser.c \
 					parser_utils.c \
-					token_iter.c \
+					parser_token.c \
+					builtin.c \
+
 
 OBJS			=	$(SRCS:%.c=%.o)
 
