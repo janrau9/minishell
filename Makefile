@@ -6,7 +6,7 @@
 #    By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/07 11:38:23 by jberay            #+#    #+#              #
-#    Updated: 2024/03/13 15:29:17 by jberay           ###   ########.fr        #
+#    Updated: 2024/03/14 14:58:23 by jberay           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,6 +31,11 @@ SRCS 			=	minishell.c \
 					parser_utils.c \
 					parser_token.c \
 					builtin.c \
+					array_utils.c \
+					errors.c \
+					executor/executor.c \
+					executor/redirections.c \
+					buildin/buildins.c \
 					
 						
 OBJS			=	$(SRCS:%.c=%.o)

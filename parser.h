@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 10:53:49 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 14:15:37 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/14 11:35:48 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ typedef struct s_node
 }	t_node;
 
 /*parser utils*/
-void	ft_realloc_array(char ***args, size_t size);
 int		ft_substr_custom(char **dst, char const *s, char *start, size_t len);
 int		ft_strjoin_custom(char **dst, char *s1, char *s2);
 

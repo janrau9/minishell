@@ -6,13 +6,13 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:12:01 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/13 15:08:08 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/14 14:59:53 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_realloc_array(char ***args, size_t size)
+void	ft_realloc_array(t_data *data, char ***args, size_t size)
 {
 	char	**new;
 	char	**tmp;
@@ -29,7 +29,7 @@ void	ft_realloc_array(char ***args, size_t size)
 			i++;
 		}
 		free(tmp);
-		exit(1);
+		ft_error(data, "malloc error", MALLOC_ERROR);
 	}
 	i = 0;
 	while (i < size - 1)
@@ -46,10 +46,10 @@ int	ft_substr_custom(char **dst, char const *s, char *start, size_t len)
 	char	*ptr;
 
 	if (!s || !start)
-		return (-1);
+		return (NULL_ERROR);
 	ptr = malloc((len +1) * sizeof(char));
 	if (ptr == NULL)
-		return (-1);
+		return (MALLOC_ERROR);
 	ft_memcpy(ptr, start, len);
 	ptr[len] = 0;
 	*dst = ptr;
@@ -62,11 +62,11 @@ int	ft_strjoin_custom(char **dst, char *s1, char *s2)
 	char	*ptr;
 
 	if (s1 == NULL || s2 == NULL)
-		return (-1);
+		return (NULL_ERROR);
 	flen = ft_strlen(s1) + ft_strlen(s2);
 	ptr = malloc(flen +1);
 	if (!ptr)
-		return (-1);
+		return (MALLOC_ERROR);
 	ft_memmove(ptr, s1, ft_strlen(s1));
 	ft_memmove(ptr + ft_strlen(s1), s2, ft_strlen(s2));
 	ptr[flen] = 0;
@@ -90,7 +90,10 @@ void	init_data(t_data *data)
 			pipe_count++;
 		i++;
 	}
-	data->pipe_count = pipe_count;
+	data->exec.cmd_count = pipe_count +1;
+	data->exec.cmd = ft_calloc(pipe_count + 2, sizeof(t_cmd));
+	if (!data->exec.cmd)
+		ft_error(data, "malloc error", MALLOC_ERROR);
 }
 
 void	token_print(t_token *token)

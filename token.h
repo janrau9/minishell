@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 09:02:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 13:54:14 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/14 09:22:09 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,6 @@ typedef struct s_token
 	t_slice			location;
 }	t_token;
 
-/*creates tokens from string*/
-int		tokenizer(char *read_line, t_token **token_ptr_add);
-
 /* t_tokens */
 void	take_pipe(t_char_iter *iter, t_token *token);
 void	take_redir_in(t_char_iter *iter, t_token *token);
@@ -67,5 +64,5 @@ void	take_error(t_char_iter *iter, t_token *token, int d_flag);
 
 /*utils*/
 int		check_syntax(t_token *token);
-void	ft_realloc(t_token **token, size_t size);
+int		ft_realloc(t_token **token, size_t size);
 #endif

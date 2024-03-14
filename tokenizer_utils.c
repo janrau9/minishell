@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:11:18 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/13 15:05:56 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/14 08:45:14 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,17 +50,14 @@ void	take_error(t_char_iter *iter, t_token *token, int d_flag)
 }
 
 /*Re allocation of token array*/
-void	ft_realloc(t_token **token, size_t size)
+int	ft_realloc(t_token **token, size_t size)
 {
 	t_token		*new;
 	size_t		i;
 
 	new = ft_calloc(size, sizeof(t_token));
 	if (!new)
-	{
-		printf("Error with malloc\n");
-		exit (2);
-	}
+		return (MALLOC_ERROR);
 	i = 0;
 	while (i < size - 1)
 	{
@@ -69,4 +66,5 @@ void	ft_realloc(t_token **token, size_t size)
 	}
 	free(*token);
 	*token = new;
+	return (0);
 }
