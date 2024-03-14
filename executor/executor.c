@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/13 19:10:22 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/14 14:38:45 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	free_arr(char **arr)
 }
 
 /*find the path of the command*/
-char	*parse_path(char *cmd, char **envp)
+char	*find_path(char *cmd, char **envp)
 {
 	char	**path;
 	char	*path_cmd;
@@ -63,26 +63,27 @@ char	*parse_path(char *cmd, char **envp)
 }
 
 /*find the command and execute it*/
-void	execute_cmd(t_cmd *cmd, char **envp)
+void	execute_cmd(t_cmd parsed_cmd, char **envp)
 {
 	char	*path;
 
-	check_redirections(cmd);
-	if (!cmd->cmd[0])
+	check_redirections(parsed_cmd);
+	check_buildins(parsed_cmd.cmd, envp);
+	if (!parsed_cmd.cmd[0])
 		error_exit(CMD_NOT_FOUND, NULL);
-	if (!ft_strrchr(cmd->cmd[0], '/'))
-		path = parse_path(cmd->cmd[0], envp);
+	if (!ft_strrchr(parsed_cmd.cmd[0], '/'))
+		path = find_path(parsed_cmd.cmd[0], envp);
 	else
 	{
-		if (access(cmd->cmd[0], F_OK) != 0)
-			error_exit(NO_PATH, cmd->cmd[0]);
-		if (access(cmd->cmd[0], X_OK) != 0)
-			error_exit(EXECVE_FAIL, cmd->cmd[0]);
-		path = cmd->cmd[0];
+		if (access(parsed_cmd.cmd[0], F_OK) != 0)
+			error_exit(NO_PATH, parsed_cmd.cmd[0]);
+		if (access(parsed_cmd.cmd[0], X_OK) != 0)
+			error_exit(EXECVE_FAIL, parsed_cmd.cmd[0]);
+		path = parsed_cmd.cmd[0];
 	}
 	// if (!path)
 	// 	error_free_exit(cmd);
-	if (execve(path, cmd->cmd, envp) == -1)
+	if (execve(path, parsed_cmd.cmd, envp) == -1)
 		error_exit(EXECVE_FAIL, path);
 }
 
@@ -119,35 +120,35 @@ void	dup_child(size_t i, t_exec *exec, int *fd)
 	{
 		if (dup2(fd[1], STDOUT_FILENO) < 0)
 			error_exit(DUP_FAIL, NULL);
-		close(fd[1]);
+		//close(fd[1]);
 	}
 	else if (i == exec->cmd_count - 1)
 	{
 		if (dup2(fd[0], STDIN_FILENO) < 0)
 			error_exit(DUP_FAIL, NULL);
-		close(fd[0]);
+		//close(fd[0]);
 	}
 	else
 	{
 		if (dup2(fd[0], STDIN_FILENO) < 0 || dup2(fd[1], STDOUT_FILENO) < 0)
 			error_exit(DUP_FAIL, NULL);
-		close(fd[1]);
-		close(fd[0]);
 	}
+	close(fd[1]);
+	close(fd[0]);
 }
 
 
 /*get the command from parser and create pipes and child process*/
-void	executor(t_exec *exec, char **envp)
+void	executor(t_exec *exec)
 {
 	int		fd[2];
 	size_t	i;
 	size_t	j;
-	int		fd_in;
 	int		status;
 
 	i = 0;
-	exec->pid = malloc(sizeof(int) * (exec->cmd_count - 1));
+	exec->pid = malloc(sizeof(int) * (exec->cmd_count));
+	printf("%zu\n", exec->cmd_count);
 	while (i < exec->cmd_count)
 	{
 		if (exec->cmd[i + 1].cmd != NULL)
@@ -157,22 +158,20 @@ void	executor(t_exec *exec, char **envp)
 			error_exit(FORK_FAIL, NULL); //
 		if (exec->pid[i] == 0)
 		{
-			dup_child(i, exec, fd);
-			execute_cmd(exec->cmd, envp);
+			if (exec->cmd_count > 1)
+				dup_child(i, exec, fd);
+			execute_cmd(exec->cmd[i], exec->envp);
 		}
-		// if (parsed_cmd->here_doc)
-		// {
-		// 	close(fd[0]);
-		// 	fd_in = open();
-		// }
-		// else
-		fd_in = fd[0];
+		if (exec->cmd_count > 1 && i == 0)
+			close(fd[1]);
+		if (exec->cmd_count > 1 && i == exec->cmd_count - 1)
+			close(fd[0]);
 		i++;
 	}
-	j = 0;
-	while (j++ < i)
-		waitpid(exec->pid[i], NULL, 0);
-	waitpid(exec->pid[i], &status, 0);
+	j = -1;
+	while (++j < i)
+		waitpid(exec->pid[j], NULL, 0);
+	waitpid(exec->pid[j], &status, 0);
 	if (WIFEXITED(status))
 		exec->exit_code = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))

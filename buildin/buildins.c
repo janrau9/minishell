@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   buildins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/13 13:46:33 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/13 14:39:03 by jtu              ###   ########.fr       */
+/*   Created: 2024/03/14 14:18:54 by jtu               #+#    #+#             */
+/*   Updated: 2024/03/14 14:30:05 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	ft_echo(char **cmd)
 
 	i = 1;
 	nl = 1;
-	if (cmd[i] == "-n")
+	if (ft_strncmp(cmd[i], "-n", 3))
 	{
 		nl = 0;
 		i++;
@@ -28,4 +28,35 @@ void	ft_echo(char **cmd)
 		ft_putstr_fd(cmd[i++], STDOUT_FILENO);
 	if (nl)
 		ft_putstr_fd("\n", STDOUT_FILENO);
+}
+
+void	ft_env(char **envp)
+{
+	int	i;
+
+	i = 0;
+	while (envp[i])
+	{
+		if (ft_strrchr(envp[i], '='))
+			ft_putendl_fd(envp[i], STDOUT_FILENO);
+		i++;
+	}
+}
+
+void	ft_pwd()
+{
+	char	buffer[1024];
+
+	getcwd(buffer, 1024);
+	ft_putendl_fd(buffer, STDOUT_FILENO);
+}
+
+void	check_buildins(char **cmd, char **envp)
+{
+	if (!ft_strncmp(cmd[0], "env", 4))
+		ft_env(envp);
+	if (!ft_strncmp(cmd[0], "pwd", 4))
+		ft_pwd();
+	if (!ft_strncmp(cmd[0], "echo", 5))
+		ft_echo(cmd);
 }

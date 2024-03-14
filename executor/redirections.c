@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 12:31:06 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/13 19:14:42 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/14 13:06:33 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	handle_outfile(char *redir, char *file)
 {
 	int	fd_out;
 
-	if (ft_strncmp(redir, ">>", 3))
+	if (!ft_strncmp(redir, ">>", 3))
 		fd_out = open(file, O_CREAT | O_RDWR | O_APPEND, 0644);
 	else
 		fd_out = open(file, O_CREAT | O_RDWR | O_TRUNC, 0644);
@@ -39,27 +39,26 @@ void	handle_infile(char *file)
 	close(fd_in);
 }
 
-void	check_redirections(t_cmd *parsed_cmd)
+void	check_redirections(t_cmd parsed_cmd)
 {
 	int	i;
-	int	j;
 
-	j = 0;
-	while (parsed_cmd[j].cmd != NULL)
+	i = 0;
+	// ft_putendl_fd(parsed_cmd.redir[i], STDERR_FILENO);
+	// if(!ft_strncmp(parsed_cmd.redir[i], "<", 2))
+	// 	ft_putendl_fd("no difference", STDERR_FILENO);
+	while (parsed_cmd.redir[i] != NULL)
 	{
-		i = 0;
-		while (parsed_cmd[j].redir[i] != NULL)
+		if (!ft_strncmp(parsed_cmd.redir[i], "<", 2) || !ft_strncmp(parsed_cmd.redir[i], "<<", 3))
 		{
-			if (ft_strncmp(parsed_cmd[j].redir[i], "<", 2) || ft_strncmp(parsed_cmd[j].redir[i], "<<", 3))
-			{
-				handle_infile(parsed_cmd[j].redir[i + 1]);
-			}
-			if (ft_strncmp(parsed_cmd[j].redir[i], ">", 2) || ft_strncmp(parsed_cmd[j].redir[i], ">>", 3))
-			{
-				handle_outfile(parsed_cmd[j].redir[i], parsed_cmd[j].redir[i + 1]);
-			}
-			i++;
+			// ft_putendl_fd("infile", STDERR_FILENO);
+			handle_infile(parsed_cmd.redir[i + 1]);
 		}
-		j++;
+		if (!ft_strncmp(parsed_cmd.redir[i], ">", 2) || !ft_strncmp(parsed_cmd.redir[i], ">>", 3))
+		{
+			// ft_putendl_fd("outfile", STDERR_FILENO);
+			handle_outfile(parsed_cmd.redir[i], parsed_cmd.redir[i + 1]);
+		}
+		i++;
 	}
 }
