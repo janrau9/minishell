@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/14 14:38:45 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/14 15:24:33 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	execute_cmd(t_cmd parsed_cmd, char **envp)
 /*get error type, give an error message and exit the project*/
 void	error_exit(t_error error, char *s)
 {
-	ft_putstr_fd("pipex: ", STDERR_FILENO);
+	ft_putstr_fd("jjsh-1.0: ", STDERR_FILENO);
 	if (error == CMD_NOT_FOUND)
 	{
 		ft_putendl_fd("command not found: ", STDERR_FILENO);
