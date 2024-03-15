@@ -3,28 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 08:03:07 by jberay            #+#    #+#             */
-/*   Updated: 2023/11/01 08:03:09 by jberay           ###   ########.fr       */
+/*   Created: 2023/10/25 14:48:39 by jtu               #+#    #+#             */
+/*   Updated: 2023/11/14 19:03:18 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/**
+ * strlcpy() copies up to dstsize - 1 characters from the
+ * string src to dst, NUL-terminating the result if dstsize
+ * is not 0.
+ */
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 {
 	size_t	i;
 
-	if (dstsize != 0)
-	{
-		i = 0;
-		while (src[i] != 0 && i < dstsize -1)
-		{
-			dst[i] = src[i];
-			i++;
-		}
-		dst[i] = 0;
-	}
-	return (ft_strlen(src));
+	i = 0;
+	while (src[i])
+		i++;
+	if (dstsize == 0)
+		return (i);
+	while (--dstsize && *src)
+		*dst++ = *src++;
+	*dst = 0;
+	return (i);
 }

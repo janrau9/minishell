@@ -3,25 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstlast_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/02 14:01:54 by jberay            #+#    #+#             */
-/*   Updated: 2024/02/02 16:01:10 by jberay           ###   ########.fr       */
+/*   Created: 2023/11/01 17:07:20 by jtu               #+#    #+#             */
+/*   Updated: 2023/11/14 18:18:25 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/**
+ * Return the last node of the list.
+*/
 t_list	*ft_lstlast(t_list *lst)
 {
-	t_list	*ptr;
-
-	ptr = lst;
-	if (ptr)
-	{
-		while (ptr->next != NULL)
-			ptr = ptr->next;
-		return (ptr);
-	}
-	return (NULL);
+	if (!lst)
+		return (NULL);
+	while (lst->next)
+		lst = lst->next;
+	return (lst);
 }

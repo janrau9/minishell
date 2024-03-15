@@ -3,28 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 08:06:27 by jberay            #+#    #+#             */
-/*   Updated: 2024/02/02 09:14:18 by jberay           ###   ########.fr       */
+/*   Created: 2023/10/25 15:44:24 by jtu               #+#    #+#             */
+/*   Updated: 2024/02/21 13:51:02 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/**
+ * Allocates (with malloc(3)) and returns a new string,
+ * which is the result of the concatenation of ’s1’ and
+ * ’s2’.
+ * @param s1 - The prefix string.
+ * @param s2 - The suffix string.
+ * @return The new string. NULL if the allocation fails.
+ */
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	size_t	flen;
-	char	*ptr;
+	int		i;
+	int		j;
+	char	*s3;
 
-	if (s1 == NULL || s2 == NULL)
+	i = 0;
+	j = 0;
+	s3 = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	if (!s3)
 		return (NULL);
-	flen = ft_strlen(s1) + ft_strlen(s2);
-	ptr = malloc(flen +1);
-	if (!ptr)
-		return (0);
-	ft_memmove(ptr, s1, ft_strlen(s1));
-	ft_memmove(ptr + ft_strlen(s1), s2, ft_strlen(s2));
-	ptr[flen] = 0;
-	return (ptr);
+	while (s1[i])
+	{
+		s3[i] = s1[i];
+		i++;
+	}
+	while (s2[j])
+	{
+		s3[i] = s2[j];
+		i++;
+		j++;
+	}
+	s3[i] = '\0';
+	return (s3);
 }

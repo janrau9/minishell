@@ -3,38 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstmap_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/02 14:10:15 by jberay            #+#    #+#             */
-/*   Updated: 2023/11/06 11:19:42 by jberay           ###   ########.fr       */
+/*   Created: 2023/11/02 14:55:38 by jtu               #+#    #+#             */
+/*   Updated: 2023/11/14 19:47:27 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/**
+ * Iterates the list ’lst’ and applies the function
+ * ’f’ on the content of each node. Creates a new
+ * list resulting of the successive applications of
+ * the function ’f’. The ’del’ function is used to
+ * delete the content of a node if needed.
+ * @param lst - The address of a pointer to a node.
+ * @param f - The address of the function used to
+ * iterate on the list.
+ * @param del - The address of the function used to
+ * delete the content of a node if needed.
+*/
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {
-	t_list	*temp;
-	t_list	*head;
-	void	*c;
+	t_list	*new_lst;
+	t_list	*node;
+	void	*content;
 
-	if (lst)
+	new_lst = NULL;
+	while (lst)
 	{
-		head = NULL;
-		while (lst)
+		content = f(lst->content);
+		node = ft_lstnew(content);
+		if (!node)
 		{
-			c = f(lst->content);
-			temp = ft_lstnew(c);
-			if (!temp)
-			{
-				del(c);
-				ft_lstclear(&head, del);
-				return (NULL);
-			}
-			ft_lstadd_back(&head, temp);
-			lst = lst->next;
+			if (content != lst->content)
+				del(content);
+			ft_lstclear(&new_lst, del);
+			return (NULL);
 		}
-		return (head);
+		ft_lstadd_back(&new_lst, node);
+		lst = lst->next;
 	}
-	return (NULL);
+	return (new_lst);
 }

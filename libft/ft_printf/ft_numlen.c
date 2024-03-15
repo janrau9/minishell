@@ -1,29 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstsize_bonus.c                                 :+:      :+:    :+:   */
+/*   ft_numlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 16:57:22 by jtu               #+#    #+#             */
-/*   Updated: 2023/11/14 18:24:42 by jtu              ###   ########.fr       */
+/*   Created: 2023/11/22 13:15:36 by jtu               #+#    #+#             */
+/*   Updated: 2023/11/22 13:16:41 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "ft_printf.h"
 
-/**
- * Counts the number of nodes in a list.
- */
-int	ft_lstsize(t_list *lst)
+int	ft_numlen_base(long nbr, char *base, char type)
 {
 	int	len;
+	int	base_len;
 
+	if (type != 'd')
+		nbr = (unsigned int)nbr;
+	base_len = ft_strlen(base);
 	len = 0;
-	while (lst)
-	{
+	if (nbr < 1)
 		len++;
-		lst = lst->next;
+	while (nbr)
+	{
+		nbr /= base_len;
+		len++;
+	}
+	return (len);
+}
+
+int	ft_numlen_base_ul(unsigned long nbr, char *base)
+{
+	int	len;
+	int	base_len;
+
+	base_len = ft_strlen(base);
+	len = 0;
+	if (nbr < 1)
+		len++;
+	while (nbr)
+	{
+		nbr /= base_len;
+		len++;
 	}
 	return (len);
 }

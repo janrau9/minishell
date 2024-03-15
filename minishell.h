@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/14 14:57:53 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/15 14:50:44 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 # define MINISHELL_H
 
 # include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <fcntl.h>
+# include <unistd.h>
+
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "libft/libft.h"
@@ -21,10 +26,11 @@
 # include "parser.h"
 # include "char_iter.h"
 # include "executor/executor.h"
-# include <fcntl.h>
+
 
 # include <signal.h>
 # include <termios.h>
+
 
 typedef struct s_cmd
 {
@@ -35,10 +41,9 @@ typedef struct s_cmd
 typedef struct s_exec
 {
 	t_cmd	*cmd;
+	size_t	cmd_count;
 	char	**envp;
 	int		exit_code;
-	size_t	pipe_count;
-	size_t	cmd_count;
 	int		*pid;
 }	t_exec;
 
@@ -47,10 +52,9 @@ typedef struct s_data
 	char	*read_line;
 	t_token	*token;
 	t_exec	exec;
-	size_t	token_iter;
-	size_t	cmds_iter;
-	size_t	redir_iter;
-	int		shell_status;
+	// size_t	token_iter;
+	// size_t	cmds_iter;
+	// size_t	redir_iter;
 }	t_data;
 
 typedef enum e_error_code
@@ -62,21 +66,28 @@ typedef enum e_error_code
 	UNEXPECTED_EOF = 258,
 }	t_error_code;
 
-/* token */
+/*minishell*/
+void	heredoc(t_data *data);
 
+/*minishell utils*/
+void	rl_replace_line(const char *text, int clear_undo);
+
+int		check_command_after_pipe(t_data *data);
+
+
+/* token */
 int		tokenizer(t_data *data);
 
-void	rl_replace_line(const char *text, int clear_undo);
+
 
 /* parser */
 void	parse(t_data *data);
-
-void	parse_redir(char **dst, t_data *data);
-void	parse_string(char **dst, t_data *data);
-void	parse_dollar(char **dst, t_data *data);
-void	parse_dquote(char **dst, t_data *data);
-void	init_data(t_data *data);
-
+void	parse_redir(t_data *data, char **dst, t_iterator *iter);
+void	parse_string(t_data *data, char **dst, t_iterator *iter);
+void	parse_dollar(t_data *data, char **dst, t_iterator *iter);
+void	parse_dquote(t_data *data, char **dst, t_iterator *iter);
+void	init_data(t_data *data, t_iterator *iter);
+/*parser utils*/
 bool	is_redir(t_token *token);
 
 void	builtin(t_data *data);
@@ -86,8 +97,10 @@ void	ft_export(t_exec *exec);
 size_t	ft_arrlen(char **arr);
 int		ft_arrdup(char ***dst_add, char **src);
 void	ft_arrcpy(char ***dst_add, char **src);
-void	ft_freearr(char ***array);
-void	ft_realloc_array(t_data *data, char ***args, size_t size);
+int		ft_realloc_array(char ***dst_add, size_t size);
+/*frees*/
+void	ft_freearr(char ***array_add);
+void	ft_freestruct(t_cmd **cmd);
 
 int		ft_error(t_data *data, char *msg, int return_code);
 

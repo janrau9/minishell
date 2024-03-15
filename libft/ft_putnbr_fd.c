@@ -3,26 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 10:11:46 by jberay            #+#    #+#             */
-/*   Updated: 2023/11/01 10:11:48 by jberay           ###   ########.fr       */
+/*   Created: 2023/11/01 12:37:37 by jtu               #+#    #+#             */
+/*   Updated: 2023/11/14 18:37:24 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/**
+ * Outputs the character ’c’ to the given file descriptor.
+ * @param n - The integer to output.
+ * @param fd - The file descriptor on which to write.
+ */
 void	ft_putnbr_fd(int n, int fd)
 {
-	long	i;
+	long	nbr;
 
-	i = (long)n;
-	if (n < 0)
+	nbr = n;
+	if (nbr < 0)
 	{
-		i = i * -1;
 		ft_putchar_fd('-', fd);
+		nbr = -nbr;
 	}
-	if (i >= 10)
-		ft_putnbr_fd(i / 10, fd);
-	ft_putchar_fd('0' + i % 10, fd);
+	if (nbr >= 10)
+	{
+		ft_putnbr_fd(nbr / 10, fd);
+		ft_putnbr_fd(nbr % 10, fd);
+	}
+	else
+		ft_putchar_fd(nbr + '0', fd);
 }

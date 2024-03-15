@@ -1,30 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd_back_double.c                            :+:      :+:    :+:   */
+/*   frees.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/02 14:00:19 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/08 14:18:41 by jberay           ###   ########.fr       */
+/*   Created: 2024/03/15 09:09:55 by jberay            #+#    #+#             */
+/*   Updated: 2024/03/15 09:10:49 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-void	ft_lstadd_back_double(t_dlist **lst, t_dlist *new)
+void	ft_freestruct(t_cmd **cmd)
 {
-	t_dlist	*ptr;
+	t_cmd	*tmp;
+	size_t	i;
 
-	ptr = *lst;
-	if (ptr != NULL)
+	tmp = *cmd;
+	i = 0;
+	while (tmp[i].cmd != NULL)
 	{
-		while (ptr->next != NULL)
-			ptr = ptr->next;
-		ptr->next = new;
-		new->prev = ptr;
-		ptr = *lst;
+		ft_freearr(&tmp[i].cmd);
+		ft_freearr(&tmp[i].redir);
+		i++;
 	}
-	else
-		*lst = new;
+	free(tmp);
+}
+
+void	ft_freearr(char ***array)
+{
+	size_t	i;
+	char	**tmp;
+
+	i = 0;
+	if (!*array || !array)
+		return ;
+	tmp = *array;
+	while (tmp[i] != NULL)
+	{
+		free(tmp[i]);
+		i++;
+	}
+	free(tmp);
+	*array = NULL;
 }

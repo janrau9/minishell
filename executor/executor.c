@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
+/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/14 14:38:45 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/15 09:41:45 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,6 @@ void	executor(t_exec *exec)
 
 	i = 0;
 	exec->pid = malloc(sizeof(int) * (exec->cmd_count));
-	printf("%zu\n", exec->cmd_count);
 	while (i < exec->cmd_count)
 	{
 		if (exec->cmd[i + 1].cmd != NULL)

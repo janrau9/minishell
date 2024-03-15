@@ -6,61 +6,25 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 10:23:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/13 15:43:16 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/15 15:21:09 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	builtin(t_data *data)
+int	run_export(t_exec *exec, char *exp_arg, size_t len)
 {
-	t_exec	*exec;
-
-	exec = &data->exec;
-	if (ft_strncmp(exec->cmd->cmd[0], "export", 7) == 0)
-		ft_export(exec);
-	// else if (ft_strncmp(cmd->cmd[0], "echo", 5) == 0)
-	// 	ft_echo(cmd);
-	// else if (ft_strncmp(cmd->cmd[0], "cd", 3) == 0)
-	// 	ft_cd(cmd);
-	// else if (ft_strncmp(cmd->cmd[0], "pwd", 4) == 0)
-	// 	ft_pwd(cmd);
-	// else if (ft_strncmp(cmd->cmd[0], "unset", 6) == 0)
-	// 	ft_unset(cmd);
-	// else if (ft_strncmp(cmd->cmd[0], "env", 4) == 0)
-	// 	ft_env(cmd);
-	// else if (ft_strncmp(cmd->cmd[0], "exit", 5) == 0)
-	// 	ft_exit(cmd);
-	return ;
-}
-
-int	rd_export_arg(t_exec *exec, char *exp_arg)
-{
-	size_t	c;
-	size_t	len;
-	char	*env;
 	char	*tmp;
+	char	*env;
+	size_t	c;
 
-	c = -1;
-	while (exp_arg[++c])
-	{
-		if (ft_isalnum(exp_arg[c]) == 0 && exp_arg[c] != '_' && exp_arg[c] != '=')
-		{
-			ft_putstr_fd("jjsh-1.0$ export: `", 2);
-			ft_putstr_fd(exp_arg, 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
-			return (1);
-		}
-		if (exp_arg[c] == '=')
-			len = c;
-	}
-	c = -1;
-	tmp = ft_substr(exp_arg, 0, len + 1);
+	tmp = ft_substr(exp_arg, 0, len);
 	if (!tmp)
-		return (2);
+		return (MALLOC_ERROR);
+	c = -1;
 	while (exec->envp[++c])
 	{
-		if (ft_strnstr(exec->envp[c], tmp, len + 1) != NULL)
+		if (ft_strnstr(exec->envp[c], tmp, len) != NULL)
 		{
 			env = exec->envp[c];
 			free(env);
@@ -71,6 +35,31 @@ int	rd_export_arg(t_exec *exec, char *exp_arg)
 	}
 	free(tmp);
 	return (0);
+}
+
+int	rd_export_arg(t_exec *exec, char *exp_arg)
+{
+	size_t	c;
+	size_t	len;
+
+	c = -1;
+	len = 0;
+	while (exp_arg[++c])
+	{
+		if (ft_isalnum(exp_arg[c]) == 0 && \
+		exp_arg[c] != '_' && exp_arg[c] != '=')
+		{
+			ft_putstr_fd("jjsh-1.0$ export: `", 2);
+			ft_putstr_fd(exp_arg, 2);
+			ft_putstr_fd("': not a valid identifier\n", 2);
+			return (1);
+		}
+		if (exp_arg[c] == '=')
+			len = c;
+	}
+	// if (len == 0)
+	// 	len = c -1;
+	return (run_export(exec, exp_arg, len));
 }
 
 void	ft_export(t_exec *exec)
@@ -87,6 +76,39 @@ void	ft_export(t_exec *exec)
 	ft_arrcpy(&env, exec->envp);
 	free(exec->envp);
 	env[size] = ft_strdup(exec->cmd[0].cmd[1]);
+	if (!env[size])
+		exit(2);
 	env[size + 1] = NULL;
 	exec->envp = env;
+}
+
+
+// void	ft_pwd(void)
+// {
+// 	char	buffer[1024];
+
+// 	getcwd(buffer, 1024);
+// 	ft_putendl_fd(buffer, STDOUT_FILENO);
+// }
+
+void	builtin(t_data *data)
+{
+	t_exec	*exec;
+
+	exec = &data->exec;
+	if (!ft_strncmp(exec->cmd->cmd[0], "export", 7))
+		ft_export(exec);
+	// else if (!ft_strncmp(exec->cmd->cmd[0], "echo", 5))
+	// 	ft_echo(&exec->cmd[0].cmd[1]);
+	// else if (!ft_strncmp(exec->cmd->cmd[0], "cd", 3))
+	// 	ft_cd(&exec->cmd[0].cmd);
+	// else if (!ft_strncmp(exec->cmd->cmd[0], "pwd", 4))
+	// 	ft_pwd();
+	// else if (!ft_strncmp(exec->cmd->cmd[0], "unset", 6))
+	// 	ft_unset(&exec->cmd);
+	// else if (!ft_strncmp(exec->cmd->cmd[0], "env", 4))
+	// 	ft_env(exec->envp);
+	// else if (!ft_strncmp(exec->cmd->cmd[0], "exit", 5))
+	// 	ft_exit(&exec->cmd);
+	return ;
 }

@@ -3,39 +3,41 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 08:00:48 by jberay            #+#    #+#             */
-/*   Updated: 2023/11/01 08:01:03 by jberay           ###   ########.fr       */
+/*   Created: 2023/10/25 14:48:13 by jtu               #+#    #+#             */
+/*   Updated: 2023/11/14 18:59:40 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memmove(void *dst, const void *src, size_t len)
+/**
+ * The memmove() function copies len bytes from string src
+ * to string dst.  The two strings may overlap; the copy is
+ * always done in a non-destructive manner.
+  * @return the original value of dst.
+ */
+void	*ft_memmove(void *dst, const void *src, size_t n)
 {
-	size_t	i;
-	size_t	n;
+	unsigned char	*dst2;
+	unsigned char	*src2;
 
-	n = len;
-	i = 0;
-	if (dst == 0 && src == 0)
-		return (0);
-	if (dst > src)
-	{
-		while (i < len)
-		{
-			((unsigned char *)dst)[n -1] = ((unsigned char *)src)[n -1];
-			n--;
-			i++;
-		}
-	}
+	dst2 = (unsigned char *)dst;
+	src2 = (unsigned char *)src;
+	if (!dst && !src)
+		return (NULL);
+	if (dst2 == src2 || n == 0)
+		return (dst);
+	else if (dst2 < src2)
+		ft_memcpy(dst2, src2, n);
 	else
 	{
-		while (i < len)
+		while (--n >= 0)
 		{
-			((unsigned char *)dst)[i] = ((unsigned char *)src)[i];
-			i++;
+			dst2[n] = src2[n];
+			if (n == 0)
+				break ;
 		}
 	}
 	return (dst);

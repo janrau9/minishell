@@ -3,49 +3,44 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 15:46:43 by jberay            #+#    #+#             */
-/*   Updated: 2023/11/01 15:52:42 by jberay           ###   ########.fr       */
+/*   Created: 2023/10/25 15:43:44 by jtu               #+#    #+#             */
+/*   Updated: 2023/11/14 16:12:43 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int		is_set(const char *set, char c);
-
-char	*ft_strtrim(char const *s1, const char *set)
+/**
+ * Allocates (with malloc(3)) and returns a copy of
+ * ’s1’ with the characters specified in ’set’ removed
+ * from the beginning and the end of the string.
+*/
+char	*ft_strtrim(char const *s1, char const *set)
 {
-	size_t	i;
-	size_t	len;
-	char	*ptr;
+	char	*s1_trim;
+	int		start;
+	int		end;
+	int		len;
+	int		i;
 
-	if (s1 == NULL || set == NULL)
+	len = ft_strlen(s1);
+	start = 0;
+	end = 0;
+	while (s1[start] && ft_strchr(set, s1[start]))
+		start++;
+	while (end < len - start && ft_strchr(set, s1[len - end - 1]))
+		end++;
+	s1_trim = malloc((len - start - end + 1) * sizeof(char));
+	if (!s1_trim)
 		return (NULL);
 	i = 0;
-	len = ft_strlen(s1);
-	while (is_set(set, s1[i]) == 1)
-		i++;
-	while (s1[i] && (is_set(set, s1[len -1]) == 1))
-		len--;
-	ptr = malloc(len - i + 1);
-	if (!ptr)
-		return (0);
-	ft_memmove(ptr, &s1[i], len - i);
-	ptr[len - i] = 0;
-	return (ptr);
-}
-
-static int	is_set(const char *set, char c)
-{
-	size_t	i;
-
-	i = 0;
-	while (set[i] != '\0')
+	while (i < len - start - end)
 	{
-		if (set[i] == c)
-			return (1);
+		s1_trim[i] = s1[i + start];
 		i++;
 	}
-	return (0);
+	s1_trim[i] = '\0';
+	return (s1_trim);
 }
