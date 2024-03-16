@@ -12,21 +12,23 @@
 
 #include "minishell.h"
 
+unsigned int	g_in_reprompt;
+
 void	signal_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
-		// printf("Here %s\n", rl_prompt);
-		// printf("buffer %s\n", rl_line_buffer);
-		// if (ft_strncmp(rl_prompt, "heredoc> ", 9) == 0)
-		// {
-		// 	write(STDIN_FILENO, "\n", 4);
-		// }
-		printf("\n");
+		if (ft_strncmp(rl_prompt, "> ", 3) == 0)
+		{
+			g_in_reprompt = 1;
+			printf("\n");
+			close (STDIN_FILENO);
+		} 
+		if (g_in_reprompt == 0)
+			printf("\n");
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
-
 	}
 	if (signum == SIGQUIT)
 	{
@@ -101,24 +103,69 @@ void	enablerawmode(void)
 	tcsetattr(STDIN_FILENO, TCSANOW, &raw);
 }
 
-void	initialize_data(t_data *data, char **envp)
+void	initialize_data(t_data *data)
 {
 	data->read_line = NULL;
 	data->token = NULL;
-	data->exec.cmd_count = 0;
 	data->exec.cmd = NULL;
 	data->exec.envp = NULL;
 	data->exec.pid = NULL;
-	data->exec.exit_code = ft_arrdup(&data->exec.envp, envp);
+	data->exec.cmd_count = 0;
 }
 
-/*
-** Malloced
-** 1. data->read_line
-** 2. data->token
-** 3. data->exec.cmd
-** 4. data->exec.envp
-*/
+void	prep_for_re_promt(t_data *data)
+{
+	ft_freeall(data);
+	initialize_data(data);
+	//enablerawmode();
+	togglesignal(1);
+}
+
+void	make_envp(t_data *data, char **envp)
+{
+	int	envp_status;
+
+	envp_status = ft_arrdup(&data->exec.envp, envp);
+	if (envp_status == MALLOC_ERROR)
+		exit (MALLOC_ERROR);
+	else if (envp_status == NULL_ERROR)
+		data->exec.envp = NULL;
+	data->exec.exit_code = 0;
+}
+
+/* void prompt(t_data *data)
+{
+	data->read_line = readline("jjsh-1.0$ ");
+	if (!data->read_line || !ft_strncmp(data->read_line, "exit", 5))
+	{
+		free(data->read_line);
+		ft_freearr(&data->exec.envp);
+		printf("Exiting minishell\n");
+		exit (0);
+	}
+	if (*data.read_line != '\0')
+	{
+		add_history(data.read_line);
+		data.exec.exit_code = check_command_after_pipe(&data);
+		if (data.exec.exit_code == 0)
+		{
+			parse(&data);
+			heredoc(&data);
+			//free data
+			// check_if_one_cmd(&data.exec);
+			//builtin(&data);
+			//token_print(data.token);
+			print_cmd(&data.exec.cmd);
+			//print_array(data.exec.envp);
+			// ft_freestruct(&data.exec.cmd);
+			
+			// executor(&data.exec);
+			free(data.token);
+			free(data.read_line);
+		}
+	}
+} */
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_data	data;
@@ -126,15 +173,17 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	(void)envp;
-	enablerawmode();
-	togglesignal(1);
-	initialize_data(&data, envp);
+	
+	initialize_data(&data);
+	make_envp(&data, envp);
+	prep_for_re_promt(&data);
 	while (data.exec.exit_code >= 0)
 	{
 		data.read_line = readline ("jjsh-1.0$ ");
 		if (!data.read_line || !ft_strncmp(data.read_line, "exit", 5))
 		{
 			free(data.read_line);
+			ft_freearr(&data.exec.envp);
 			printf("Exiting minishell\n");
 			exit (0);
 		}
@@ -142,6 +191,9 @@ int	main(int argc, char **argv, char **envp)
 		{
 			add_history(data.read_line);
 			data.exec.exit_code = check_command_after_pipe(&data);
+			
+			printf("exit code: %d\n", data.exec.exit_code);
+			printf("g_exit_code: %d\n", g_in_reprompt);
 			if (data.exec.exit_code == 0)
 			{
 				parse(&data);
@@ -149,14 +201,16 @@ int	main(int argc, char **argv, char **envp)
 				heredoc(&data);
 				//free data
 				// check_if_one_cmd(&data.exec);
-				builtin(&data);
+				//builtin(&data);
+				//token_print(data.token);
 				print_cmd(&data.exec.cmd);
-				print_array(data.exec.envp);
+				//print_array(data.exec.envp);
 				// ft_freestruct(&data.exec.cmd);
-				// token_print(data.token);
+				
 				// executor(&data.exec);
 				free(data.token);
 				free(data.read_line);
+				g_in_reprompt = 0;
 			}
 		}
 	}

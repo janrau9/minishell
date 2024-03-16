@@ -16,12 +16,26 @@ static int	re_promt(t_data *data)
 {
 	char	*read_line_new;
 	char	*rd_space;
+	//int 	fda;
+	int 	fd_og = dup(STDIN_FILENO);
 
+/* 	open("a.txt", O_CREAT | O_RDONLY);
+	fda = open ("a.txt", O_CREAT | O_EXCL);
+	if (fda == -1)
+		close (STDIN_FILENO); */
 	read_line_new = readline("> ");
+	if (!read_line_new && g_in_reprompt)
+	{
+		dup2(fd_og, STDIN_FILENO);
+		return (UNEXPECTED_EOF);
+	}
+	if (!read_line_new)
+	{
+		g_in_reprompt = 1;
+		return (UNEXPECTED_EOF);
+	}
 	if (!*read_line_new)
 		return (0);
-	if (!read_line_new)
-		return (UNEXPECTED_EOF);
 	rd_space = ft_strjoin(data->read_line, " ");
 	if (!rd_space)
 		return (MALLOC_ERROR);

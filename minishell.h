@@ -60,14 +60,18 @@ typedef struct s_data
 typedef enum e_error_code
 {
 	NO_ERR,
+	FORK_ERROR,
 	MALLOC_ERROR = -1,
 	NULL_ERROR = -2,
 	SYNTAX_ERROR = 258,
 	UNEXPECTED_EOF = 258,
 }	t_error_code;
 
+extern unsigned int	g_in_reprompt;
 /*minishell*/
 void	heredoc(t_data *data);
+void	togglesignal(int mode);
+void	signal_handler(int signum);
 
 /*minishell utils*/
 void	rl_replace_line(const char *text, int clear_undo);
@@ -101,6 +105,7 @@ int		ft_realloc_array(char ***dst_add, size_t size);
 /*frees*/
 void	ft_freearr(char ***array_add);
 void	ft_freestruct(t_cmd **cmd);
+void	ft_freeall(t_data *data);
 
 int		ft_error(t_data *data, char *msg, int return_code);
 
