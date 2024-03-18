@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:32:17 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/12 10:59:33 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/18 10:37:16 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@
 // 	char	**redirection;
 // }	t_cmd;
 
-typedef struct s_util
-{
-	bool	here_doc;
-	int		pipes;
-	int		exit_code;
-}	t_util;
+// typedef struct s_util
+// {
+// 	bool	here_doc;
+// 	int		pipes;
+// 	int		exit_code;
+// }	t_util;
 
 typedef enum s_error
 {

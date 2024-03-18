@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:18:54 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/14 14:30:05 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/18 10:29:08 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	ft_echo(char **cmd)
 
 	i = 1;
 	nl = 1;
-	if (ft_strncmp(cmd[i], "-n", 3))
+	if (!ft_strncmp(cmd[i], "-n", 3))
 	{
 		nl = 0;
 		i++;
@@ -55,8 +55,15 @@ void	check_buildins(char **cmd, char **envp)
 {
 	if (!ft_strncmp(cmd[0], "env", 4))
 		ft_env(envp);
-	if (!ft_strncmp(cmd[0], "pwd", 4))
+	else if (!ft_strncmp(cmd[0], "pwd", 4))
 		ft_pwd();
-	if (!ft_strncmp(cmd[0], "echo", 5))
+	else if (!ft_strncmp(cmd[0], "echo", 5))
 		ft_echo(cmd);
+	else if (!ft_strncmp(cmd[0], "cd", 3))
+	{
+		ft_cd(cmd, envp);
+		exit(0);
+	}
+	// else if (!ft_strncmp(cmd[0], "unset", 6))
+	// 	ft_unset(cmd, envp);
 }

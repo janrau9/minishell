@@ -6,20 +6,11 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/14 15:24:33 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/18 10:28:23 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void	error_free_exit(char **cmd)
-{
-	ft_putstr_fd("pipex: ", STDERR_FILENO);
-	ft_putstr_fd("command not found: ", STDERR_FILENO);
-	ft_putendl_fd(*cmd, STDERR_FILENO);
-	free_arr(cmd);
-	exit(127);
-}
 
 void	free_arr(char **arr)
 {
@@ -139,16 +130,20 @@ void	dup_child(size_t i, t_exec *exec, int *fd)
 
 
 /*get the command from parser and create pipes and child process*/
-void	executor(t_exec *exec)
+void	executor(t_data *data)
 {
 	int		fd[2];
 	size_t	i;
 	size_t	j;
 	int		status;
+	t_exec	*exec;
 
 	i = 0;
+	exec = &(data->exec);
+	if (!ft_strncmp(exec->cmd[0].cmd[0], "unset", 6))
+		ft_unset(exec);
 	exec->pid = malloc(sizeof(int) * (exec->cmd_count));
-	printf("%zu\n", exec->cmd_count);
+	// printf("%zu\n", exec->cmd_count); //
 	while (i < exec->cmd_count)
 	{
 		if (exec->cmd[i + 1].cmd != NULL)
