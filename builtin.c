@@ -91,11 +91,8 @@ void	ft_export(t_exec *exec)
 // 	ft_putendl_fd(buffer, STDOUT_FILENO);
 // }
 
-void	builtin(t_data *data)
+void	builtin(t_exec *exec)
 {
-	t_exec	*exec;
-
-	exec = &data->exec;
 	if (!ft_strncmp(exec->cmd->cmd[0], "export", 7))
 		ft_export(exec);
 	// else if (!ft_strncmp(exec->cmd->cmd[0], "echo", 5))

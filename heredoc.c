@@ -12,105 +12,129 @@
 
 #include "minishell.h"
 
-static void	create_heredoc_name(t_data *data, char **heredoc_name, int child)
+void	parse_heredoc(t_exec *exec, char **dst, t_iterator *iter, bool is_expand)
+{
+	char	*str[3];
+
+	str[0] = ft_strdup("");
+	if (!str[0])
+		ft_error(exec, "malloc error", MALLOC_ERROR);
+	while (exec->token[iter->token_iter].type != EOL_TOKEN)
+	{
+		str[2] = str[0];
+		if (exec->token[iter->token_iter].type == DOLLAR_TOKEN)
+			parse_dollar(exec, &str[1], iter, is_expand);
+		else
+		{
+			if (exec->token[iter->token_iter].type == OPEN_DQUOTE_TOKEN)
+			{
+				exec->token[iter->token_iter].location.start--;
+				exec->token[iter->token_iter].location.len++;
+			}
+			if (exec->token[iter->token_iter].type == CLOSE_DQUOTE_TOKEN)
+				exec->token[iter->token_iter].location.len++;
+			if (exec->token[iter->token_iter].type == SQUOTE_TOKEN)
+			{
+				exec->token[iter->token_iter].location.start--;
+				exec->token[iter->token_iter].location.len++;
+				exec->token[iter->token_iter].location.len++;
+			}
+			parse_string(exec, &str[1], iter);
+		}
+		ft_strjoin_custom(&str[0], str[2], str[1]);
+		if (!str[0])
+			ft_error(exec, "malloc error", MALLOC_ERROR);
+	}
+	*dst = str[0];
+}
+
+static void	write_to_heredoc(t_exec *exec, int fd, char *delimiter, int is_expand)
+{
+	t_iterator	iter;
+	char		*heredoc;
+
+	while (1)
+	{
+		initialize_exec(exec);
+		iter.token_iter = 0;
+		exec->read_line = readline("heredoc> ");
+		if (!exec->read_line)
+		{
+			close(fd);
+			printf("unexpected eof\n");
+			break ;
+		}
+		if (ft_strncmp(exec->read_line, delimiter, ft_strlen(delimiter) + 1) == 0)
+		{
+			printf("break\n");
+			free(exec->read_line);
+			break ;
+		}
+		tokenizer(exec);
+		printf("readline = %s\n", exec->read_line);
+		parse_heredoc(exec, &heredoc, &iter, is_expand);
+		printf("heredoc = %s\n", heredoc);
+		write(fd, heredoc, ft_strlen(heredoc));
+		write(fd, "\n", 1);
+		free(heredoc);
+		ft_freeall(exec);
+	}
+}
+
+void	run_heredoc(t_exec *exec, int fd, char *delimiter, int is_expand)
+{
+	int		heredoc_child;
+	int		status;
+
+	heredoc_child = fork();
+	if (heredoc_child == -1)
+		ft_error(exec, "fork error", FORK_ERROR);
+	if (heredoc_child == 0)
+	{
+		togglesignal(0);
+		ft_freeall(exec);
+		write_to_heredoc(exec, fd, delimiter, is_expand);
+		togglesignal(1);
+		exit(0);
+	}
+	waitpid(heredoc_child, &status, 0);
+	if (status == SIGINT)
+		printf("reprompt\n");
+	if (status == SIGQUIT)
+		printf("unexpected eof\n");
+}
+
+static void	create_heredoc_name(t_exec *exec, char **heredoc_name, int id)
 {
 	char	*tmp;
 
-	tmp = ft_itoa(child);
+	tmp = ft_itoa(id);
 	if (!tmp)
-		ft_error(data, "malloc error", MALLOC_ERROR);
+		ft_error(exec, "malloc error", MALLOC_ERROR);
 	*heredoc_name = ft_strjoin("/tmp/heredoc_", tmp);
 	if (!*heredoc_name)
 	{
 		free(tmp);
-		ft_error(data, "malloc error", MALLOC_ERROR);
+		ft_error(exec, "malloc error", MALLOC_ERROR);
 	}
 	free(tmp);
 	unlink(*heredoc_name);
 }
 
-static void	write_to_heredoc(t_data *data, int fd, char *delimiter, char *heredoc_name)
-{
-	char	*heredoc;
-
-	while (1)
-	{
-		heredoc = readline("heredoc> ");
-		if (!heredoc)
-		{
-			close(fd);
-			unlink(heredoc_name);
-			ft_error(data, "unexpected eof", 130);
-			break ;
-		}
-		if (ft_strncmp(heredoc, delimiter, ft_strlen(delimiter)) == 0)
-		{
-			free(heredoc);
-			break ;
-		}
-		write(fd, heredoc, ft_strlen(heredoc));
-		write(fd, "\n", 1);
-		free(heredoc);
-	}
-}
-
 /*remember to unlink heredoc file after minishell use*/
-void	run_heredoc(t_data *data)
+void	heredoc(t_exec *exec, char **dst, t_iterator *iter, bool is_expand)
 {
-	size_t	child_iter;
-	size_t	iter;
 	int		fd;
-	char	*delimiter;
 	char	*heredoc_name;
+	char	*delimiter;
 
-	child_iter = -1;
-	while (data->exec.cmd[++child_iter].redir != NULL)
-	{
-		iter = -1;
-		while (data->exec.cmd[child_iter].redir[++iter] != NULL)
-		{
-			if (!ft_strncmp(data->exec.cmd[child_iter].redir[iter], "<<", 2))
-			{
-				create_heredoc_name(data, &heredoc_name, child_iter);
-				fd = open(heredoc_name, O_TRUNC | O_CREAT | O_RDWR, 0644);
-				delimiter = data->exec.cmd[child_iter].redir[iter + 1];
-				write_to_heredoc(data, fd, delimiter, heredoc_name);
-				data->exec.cmd[child_iter].redir[iter + 1] = heredoc_name;
-				free(delimiter);
-				close(fd);
-			}
-		}
-	}
-}
-
-void	heredoc(t_data *data)
-{
-	size_t	t_iter;
-	int		status;
-	int		heredoc_child;
-
-	t_iter = -1;
-	while (data->token[++t_iter].type != EOL_TOKEN)
-	{
-		if (data->token[t_iter].type == REDIR_HEREDOC_TOKEN)
-		{
-			heredoc_child = fork();
-			if (heredoc_child == -1)
-				ft_error(data, "fork error", FORK_ERROR);
-			if (heredoc_child == 0)
-			{
-				togglesignal(0);
-				run_heredoc(data);
-				ft_freeall(data);
-				togglesignal(1);
-				exit(0);
-			}
-			waitpid(heredoc_child, &status, 0);
-			if (status == SIGINT)
-				printf("reprompt\n");
-			if (status == SIGQUIT)
-				printf("unexpected eof\n");
-		}
-	}
-
+	create_heredoc_name(exec, &heredoc_name, iter->redir_iter);
+	fd = open(heredoc_name, O_TRUNC | O_CREAT | O_RDWR, 0644);
+	delimiter = ft_strdup(exec->cmd->redir[iter->redir_iter]);
+	if (!delimiter)
+		ft_error(exec, "malloc error", MALLOC_ERROR);
+	run_heredoc(exec, fd, delimiter, is_expand);
+	*dst = heredoc_name;
+	//write_to_heredoc(exec, fd, delimiter, heredoc_name);
+	close(fd);
 }

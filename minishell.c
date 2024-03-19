@@ -103,34 +103,34 @@ void	enablerawmode(void)
 	tcsetattr(STDIN_FILENO, TCSANOW, &raw);
 }
 
-void	initialize_data(t_data *data)
+void	initialize_exec(t_exec *exec)
 {
-	data->read_line = NULL;
-	data->token = NULL;
-	data->exec.cmd = NULL;
-	data->exec.envp = NULL;
-	data->exec.pid = NULL;
-	data->exec.cmd_count = 0;
+	exec->read_line = NULL;
+	exec->token = NULL;
+	exec->cmd = NULL;
+	exec->envp = NULL;
+	exec->pid = NULL;
+	exec->cmd_count = 0;
 }
 
-void	prep_for_re_promt(t_data *data)
+void	prep_for_next_promt(t_exec *exec)
 {
-	ft_freeall(data);
-	initialize_data(data);
-	//enablerawmode();
+	ft_freeall(exec);
+	initialize_exec(exec);
+	enablerawmode();
 	togglesignal(1);
 }
 
-void	make_envp(t_data *data, char **envp)
+void	make_envp(t_exec *exec, char **envp)
 {
 	int	envp_status;
 
-	envp_status = ft_arrdup(&data->exec.envp, envp);
+	envp_status = ft_arrdup(&exec->envp, envp);
 	if (envp_status == MALLOC_ERROR)
 		exit (MALLOC_ERROR);
 	else if (envp_status == NULL_ERROR)
-		data->exec.envp = NULL;
-	data->exec.exit_code = 0;
+		exec->envp = NULL;
+	exec->exit_code = 0;
 }
 
 /* void prompt(t_data *data)
@@ -168,48 +168,45 @@ void	make_envp(t_data *data, char **envp)
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_data	data;
+	t_exec	exec;
 
 	(void)argc;
 	(void)argv;
 	(void)envp;
 	
-	initialize_data(&data);
-	make_envp(&data, envp);
-	prep_for_re_promt(&data);
-	while (data.exec.exit_code >= 0)
+	initialize_exec(&exec);
+	make_envp(&exec, envp);
+	prep_for_next_promt(&exec);
+	while (exec.exit_code >= 0)
 	{
-		data.read_line = readline ("jjsh-1.0$ ");
-		if (!data.read_line || !ft_strncmp(data.read_line, "exit", 5))
+		exec.read_line = readline ("jjsh-1.0$ ");
+		if (!exec.read_line || !ft_strncmp(exec.read_line, "exit", 5))
 		{
-			free(data.read_line);
-			ft_freearr(&data.exec.envp);
+			free(exec.read_line);
+			ft_freearr(&exec.envp);
 			printf("Exiting minishell\n");
 			exit (0);
 		}
-		if (*data.read_line != '\0')
+		if (*exec.read_line != '\0')
 		{
-			add_history(data.read_line);
-			data.exec.exit_code = check_command_after_pipe(&data);
-			
-			printf("exit code: %d\n", data.exec.exit_code);
-			printf("g_exit_code: %d\n", g_in_reprompt);
-			if (data.exec.exit_code == 0)
+			add_history(exec.read_line);
+			exec.exit_code = check_command_after_pipe(&exec);
+			if (exec.exit_code == 0)
 			{
-				parse(&data);
+				parse(&exec);
 				//free token
-				heredoc(&data);
+				//heredoc(&exec);
 				//free data
-				// check_if_one_cmd(&data.exec);
-				//builtin(&data);
-				//token_print(data.token);
-				print_cmd(&data.exec.cmd);
-				//print_array(data.exec.envp);
-				// ft_freestruct(&data.exec.cmd);
+				// check_if_one_cmd(&exec);
+				//builtin(&exec);
+				//token_print(exec.token);
+				print_cmd(&exec.cmd);
+				//print_array(exec.envp);
+				// ft_freestruct(&exec.cmd);
 				
-				// executor(&data.exec);
-				free(data.token);
-				free(data.read_line);
+				// executor(&exec);
+				free(exec.token);
+				free(exec.read_line);
 				g_in_reprompt = 0;
 			}
 		}

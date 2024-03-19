@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static int	re_promt(t_data *data)
+static int	re_promt(t_exec *exec)
 {
 	char	*read_line_new;
 	char	*rd_space;
@@ -36,22 +36,22 @@ static int	re_promt(t_data *data)
 	}
 	if (!*read_line_new)
 		return (0);
-	rd_space = ft_strjoin(data->read_line, " ");
+	rd_space = ft_strjoin(exec->read_line, " ");
 	if (!rd_space)
 		return (MALLOC_ERROR);
-	free(data->read_line);
-	ft_strjoin_custom(&data->read_line, rd_space, read_line_new);
-	if (!data->read_line)
+	free(exec->read_line);
+	ft_strjoin_custom(&exec->read_line, rd_space, read_line_new);
+	if (!exec->read_line)
 	{
 		free(rd_space);
 		free(read_line_new);
 		return (MALLOC_ERROR);
 	}
-	add_history(data->read_line);
+	add_history(exec->read_line);
 	return (0);
 }
 
-int	check_command_after_pipe(t_data *data)
+int	check_command_after_pipe(t_exec *exec)
 {
 	size_t	i;
 	int		cmd_flag;
@@ -60,21 +60,21 @@ int	check_command_after_pipe(t_data *data)
 	cmd_flag = 0;
 	while (cmd_flag == 0)
 	{
-		err_return = tokenizer(data);
+		err_return = tokenizer(exec);
 		if (err_return)
 			return (err_return);
-		i = ft_strlen(data->read_line);
-		while (data->read_line[--i] != '|' && i > 0)
+		i = ft_strlen(exec->read_line);
+		while (exec->read_line[--i] != '|' && i > 0)
 		{
-			if (data->read_line[i] != ' ' && data->read_line[i] != '|')
+			if (exec->read_line[i] != ' ' && exec->read_line[i] != '|')
 				cmd_flag = 1;
 		}
 		if (cmd_flag == 0)
 		{
-			err_return = re_promt(data);
+			err_return = re_promt(exec);
 			if (err_return)
 				return (err_return);
-			free(data->token);
+			free(exec->token);
 		}
 	}
 	return (0);

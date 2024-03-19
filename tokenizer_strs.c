@@ -35,10 +35,13 @@ void	take_space(t_char_iter *iter, t_token *token)
 {
 	token->type = SPACE_TOKEN;
 	token->location.start = char_iter_cursor(iter);
-	token->location.len = 1;
+	token->location.len = 0;
 	while (char_iter_cursor(iter) != iter->end
 		&& char_iter_peek(iter) == ' ')
+	{
 		char_iter_next(iter);
+		token->location.len++;
+	}
 }
 
 void	take_string(t_char_iter *iter, t_token *token, int *d_flag)

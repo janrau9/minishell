@@ -14,10 +14,10 @@
 
 /*
 ** Malloced
-** 1. data->read_line
-** 2. data->token
-** 3. data->exec.cmd
-** 4. data->exec.envp
+** 1. exec->read_line
+** 2. exec->token
+** 3. exec->exec.cmd
+** 4. exec->exec.envp
 */
 void	ft_freearr(char ***array)
 {
@@ -53,16 +53,16 @@ void	ft_freestruct(t_cmd **cmd)
 	free(tmp);
 }
 
-void ft_freeall(t_data *data)
+void ft_freeall(t_exec *exec)
 {
-	if (data->read_line)
-		free(data->read_line);
-	if (data->token)
-		free(data->token);
-	if (data->exec.pid)
-		free(data->exec.pid);
-	if (data->exec.cmd)
-		ft_freestruct(&data->exec.cmd);
-	if (data->exec.envp)
-		ft_freearr(&data->exec.envp);
+	if (exec->read_line)
+		free(exec->read_line);
+	if (exec->token)
+		free(exec->token);
+	if (exec->pid)
+		free(exec->pid);
+	if (exec->cmd)
+		ft_freestruct(&exec->cmd);
+	if (exec->envp)
+		ft_freearr(&exec->envp);
 }

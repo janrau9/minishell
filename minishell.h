@@ -40,6 +40,8 @@ typedef struct s_cmd
 
 typedef struct s_exec
 {
+	char	*read_line;
+	t_token	*token;
 	t_cmd	*cmd;
 	size_t	cmd_count;
 	char	**envp;
@@ -47,7 +49,7 @@ typedef struct s_exec
 	int		*pid;
 }	t_exec;
 
-typedef struct s_data
+/* typedef struct s_exec
 {
 	char	*read_line;
 	t_token	*token;
@@ -55,7 +57,7 @@ typedef struct s_data
 	// size_t	token_iter;
 	// size_t	cmds_iter;
 	// size_t	redir_iter;
-}	t_data;
+}	t_exec; */
 
 typedef enum e_error_code
 {
@@ -69,32 +71,34 @@ typedef enum e_error_code
 
 extern unsigned int	g_in_reprompt;
 /*minishell*/
-void	heredoc(t_data *data);
+void	heredoc(t_exec *exec, char **dst, t_iterator *iter, bool is_expand);
 void	togglesignal(int mode);
 void	signal_handler(int signum);
 
 /*minishell utils*/
 void	rl_replace_line(const char *text, int clear_undo);
 
-int		check_command_after_pipe(t_data *data);
+void	initialize_exec(t_exec *exec);
+
+int		check_command_after_pipe(t_exec *exec);
 
 
 /* token */
-int		tokenizer(t_data *data);
+int		tokenizer(t_exec *exec);
 
 
 
 /* parser */
-void	parse(t_data *data);
-void	parse_redir(t_data *data, char **dst, t_iterator *iter);
-void	parse_string(t_data *data, char **dst, t_iterator *iter);
-void	parse_dollar(t_data *data, char **dst, t_iterator *iter);
-void	parse_dquote(t_data *data, char **dst, t_iterator *iter);
-void	init_data(t_data *data, t_iterator *iter);
+void	parse(t_exec *exec);
+void	parse_redir(t_exec *exec, char **dst, t_iterator *iter);
+void	parse_string(t_exec *exec, char **dst, t_iterator *iter);
+void	parse_dollar(t_exec *exec, char **dst, t_iterator *iter, bool is_expand);
+void	parse_dquote(t_exec *exec, char **dst, t_iterator *iter, bool is_expand);
+void	init_data(t_exec *exec, t_iterator *iter);
 /*parser utils*/
 bool	is_redir(t_token *token);
 
-void	builtin(t_data *data);
+void	builtin(t_exec *exec);
 void	ft_export(t_exec *exec);
 
 /*Array utils*/
@@ -105,9 +109,9 @@ int		ft_realloc_array(char ***dst_add, size_t size);
 /*frees*/
 void	ft_freearr(char ***array_add);
 void	ft_freestruct(t_cmd **cmd);
-void	ft_freeall(t_data *data);
+void	ft_freeall(t_exec *exec);
 
-int		ft_error(t_data *data, char *msg, int return_code);
+int		ft_error(t_exec *exec, char *msg, int return_code);
 
 //exector
 void	executor(t_exec *exec);

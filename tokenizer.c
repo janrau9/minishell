@@ -35,7 +35,7 @@ void	tokenizer_loop(t_token *token, t_char_iter *iter, int *d_flag)
 /*
 	** This function takes a string and converts it to array of tokens
 */
-int	tokenizer(t_data *data)
+int	tokenizer(t_exec *exec)
 {
 	t_char_iter		iter;
 	t_token			*token;
@@ -45,7 +45,7 @@ int	tokenizer(t_data *data)
 	token = ft_calloc(1, sizeof(t_token));
 	if (!token)
 		return (MALLOC_ERROR);
-	iter = char_iter_constructor(data->read_line, ft_strlen(data->read_line));
+	iter = char_iter_constructor(exec->read_line, ft_strlen(exec->read_line));
 	i = 0;
 	d_flag = 0;
 	while (char_iter_cursor(&iter) != iter.end)
@@ -58,6 +58,6 @@ int	tokenizer(t_data *data)
 	take_eol(&iter, &token[i]);
 	if (check_syntax(token))
 		return (SYNTAX_ERROR);
-	data->token = token;
+	exec->token = token;
 	return (0);
 }

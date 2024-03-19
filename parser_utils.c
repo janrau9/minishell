@@ -72,7 +72,7 @@ int	ft_strjoin_custom(char **dst, char *s1, char *s2)
 	return (0);
 }
 
-void	init_data(t_data *data, t_iterator *iter)
+void	init_data(t_exec *exec, t_iterator *iter)
 {
 	size_t	i;
 	size_t	pipe_count;
@@ -81,16 +81,16 @@ void	init_data(t_data *data, t_iterator *iter)
 	iter->cmd_count = -1;
 	i = 0;
 	pipe_count = 0;
-	while (data->token[i].type != EOL_TOKEN)
+	while (exec->token[i].type != EOL_TOKEN)
 	{
-		if (data->token[i].type == PIPE_TOKEN)
+		if (exec->token[i].type == PIPE_TOKEN)
 			pipe_count++;
 		i++;
 	}
-	data->exec.cmd_count = pipe_count +1;
-	data->exec.cmd = ft_calloc(pipe_count + 2, sizeof(t_cmd));
-	if (!data->exec.cmd)
-		ft_error(data, "malloc error", MALLOC_ERROR);
+	exec->cmd_count = pipe_count +1;
+	exec->cmd = ft_calloc(pipe_count + 2, sizeof(t_cmd));
+	if (!exec->cmd)
+		ft_error(exec, "malloc error", MALLOC_ERROR);
 }
 
 /* prints token array for debugging */
