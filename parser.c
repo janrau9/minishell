@@ -25,7 +25,9 @@ static void	parse_redir_and_filename(t_exec *exec, t_cmd *cmd, t_iterator *iter)
 	if (exec->token[iter->token_iter].type == OPEN_DQUOTE_TOKEN)
 		is_expand = false;
 	parse_dquote(exec, &cmd->redir[iter->redir_iter], iter, false);
-	heredoc(exec, &cmd->redir[iter->redir_iter], iter, is_expand);
+	printf("redir: %s\n", cmd->redir[iter->redir_iter - 1]);
+	if (ft_strncmp(cmd->redir[iter->redir_iter - 1], "<<", 3) == 0)
+		heredoc(exec, &cmd->redir[iter->redir_iter], iter, is_expand);
 	iter->redir_iter = iter->redir_iter + 1;
 	iter->cmds_iter = iter->cmds_iter - 1;
 }

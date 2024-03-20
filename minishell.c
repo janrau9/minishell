@@ -31,9 +31,7 @@ void	signal_handler(int signum)
 		rl_redisplay();
 	}
 	if (signum == SIGQUIT)
-	{
 		rl_redisplay();
-	}
 }
 
 void	togglesignal(int mode)
@@ -106,7 +104,6 @@ int	main(int argc, char **argv, char **envp)
 		exec.read_line = readline ("jjsh-1.0$ ");
 		if (!exec.read_line || !ft_strncmp(exec.read_line, "exit", 5))
 		{
-			free(exec.read_line);
 			ft_freearr(&exec.envp);
 			printf("Exiting minishell\n");
 			exit (0);
@@ -124,7 +121,7 @@ int	main(int argc, char **argv, char **envp)
 				builtin(&exec);
 				print_cmd(&exec.cmd);
 				// ft_freestruct(&exec.cmd);
-				// executor(&exec);
+				executor(&exec);
 				free(exec.token);
 				free(exec.read_line);
 				g_in_reprompt = 0;
