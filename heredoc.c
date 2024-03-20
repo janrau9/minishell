@@ -55,6 +55,7 @@ static void	write_to_heredoc(t_exec *exec, int fd, char *delimiter, int is_expan
 
 	while (1)
 	{
+		ft_freeall_n_envp(exec);
 		initialize_exec(exec);
 		iter.token_iter = 0;
 		exec->read_line = readline("heredoc> ");
@@ -67,8 +68,8 @@ static void	write_to_heredoc(t_exec *exec, int fd, char *delimiter, int is_expan
 		if (ft_strncmp(exec->read_line, delimiter, ft_strlen(delimiter) + 1) == 0)
 		{
 			printf("break\n");
-			free(exec->read_line);
-			break ;
+			ft_freeall(exec);
+			return ;
 		}
 		tokenizer(exec);
 		printf("readline = %s\n", exec->read_line);
@@ -77,7 +78,6 @@ static void	write_to_heredoc(t_exec *exec, int fd, char *delimiter, int is_expan
 		write(fd, heredoc, ft_strlen(heredoc));
 		write(fd, "\n", 1);
 		free(heredoc);
-		ft_freeall(exec);
 	}
 }
 
@@ -92,7 +92,6 @@ void	run_heredoc(t_exec *exec, int fd, char *delimiter, int is_expand)
 	if (heredoc_child == 0)
 	{
 		togglesignal(0);
-		ft_freeall(exec);
 		write_to_heredoc(exec, fd, delimiter, is_expand);
 		togglesignal(1);
 		exit(0);

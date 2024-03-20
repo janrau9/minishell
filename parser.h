@@ -62,6 +62,4 @@ typedef struct s_iterator
 int		ft_substr_custom(char **dst, char const *s, char *start, size_t len);
 int		ft_strjoin_custom(char **dst, char *s1, char *s2);
 
-/*debug*/
-void	token_print(t_token *token);
 #endif

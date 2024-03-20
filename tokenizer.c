@@ -56,8 +56,6 @@ int	tokenizer(t_exec *exec)
 			return (MALLOC_ERROR);
 	}
 	take_eol(&iter, &token[i]);
-	if (check_syntax(token))
-		return (SYNTAX_ERROR);
 	exec->token = token;
 	return (0);
 }

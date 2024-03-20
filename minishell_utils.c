@@ -63,6 +63,8 @@ int	check_command_after_pipe(t_exec *exec)
 		err_return = tokenizer(exec);
 		if (err_return)
 			return (err_return);
+		if (check_syntax(exec->token))
+			return (SYNTAX_ERROR);
 		i = ft_strlen(exec->read_line);
 		while (exec->read_line[--i] != '|' && i > 0)
 		{

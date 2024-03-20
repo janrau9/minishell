@@ -44,13 +44,14 @@ void	ft_freestruct(t_cmd **cmd)
 
 	tmp = *cmd;
 	i = 0;
-	while (tmp[i].cmd != NULL)
+	while (tmp[i].cmd[0] != NULL)
 	{
 		ft_freearr(&tmp[i].cmd);
 		ft_freearr(&tmp[i].redir);
 		i++;
 	}
 	free(tmp);
+	*cmd = NULL;
 }
 
 void ft_freeall(t_exec *exec)
@@ -65,4 +66,16 @@ void ft_freeall(t_exec *exec)
 		ft_freestruct(&exec->cmd);
 	if (exec->envp)
 		ft_freearr(&exec->envp);
+}
+
+void ft_freeall_n_envp(t_exec *exec)
+{
+	if (exec->read_line)
+		free(exec->read_line);
+	if (exec->token)
+		free(exec->token);
+	if (exec->pid)
+		free(exec->pid);
+	if (exec->cmd)
+		ft_freestruct(&exec->cmd);
 }

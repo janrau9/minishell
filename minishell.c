@@ -51,49 +51,6 @@ void	togglesignal(int mode)
 
 }
 
-void	print_cmd(t_cmd **cmd_ptr)
-{
-	size_t	i;
-	size_t	j;
-	t_cmd	*cmd;
-
-	cmd = *cmd_ptr;
-
-	j = 0;
-	i = 0;
-	while (cmd[j].cmd != NULL)
-	{
-		printf("\nsimple command[%zu]\n", j);
-		i = 0;
-		while (cmd[j].cmd[i] != 0)
-		{
-			printf("cmd[%zu]:%s\n", i, cmd[j].cmd[i]);
-			i++;
-		}
-		printf("cmd[%zu]:%s\n", i, cmd[j].cmd[i]);
-		i = 0;
-		while (cmd[j].redir[i] != 0)
-		{
-			printf("redir[%zu]:%s\n", i, cmd[j].redir[i]);
-			i++;
-		}
-		printf("redir[%zu]:%s\n\n", i, cmd[j].redir[i]);
-		j++;
-	}
-}
-
-void	print_array(char **array)
-{
-	size_t	i;
-
-	i = 0;
-	while (array[i] != NULL)
-	{
-		printf("env[%zu]:%s\n", i, array[i]);
-		i++;
-	}
-}
-
 void	enablerawmode(void)
 {
 	struct termios	raw;
@@ -108,14 +65,13 @@ void	initialize_exec(t_exec *exec)
 	exec->read_line = NULL;
 	exec->token = NULL;
 	exec->cmd = NULL;
-	exec->envp = NULL;
 	exec->pid = NULL;
 	exec->cmd_count = 0;
 }
 
 void	prep_for_next_promt(t_exec *exec)
 {
-	ft_freeall(exec);
+	ft_freeall_n_envp(exec);
 	initialize_exec(exec);
 	enablerawmode();
 	togglesignal(1);
@@ -125,6 +81,7 @@ void	make_envp(t_exec *exec, char **envp)
 {
 	int	envp_status;
 
+	
 	envp_status = ft_arrdup(&exec->envp, envp);
 	if (envp_status == MALLOC_ERROR)
 		exit (MALLOC_ERROR);
@@ -132,39 +89,6 @@ void	make_envp(t_exec *exec, char **envp)
 		exec->envp = NULL;
 	exec->exit_code = 0;
 }
-
-/* void prompt(t_data *data)
-{
-	data->read_line = readline("jjsh-1.0$ ");
-	if (!data->read_line || !ft_strncmp(data->read_line, "exit", 5))
-	{
-		free(data->read_line);
-		ft_freearr(&data->exec.envp);
-		printf("Exiting minishell\n");
-		exit (0);
-	}
-	if (*data.read_line != '\0')
-	{
-		add_history(data.read_line);
-		data.exec.exit_code = check_command_after_pipe(&data);
-		if (data.exec.exit_code == 0)
-		{
-			parse(&data);
-			heredoc(&data);
-			//free data
-			// check_if_one_cmd(&data.exec);
-			//builtin(&data);
-			//token_print(data.token);
-			print_cmd(&data.exec.cmd);
-			//print_array(data.exec.envp);
-			// ft_freestruct(&data.exec.cmd);
-			
-			// executor(&data.exec);
-			free(data.token);
-			free(data.read_line);
-		}
-	}
-} */
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -195,15 +119,11 @@ int	main(int argc, char **argv, char **envp)
 			{
 				parse(&exec);
 				//free token
-				//heredoc(&exec);
 				//free data
-				// check_if_one_cmd(&exec);
-				//builtin(&exec);
-				//token_print(exec.token);
-				print_cmd(&exec.cmd);
 				//print_array(exec.envp);
+				builtin(&exec);
+				print_cmd(&exec.cmd);
 				// ft_freestruct(&exec.cmd);
-				
 				// executor(&exec);
 				free(exec.token);
 				free(exec.read_line);

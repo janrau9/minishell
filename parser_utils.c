@@ -87,24 +87,10 @@ void	init_data(t_exec *exec, t_iterator *iter)
 			pipe_count++;
 		i++;
 	}
-	exec->cmd_count = pipe_count +1;
+	exec->cmd_count = pipe_count + 1;
 	exec->cmd = ft_calloc(pipe_count + 2, sizeof(t_cmd));
 	if (!exec->cmd)
 		ft_error(exec, "malloc error", MALLOC_ERROR);
 }
 
-/* prints token array for debugging */
-void	token_print(t_token *token)
-{
-	size_t	i;
 
-	i = 0;
-	printf("Printing token array\n");
-	while (token[i].type != EOL_TOKEN)
-	{
-		printf("token typ[%zu]:%d\n", i, token[i].type);
-		printf("token len[%zu]:%zu\n", i, token[i].location.len);
-		printf("token sta[%zu]:%s\n", i, token[i].location.start);
-		i++;
-	}
-}

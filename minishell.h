@@ -99,7 +99,7 @@ void	init_data(t_exec *exec, t_iterator *iter);
 bool	is_redir(t_token *token);
 
 void	builtin(t_exec *exec);
-void	ft_export(t_exec *exec);
+int		ft_export(t_exec *exec);
 
 /*Array utils*/
 size_t	ft_arrlen(char **arr);
@@ -110,6 +110,7 @@ int		ft_realloc_array(char ***dst_add, size_t size);
 void	ft_freearr(char ***array_add);
 void	ft_freestruct(t_cmd **cmd);
 void	ft_freeall(t_exec *exec);
+void ft_freeall_n_envp(t_exec *exec);
 
 int		ft_error(t_exec *exec, char *msg, int return_code);
 
@@ -120,4 +121,10 @@ void	free_arr(char **arr);
 void	error_free_exit(char **s);
 void	check_redirections(t_cmd parsed_cmd);
 void	check_buildins(char **cmd, char **envp);
+
+
+/*debug*/
+void	token_print(t_token *token);
+void	print_array(char **array);
+void	print_cmd(t_cmd **cmd_ptr);
 #endif

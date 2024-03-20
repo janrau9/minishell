@@ -34,6 +34,58 @@ void	parse_string(t_exec *exec, char **dst, t_iterator *iter)
 	iter->token_iter = iter->token_iter + 1;
 }
 
+/* ~ = $HOME
+	~+ = $PWD
+	~- = $OLDPWD */
+/* char	*ft_expand_tilde(t_exec *exec, char *key)
+{
+	char	*tmp;
+
+	if (ft_strncmp(key, "~", 1) == 0)
+	{
+		tmp = key;
+		if (ft_strlen(key) == 1)
+			key = ft_strdup("HOME=");
+		else if (ft_strlen(key) == 2 && key[1] == '+')
+			key = ft_strdup("PWD=");
+		else if (ft_strlen(key) == 2 && key[1] == '-')
+			key = ft_strdup("OLDPWD=");
+		free(tmp);
+		if (!key)
+			ft_error(exec, "malloc error", MALLOC_ERROR);
+	}
+	return (key);
+} */
+char	*ft_getenv(t_exec *exec, char *key)
+{
+	size_t	i;
+	char	*value;
+	char	*tmp;
+
+	tmp = key;
+	key = ft_strjoin(tmp, "=");
+	if (!tmp)
+		ft_error(exec, "malloc error", MALLOC_ERROR);
+	free(tmp);
+	i = -1;
+	while (exec->envp[++i])
+	{
+		if (ft_strncmp(exec->envp[i], key, ft_strlen(key)) == 0)
+		{
+			value = ft_strdup(exec->envp[i] + ft_strlen(key) + 1);
+			if (!value)
+			{
+				free(key);
+				ft_error(exec, "malloc error", MALLOC_ERROR);
+			}
+			free(key);
+			return (value);
+		}
+	}
+	free(key);
+	return (NULL);
+}
+
 /*Malloc substring and  expand $ variable*/
 void	parse_dollar(t_exec *exec, char **dst, t_iterator *iter, bool is_expand)
 {
@@ -52,13 +104,12 @@ void	parse_dollar(t_exec *exec, char **dst, t_iterator *iter, bool is_expand)
 	exec->token[iter->token_iter].location.len);
 	if (!env_str)
 		ft_error(exec, "malloc error", MALLOC_ERROR);
-	expand_str = getenv(env_str);
+	expand_str = ft_getenv(exec, env_str);
 	if (!expand_str)
 		expand_str = "";
 	*dst = ft_strdup(expand_str);
 	if (!*dst)
 		ft_error(exec, "malloc error", MALLOC_ERROR);
-	free(env_str);
 	iter->token_iter = iter->token_iter + 1;
 }
 
