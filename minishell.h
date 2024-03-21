@@ -6,11 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/03/21 13:04:18 by jtu              ###   ########.fr       */
-=======
-/*   Updated: 2024/03/21 10:40:17 by jberay           ###   ########.fr       */
->>>>>>> eb9656baa1037f2c6197550243c81a34eae62428
+/*   Updated: 2024/03/21 13:58:16 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +135,7 @@ void	error_exit(t_error error, char *s);
 void	free_arr(char **arr);
 void	error_free_exit(char **s);
 void	check_redirections(t_cmd parsed_cmd);
-void	check_builtins(char **cmd, char **envp);
+int	check_builtins(char **cmd, char **envp);
 void	ft_unset(t_exec *exec);
 void	ft_cd(char **cmd, char **envp);
 
