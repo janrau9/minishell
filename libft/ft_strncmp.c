@@ -3,32 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 08:04:42 by jberay            #+#    #+#             */
-/*   Updated: 2023/11/01 08:04:44 by jberay           ###   ########.fr       */
+/*   Created: 2023/08/15 18:28:42 by jtu               #+#    #+#             */
+/*   Updated: 2024/01/30 13:50:52 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/**
+ * The strncmp() function compares not more than n characters.
+ * Because strncmp() is designed for comparing strings rather
+ * than binary data, characters that appear after a `\0'
+ * character are not compared.
+ * @return The difference between two strings in the first n
+ * characters.
+ */
 int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	size_t			i;
-	unsigned char	*ps1;
-	unsigned char	*ps2;
+	unsigned int	i;
 
-	ps1 = (unsigned char *)s1;
-	ps2 = (unsigned char *)s2;
 	i = 0;
-	if (n != 0)
+	while ((s1[i] || s2[i]) && i < n)
 	{
-		while (ps1[i] == ps2[i] && ps1[i] && ps2[i] && i < n)
-			i++;
-		if (i == n)
-			return (ps1[i -1] - ps2[i -1]);
-		else
-			return (ps1[i] - ps2[i]);
+		if (s1[i] != s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
 	}
 	return (0);
 }

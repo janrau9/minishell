@@ -3,31 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/27 18:10:29 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/06 15:09:04 by jberay           ###   ########.fr       */
+/*   Created: 2023/08/24 15:38:34 by jtu               #+#    #+#             */
+/*   Updated: 2023/11/14 18:35:25 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strdup(const char *s1)
+/**
+ * The strdup() function allocates sufficient memory for a
+ * copy of the string s1, does the copy, and returns a
+ * pointer to it. The pointer may subsequently be used as
+ * an argument to the function free(3).
+ */
+char	*ft_strdup(const char *src)
 {
 	char	*ptr;
-	int		i;
+	size_t	len;
 
-	if (!s1)
-		return (0);
-	i = 0;
-	ptr = malloc(ft_strlen(s1) + 1);
+	len = ft_strlen(src);
+	ptr = (char *) malloc ((len + 1) * sizeof(char));
 	if (!ptr)
-		return (0);
-	while (s1[i])
-	{
-		ptr[i] = s1[i];
-		i++;
-	}
-	ptr[i] = 0;
+		return (NULL);
+	ft_strlcpy(ptr, src, len + 1);
 	return (ptr);
 }

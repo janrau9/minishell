@@ -3,49 +3,59 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/11 08:15:37 by jberay            #+#    #+#             */
-/*   Updated: 2024/01/11 08:15:38 by jberay           ###   ########.fr       */
+/*   Created: 2023/08/20 21:54:18 by jtu               #+#    #+#             */
+/*   Updated: 2023/11/15 16:19:29 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-static int	check(unsigned long long n, int sign);
+#include "libft.h"
 
-int	ft_atoi(const char *str)
+static int	convert_num(const char *str, long value, int sign)
 {
-	unsigned long long	result;
-	int					sign;
-
-	sign = 1;
-	result = 0;
-	if (*str == '\0')
-		return (0);
-	while ((*str >= 9 && *str <= 13) || *str == 32)
-		str++;
-	if (*str == '-')
-		sign = -1;
-	if ((*str >= 0) && (*str == '-' || *str == '+'))
-		str++;
-	while ((*str >= '0' && *str <= '9'))
+	while (*str >= 48 && *str <= 57)
 	{
-		result = result * 10 + (*str - '0');
-		if (result > 9223372036854775807)
+		if (value > LONG_MAX / 10)
 		{
-			result = check(result, sign);
-			break ;
+			if (sign > 0)
+				return (-1);
+			else
+				return (0);
 		}
+		value *= 10;
+		if (value > LONG_MAX - (*str - '0'))
+		{
+			if (sign > 0)
+				return (-1);
+			else
+				return (0);
+		}
+		value += *str - '0';
 		str++;
 	}
-	return ((int)result * sign);
+	return (value);
 }
 
-static int	check(unsigned long long n, int sign)
+/**
+ * The atoi() function converts the initial portion of the
+ * string pointed to by str to int representation.
+*/
+int	ft_atoi(const char *str)
 {
-	if (n > 9223372036854775807 && sign == 1)
-		return (-1);
-	else if (n > 9223372036854775807 && sign == -1)
-		return (0);
-	else
-		return (1);
+	long	value;
+	int		sign;
+
+	value = 0;
+	sign = 1;
+	while ((*str >= 9 && *str <= 13) || *str == 32)
+		str ++;
+	if (*str == '-' || *str == '+')
+	{
+		if (*str == '-')
+			sign *= -1;
+		str++;
+	}
+	value = convert_num(str, value, sign);
+	return (sign * value);
 }

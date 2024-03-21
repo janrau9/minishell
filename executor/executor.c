@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/15 15:00:03 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/20 14:37:25 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,18 +128,18 @@ void	dup_child(size_t i, t_exec *exec, int *fd)
 	close(fd[0]);
 }
 
-
 /*get the command from parser and create pipes and child process*/
-void	executor(t_data *data)
+void	executor(t_exec *exec)
 {
 	int		fd[2];
 	size_t	i;
 	size_t	j;
 	int		status;
-	t_exec	*exec;
 
 	i = 0;
-	exec = &(data->exec);
+	printf("%s\n", exec->cmd[0].cmd[0]);
+	if (!ft_strncmp(exec->cmd[0].cmd[0], "unset", 6))
+		ft_unset(exec);
 	exec->pid = malloc(sizeof(int) * (exec->cmd_count));
 	// printf("%zu\n", exec->cmd_count); //
 	while (i < exec->cmd_count)

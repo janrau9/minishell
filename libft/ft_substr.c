@@ -3,31 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 16:53:43 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/06 12:31:45 by jberay           ###   ########.fr       */
+/*   Created: 2023/10/25 15:44:40 by jtu               #+#    #+#             */
+/*   Updated: 2023/11/14 14:42:41 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/**
+ * Allocates (with malloc(3)) and returns a substring
+ * from the string ’s’.
+ * The substring begins at index ’start’ and is of
+ * maximum size ’len’.
+ * @param s - The string from which to create the substring.
+ * @param start - The start index of the substring in the
+ * string ’s’.
+ * @param len - The maximum length of the substring.
+*/
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	char	*ptr;
-	size_t	slen;
+	char	*sub_s;
+	size_t	i;
 
-	if (!s)
+	if (start > ft_strlen(s))
+		start = ft_strlen(s);
+	if (len > ft_strlen(s) - start)
+		len = ft_strlen(s) - start;
+	sub_s = malloc(len * sizeof(char) + 1);
+	if (!sub_s)
 		return (NULL);
-	slen = ft_strlen(s);
-	if ((size_t)start >= slen)
-		len = 0;
-	if (slen - (size_t)start < len)
-		len = slen - (size_t)start;
-	ptr = malloc((len +1) * sizeof(char));
-	if (ptr == NULL)
-		return (NULL);
-	ft_memmove(ptr, &s[start], len);
-	ptr[len] = 0;
-	return (ptr);
+	i = 0;
+	while (i < len && i + start < ft_strlen(s))
+	{
+		sub_s[i] = s[i + start];
+		i++;
+	}
+	sub_s[i] = '\0';
+	return (sub_s);
 }

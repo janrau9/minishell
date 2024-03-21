@@ -1,26 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstnew_double.c                                 :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 17:38:09 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/08 14:13:59 by jberay           ###   ########.fr       */
+/*   Created: 2023/12/15 13:26:25 by jtu               #+#    #+#             */
+/*   Updated: 2024/01/30 12:59:52 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
-t_dlist	*ft_lstnew_double(void *content)
-{
-	t_dlist	*plst;
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 10
+# endif
 
-	plst = malloc(sizeof(t_dlist));
-	if (!plst)
-		return (NULL);
-	plst->content = content;
-	plst->next = NULL;
-	plst->prev = NULL;
-	return (plst);
-}
+# include <unistd.h>
+# include <stdlib.h>
+# include <limits.h>
+# include "../libft.h"
+
+char	*get_next_line(int fd);
+
+#endif

@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 17:14:56 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/15 16:22:47 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/18 13:19:21 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	is_in_arr(char **envp, char *var)
 	char	*var_equal;
 
 	i = 0;
-	var_equal = ft_strjoin(var, '=');
+	var_equal = ft_strjoin(var, "=");
 	while (envp[i])
 	{
 		if (ft_strnstr(envp[i], var, ft_strlen(var) + 1))
@@ -37,16 +37,17 @@ int	is_in_arr(char **envp, char *var)
 	return (-1);
 }
 
-// void	remove_var(t_exec *exec)
+// int	ft_arrlen(char **arr)
 // {
 // 	int	i;
 
 // 	i = 0;
-// 	while ()
-
+// 	while (arr[i])
+// 		i++;
+// 	return (i);
 // }
 
-void	ft_unset(t_exec *exec, t_cmd *cmd)
+void	ft_unset(t_exec *exec)
 {
 	int	i;
 	int	j;
@@ -56,20 +57,27 @@ void	ft_unset(t_exec *exec, t_cmd *cmd)
 	i = 1;
 	j = -1;
 	rm = 0;
-	len = ;
-	if (!exec->cmd->cmd[i])
-		return ;
-	while (exec->cmd->cmd[i])
+	len = 0;
+	printf("%s", exec->envp[0]);
+	while (exec->envp[len] != NULL)
 	{
-		j = is_in_arr(exec->envp, exec->cmd->cmd[i]);
+		len++;
+		printf("%d", len);
+	}
+	printf("%d", len);
+	if (!exec->cmd[0].cmd[i])
+		return ;
+	while (exec->cmd[0].cmd[i])
+	{
+		j = is_in_arr(exec->envp, exec->cmd[0].cmd[i]);
 		if (j >= 0)
 		{
 			free(exec->envp[j]);
-			while ()
+			while (j < len)
 				exec->envp[j] = exec->envp[j + 1];
+			exec->envp[len - 1 - rm] = NULL;
 			rm++;
 		}
+		i++;
 	}
-	while (rm)
-		exec->envp[ - 1 - rm] = NULL;
 }

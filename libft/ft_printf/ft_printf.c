@@ -3,85 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/14 11:23:41 by jberay            #+#    #+#             */
-/*   Updated: 2024/02/02 08:23:57 by jberay           ###   ########.fr       */
+/*   Created: 2023/11/15 13:58:40 by jtu               #+#    #+#             */
+/*   Updated: 2023/11/22 15:34:22 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft.h"
+#include "ft_printf.h"
+
+void	initialise_list(t_printf *print)
+{
+	print->len = 0;
+}
 
 /**
-* %c Prints a single character.
-* %s Prints a string (as defined by the common C convention).
-* %p The void * pointer argument has to be printed in hexadecimal format.
-* %d Prints a decimal (base 10) number.
-* %i Prints an integer in base 10.
-* %u Prints an unsigned decimal (base 10) number.
-* %x Prints a number in hexadecimal (base 16) lowercase format.
-* %X Prints a number in hexadecimal (base 16) uppercase format.
-* %% Prints a percent sign.
+ * The printf() function writes output to
+ * stdout, the standard output stream
+ * @return the number of characters printed (not including
+ * the trailing `\0' used to end output to strings)
 */
-
-static void	ft_print_format(char conv, t_print *sp_ap)
+int	ft_printf(const char *fmt, ...)
 {
-	if (conv == 'c')
-		ft_print_char(va_arg(sp_ap->ap, int), sp_ap);
-	else if (conv == 's')
-		ft_print_str(va_arg(sp_ap->ap, char *), sp_ap);
-	else if (conv == 'p')
+	t_printf	print;
+
+	initialise_list(&print);
+	va_start(print.args, fmt);
+	while (*fmt)
 	{
-		ft_print_str("0x", sp_ap);
-		if (sp_ap->write_err != -1)
-			ft_print_pointer((unsigned long)va_arg(sp_ap->ap, void *), sp_ap);
-	}
-	else if (conv == 'd' || conv == 'i')
-		ft_print_nbr((long)va_arg(sp_ap->ap, int), 10, 0, sp_ap);
-	else if (conv == 'u')
-		ft_print_nbr((unsigned int)va_arg(sp_ap->ap, int), 10, 0, sp_ap);
-	else if (conv == 'x')
-		ft_print_nbr(va_arg(sp_ap->ap, unsigned int), 16, 0, sp_ap);
-	else if (conv == 'X')
-		ft_print_nbr(va_arg(sp_ap->ap, unsigned int), 16, 1, sp_ap);
-	else if (conv == '%')
-		ft_print_char('%', sp_ap);
-	else
-		sp_ap->write_err = -1;
-}
-
-static void	init_va(t_print *sp_ap, va_list ap)
-{
-	va_copy(sp_ap->ap, ap);
-	sp_ap->length = 0;
-	sp_ap->write_err = 0;
-}
-
-int	ft_printf(const char *src, ...)
-{
-	va_list	aptr;
-	t_print	*sp_ap;
-	t_print	s_ap;
-
-	init_va(&s_ap, aptr);
-	sp_ap = &s_ap;
-	va_start (sp_ap->ap, src);
-	while (*src != '\0')
-	{
-		if (*src == '%')
+		if (*fmt == '%')
 		{
-			ft_print_format(*(++src), sp_ap);
-			if (sp_ap->write_err == -1)
-				break ;
+			if (convert_spec(&print, ++fmt) != 1)
+			{
+				va_end(print.args);
+				return (-1);
+			}
 		}
+		else if (ft_putchar(*fmt) == 1)
+			print.len += 1;
 		else
 		{
-			ft_print_char(*src, sp_ap);
-			if (sp_ap->write_err == -1)
-				break ;
+			va_end(print.args);
+			return (-1);
 		}
-		src++;
+		fmt++;
 	}
-	va_end(sp_ap->ap);
-	return (sp_ap->length);
+	va_end(print.args);
+	return (print.len);
 }

@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 07:58:27 by jberay            #+#    #+#             */
-/*   Updated: 2023/11/01 07:58:43 by jberay           ###   ########.fr       */
+/*   Created: 2023/10/25 15:40:24 by jtu               #+#    #+#             */
+/*   Updated: 2023/11/14 18:28:35 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memset(void *b, int c, size_t len)
+/**
+ * The memset() function writes len bytes of value c (converted
+ * to an unsigned char) to the string b.
+*/
+void	*ft_memset(void *s, int c, size_t n)
 {
-	unsigned char	*ptr;
+	size_t	i;
 
-	ptr = b;
-	while (len > 0)
-	{
-		*ptr = (unsigned char)c;
-		ptr++;
-		len--;
-	}
-	return (b);
+	i = 0;
+	while (i < n)
+		((unsigned char *)s)[i++] = (unsigned char)c;
+	return (s);
 }

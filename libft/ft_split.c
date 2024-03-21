@@ -3,95 +3,88 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 08:07:18 by jberay            #+#    #+#             */
-/*   Updated: 2023/11/08 09:37:26 by jberay           ###   ########.fr       */
+/*   Created: 2023/08/30 12:42:12 by jtu               #+#    #+#             */
+/*   Updated: 2024/01/25 18:40:08 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static char	**clear_array(char **s, size_t j)
+static int	count_words(char const *s, char c)
 {
-	while (j > 0)
-	{
-		free(s[j -1]);
-		j--;
-	}
-	free(s);
-	return (NULL);
-}
+	int	word;
+	int	i;
 
-static char	**word_split(char **arr, char const *s, char c)
-{
-	size_t	i;
-	size_t	j;
-	size_t	len;
-
+	word = 0;
 	i = 0;
-	j = 0;
-	len = 0;
 	while (s[i])
 	{
-		if (s[i] != c)
-		{
-			len = 0;
-			while ((s[i + len] != c) && s[i + len] != '\0')
-				len++;
-			arr[j] = ft_substr(s, i, len);
-			if (!arr[j])
-				return (clear_array(arr, j));
-			i = i + len;
-			j++;
-		}
-		else
+		while (s[i] && s[i] == c)
+			i++;
+		if (s[i])
+			word++;
+		while (s[i] && s[i] != c)
 			i++;
 	}
-	arr[j] = 0;
-	return (arr);
+	return (word);
 }
 
-static size_t	word_count(char const *s, char c)
+static void	free_ptr(char **ptr, int i)
 {
-	int		flag;
-	size_t	count;
-	int		i;
-
-	flag = 0;
-	count = 0;
-	i = 0;
-	while (s[i])
+	while (i > 0)
 	{
-		if (s[i] != c && flag == 0)
-		{
-			flag = 1;
-			count++;
-		}
-		else if (s[i] == c && flag == 1)
-			flag = 0;
-		i++;
+		i--;
+		free(ptr[i]);
 	}
-	return (count);
+	free(ptr);
+}
+
+static char	**split(char const *s, char c, char **ptr)
+{
+	int	i;
+	int	j;
+
+	j = 0;
+	while (*s)
+	{
+		while (*s && *s == c)
+			s++;
+		if (*s)
+		{
+			i = 0;
+			while (*(s + i) && *(s + i) != c)
+				i++;
+			ptr[j] = malloc(sizeof(char) * (i + 1));
+			if (!ptr[j])
+			{
+				free_ptr(ptr, j);
+				return (NULL);
+			}
+			ft_strlcpy(ptr[j++], s, i + 1);
+			s += i;
+		}
+	}
+	ptr[j] = 0;
+	return (ptr);
 }
 
 /**
- * @brief divide string into double array with the given delimiter
- * 
- * @param s string
- * @param c delimeter
- * @return char** 
+ * Allocates (with malloc(3)) and returns an array
+ * of strings obtained by splitting ’s’ using the
+ * character ’c’ as a delimiter. The array must end
+ * with a NULL pointer.
+ * @param s - The string to be split.
+ * @param c - The delimiter character.
  */
 char	**ft_split(char const *s, char c)
 {
-	char	**mptr;
+	char	**ptr;
 
-	if (!s)
+	ptr = malloc(sizeof(char *) * (count_words(s, c) + 1));
+	if (!ptr)
 		return (NULL);
-	mptr = malloc((word_count(s, c) + 1) * sizeof(char *));
-	if (!mptr)
-		return (0);
-	if (!word_split(mptr, s, c))
-		return (NULL);
-	return (mptr);
+	ptr = split(s, c, ptr);
+	return (ptr);
 }

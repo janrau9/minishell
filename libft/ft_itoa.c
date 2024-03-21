@@ -3,68 +3,60 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 08:07:35 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/08 08:48:25 by jberay           ###   ########.fr       */
+/*   Created: 2023/10/26 14:47:00 by jtu               #+#    #+#             */
+/*   Updated: 2023/11/14 20:16:55 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	get_digit(long n, int sign);
-static char	*putint(long n, int sign, char *ptr, int noz);
+static int	count_len(int n)
+{
+	int	len;
 
+	len = 0;
+	if (n < 1)
+		len++;
+	while (n)
+	{
+		n /= 10;
+		len++;
+	}
+	return (len);
+}
+
+/**
+ * Allocates (with malloc(3)) and returns a string
+ * representing the integer received as an argument.
+ * Negative numbers must be handled.
+ */
 char	*ft_itoa(int n)
 {
-	long	x;
-	char	*ptr;
-	int		sign;
-	int		noz;
+	long	nbr;
+	int		len;
+	char	*str;
+	int		i;
 
-	sign = 1;
-	x = (long)n;
-	if (n < 0)
+	nbr = n;
+	len = count_len(nbr);
+	str = malloc((len + 1) * sizeof(char));
+	if (!str)
+		return (NULL);
+	str[len] = '\0';
+	if (nbr < 0)
 	{
-		x = (long)n * -1;
-		sign = -1;
+		str[0] = '-';
+		nbr = -nbr;
 	}
-	noz = get_digit(x, sign);
-	ptr = malloc((noz + 1));
-	if (!ptr)
-		return (0);
-	return (putint(x, sign, ptr, noz));
-}
-
-static char	*putint(long n, int sign, char *ptr, int noz)
-{
-	int	i;
-
-	if (sign == -1)
-		ptr[0] = '-';
-	i = 0;
-	while (n >= 10)
+	i = len - 1;
+	while (i >= 0 && nbr >= 0)
 	{
-		ptr[noz - i -1] = '0' + n % 10;
-		n = n / 10;
-		i++;
+		str[i--] = nbr % 10 + '0';
+		nbr /= 10;
+		if (nbr == 0)
+			break ;
 	}
-	ptr[noz - i -1] = '0' + n % 10;
-	ptr[noz] = 0;
-	return (ptr);
-}
-
-static int	get_digit(long n, int sign)
-{
-	int	x;
-
-	x = 0;
-	while (n >= 10)
-	{
-		n = n / 10;
-		x++;
-	}
-	if (sign == 1)
-		return (x +1);
-	return (x +2);
+	return (str);
 }

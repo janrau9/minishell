@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:18:54 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/15 10:57:39 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/18 10:29:08 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,6 @@ void	check_buildins(char **cmd, char **envp)
 		ft_cd(cmd, envp);
 		exit(0);
 	}
-	else if (!ft_strncmp(cmd[0], "unset", 6))
-		ft_unset(cmd, envp);
+	// else if (!ft_strncmp(cmd[0], "unset", 6))
+	// 	ft_unset(cmd, envp);
 }
