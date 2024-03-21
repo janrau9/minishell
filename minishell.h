@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/15 14:50:44 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/21 13:04:18 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,9 @@ void	error_exit(t_error error, char *s);
 void	free_arr(char **arr);
 void	error_free_exit(char **s);
 void	check_redirections(t_cmd parsed_cmd);
-void	check_buildins(char **cmd, char **envp);
+void	check_builtins(char **cmd, char **envp);
+void	ft_unset(t_exec *exec);
+void	ft_cd(char **cmd, char **envp);
 
 
 /*debug*/
