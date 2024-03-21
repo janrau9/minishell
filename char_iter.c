@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 14:20:47 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 14:10:36 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/21 12:00:15 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,11 @@ char	*char_iter_cursor(t_char_iter *self)
 char	char_iter_peek(t_char_iter *self)
 {
 	return (*self->start);
+}
+
+char	char_iter_peek_next(t_char_iter *self)
+{
+	return (*(self->start + 1));
 }
 
 char	char_iter_next(t_char_iter *self)

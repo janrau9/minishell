@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 09:20:31 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/12 14:10:26 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/21 12:00:37 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ t_char_iter		char_iter_constructor(char *start, size_t	len);
 
 /* returns a pointer to the current location of iterator's cursor */
 char			*char_iter_cursor(t_char_iter *self);
+
+char			char_iter_peek_next(t_char_iter *self);
 
 /* returns quotes*/
 char			*char_find_dq(t_char_iter *self);

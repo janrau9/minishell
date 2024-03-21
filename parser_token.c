@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:13:00 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/15 14:52:29 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/21 12:51:47 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	parse_string(t_exec *exec, char **dst, t_iterator *iter)
 	}
 	return (key);
 } */
+
 char	*ft_getenv(t_exec *exec, char *key)
 {
 	size_t	i;
@@ -72,7 +73,7 @@ char	*ft_getenv(t_exec *exec, char *key)
 	{
 		if (ft_strncmp(exec->envp[i], key, ft_strlen(key)) == 0)
 		{
-			value = ft_strdup(exec->envp[i] + ft_strlen(key) + 1);
+			value = ft_strdup(exec->envp[i] + ft_strlen(key));
 			if (!value)
 			{
 				free(key);
@@ -104,12 +105,15 @@ void	parse_dollar(t_exec *exec, char **dst, t_iterator *iter, bool is_expand)
 	exec->token[iter->token_iter].location.len);
 	if (!env_str)
 		ft_error(exec, "malloc error", MALLOC_ERROR);
-	expand_str = ft_getenv(exec, env_str);
-	if (!expand_str)
-		expand_str = "";
-	*dst = ft_strdup(expand_str);
-	if (!*dst)
-		ft_error(exec, "malloc error", MALLOC_ERROR);
+	if (ft_strncmp(env_str, "?", 2) == 0)
+		expand_str = ft_itoa(exec->exit_code);
+	else
+	{
+		expand_str = ft_getenv(exec, env_str);
+		if (!expand_str)
+			expand_str = "";
+	}
+	*dst = expand_str;
 	iter->token_iter = iter->token_iter + 1;
 }
 
