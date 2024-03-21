@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/15 14:50:44 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/21 10:40:17 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,31 +69,46 @@ typedef enum e_error_code
 	UNEXPECTED_EOF = 258,
 }	t_error_code;
 
-extern unsigned int	g_in_reprompt;
+typedef struct s_global
+{
+	int	in_heredoc;
+	int	in_reprompt;
+}	t_global;
+
+t_global	g;
+
 /*minishell*/
-void	heredoc(t_exec *exec, char **dst, t_iterator *iter, bool is_expand);
+int		heredoc(t_exec *exec, char **dst, t_iterator *iter, bool is_expand);
+void	write_to_heredoc(t_exec *exec, int fd, \
+char *delimiter, int is_expand);
+
+/*minishell utils*/
+void	prep_for_promt(t_exec *exec);
+void	prompt(t_exec *exec);
+
+void	rl_replace_line(const char *text, int clear_undo);
+void	initialize_exec(t_exec *exec);
+int		check_command(t_exec *exec);
+
+/*signals*/
+void	enablerawmode(void);
 void	togglesignal(int mode);
 void	signal_handler(int signum);
 
-/*minishell utils*/
-void	rl_replace_line(const char *text, int clear_undo);
-
-void	initialize_exec(t_exec *exec);
-
-int		check_command_after_pipe(t_exec *exec);
 
 
 /* token */
-int		tokenizer(t_exec *exec);
-
+void	tokenizer(t_exec *exec);
 
 
 /* parser */
-void	parse(t_exec *exec);
+int		parse(t_exec *exec);
 void	parse_redir(t_exec *exec, char **dst, t_iterator *iter);
 void	parse_string(t_exec *exec, char **dst, t_iterator *iter);
-void	parse_dollar(t_exec *exec, char **dst, t_iterator *iter, bool is_expand);
-void	parse_dquote(t_exec *exec, char **dst, t_iterator *iter, bool is_expand);
+void	parse_dollar(t_exec *exec, char **dst, \
+t_iterator *iter, bool is_expand);
+void	parse_dquote(t_exec *exec, char **dst, \
+t_iterator *iter, bool is_expand);
 void	init_data(t_exec *exec, t_iterator *iter);
 /*parser utils*/
 bool	is_redir(t_token *token);
@@ -110,7 +125,7 @@ int		ft_realloc_array(char ***dst_add, size_t size);
 void	ft_freearr(char ***array_add);
 void	ft_freestruct(t_cmd **cmd);
 void	ft_freeall(t_exec *exec);
-void ft_freeall_n_envp(t_exec *exec);
+void	ft_freeall_n_envp(t_exec *exec);
 
 int		ft_error(t_exec *exec, char *msg, int return_code);
 

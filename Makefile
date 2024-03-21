@@ -6,7 +6,7 @@
 #    By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/07 11:38:23 by jberay            #+#    #+#              #
-#    Updated: 2024/03/15 15:15:10 by jberay           ###   ########.fr        #
+#    Updated: 2024/03/21 10:08:15 by jberay           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ GREEN = \033[0;92m
 NAME			=	minishell
 
 CC				=	cc
-CFLAGS			=	-Wall -Wextra -Werror -fsanitize=address -g
+CFLAGS			=	-Wall -Wextra -Werror
 RM				=	rm -rf
 READLINE_HEADER = ~/.brew/opt/readline/include
 READLINE_LIB = ~/.brew/opt/readline/lib
@@ -23,6 +23,7 @@ READLINE_LIB = ~/.brew/opt/readline/lib
 SRCS 			=	minishell.c \
 					minishell_utils.c \
 					heredoc.c \
+					heredoc_utils.c \
 					char_iter.c \
 					tokenizer.c \
 					tokenizer_strs.c \
@@ -32,6 +33,7 @@ SRCS 			=	minishell.c \
 					parser.c \
 					parser_utils.c \
 					parser_token.c \
+					signals.c \
 					builtin.c \
 					array_utils.c \
 					errors.c \
@@ -39,6 +41,7 @@ SRCS 			=	minishell.c \
 					executor/executor.c \
 					executor/redirections.c \
 					buildin/buildins.c \
+					debug.c
 					
 						
 OBJS			=	$(SRCS:%.c=%.o)

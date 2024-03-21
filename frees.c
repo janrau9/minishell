@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:09:55 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/15 09:10:49 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/21 10:48:46 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ void	ft_freestruct(t_cmd **cmd)
 
 	tmp = *cmd;
 	i = 0;
-	while (tmp[i].cmd[0] != NULL)
+	while (tmp[i].cmd != NULL
+		|| tmp[i].redir != NULL)
 	{
 		ft_freearr(&tmp[i].cmd);
 		ft_freearr(&tmp[i].redir);
@@ -54,7 +55,7 @@ void	ft_freestruct(t_cmd **cmd)
 	*cmd = NULL;
 }
 
-void ft_freeall(t_exec *exec)
+void	ft_freeall(t_exec *exec)
 {
 	if (exec->read_line)
 		free(exec->read_line);
@@ -68,7 +69,7 @@ void ft_freeall(t_exec *exec)
 		ft_freearr(&exec->envp);
 }
 
-void ft_freeall_n_envp(t_exec *exec)
+void	ft_freeall_n_envp(t_exec *exec)
 {
 	if (exec->read_line)
 		free(exec->read_line);

@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 09:48:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/13 09:41:27 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/21 12:20:25 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,12 @@ void	take_dquote(t_char_iter *iter, t_token *token, int *d_flag)
 		token->type = OPEN_DQUOTE_TOKEN;
 		char_iter_next(iter);
 		while (char_iter_cursor(iter) != iter->end
-			&& char_iter_peek(iter) != '"'
-			&& char_iter_peek(iter) != '$')
+			&& char_iter_peek(iter) != '"')
 		{
+			if (char_iter_peek(iter) == '$'
+				&& char_iter_peek_next(iter) != ' '
+				&& char_iter_peek_next(iter) != '"')
+				break ;
 			char_iter_next(iter);
 			token->location.len++;
 		}

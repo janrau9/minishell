@@ -6,13 +6,13 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 13:48:54 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/15 14:51:12 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/21 12:50:09 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	parse_redir_and_filename(t_exec *exec, t_cmd *cmd, t_iterator *iter)
+static int	parse_redir_and_filename(t_exec *exec, t_cmd *cmd, t_iterator *iter)
 {
 	bool	is_expand;
 
@@ -25,25 +25,30 @@ static void	parse_redir_and_filename(t_exec *exec, t_cmd *cmd, t_iterator *iter)
 	if (exec->token[iter->token_iter].type == OPEN_DQUOTE_TOKEN)
 		is_expand = false;
 	parse_dquote(exec, &cmd->redir[iter->redir_iter], iter, false);
-	printf("redir: %s\n", cmd->redir[iter->redir_iter - 1]);
 	if (ft_strncmp(cmd->redir[iter->redir_iter - 1], "<<", 3) == 0)
-		heredoc(exec, &cmd->redir[iter->redir_iter], iter, is_expand);
+		if (heredoc(exec, &cmd->redir[iter->redir_iter], iter, is_expand))
+			return (1);
 	iter->redir_iter = iter->redir_iter + 1;
 	iter->cmds_iter = iter->cmds_iter - 1;
+	return (0);
 }
 
-static void	parser_loop( t_exec *exec, t_cmd *cmd, t_iterator *iter)
+static int	parser_loop( t_exec *exec, t_cmd *cmd, t_iterator *iter)
 {
 	if (exec->token[iter->token_iter].type != SPACE_TOKEN)
 	{
-		if (exec->token[iter->token_iter].type == DOLLAR_TOKEN)
-			parse_dollar(exec, &cmd->cmd[iter->cmds_iter], iter, true);
-		else if (exec->token[iter->token_iter].type == OPEN_DQUOTE_TOKEN)
-			parse_dquote(exec, &cmd->cmd[iter->cmds_iter], iter, 0);
+		// if (exec->token[iter->token_iter].type == DOLLAR_TOKEN)
+		// 	parse_dollar(exec, &cmd->cmd[iter->cmds_iter], iter, true);
+		if (exec->token[iter->token_iter].type == OPEN_DQUOTE_TOKEN
+			|| exec->token[iter->token_iter].type == SQUOTE_TOKEN
+			|| exec->token[iter->token_iter].type == STRING_TOKEN
+			|| exec->token[iter->token_iter].type == DOLLAR_TOKEN)
+			parse_dquote(exec, &cmd->cmd[iter->cmds_iter], iter, true);
 		else if (is_redir(&exec->token[iter->token_iter]))
-			parse_redir_and_filename(exec, cmd, iter);
-		else
-			parse_string(exec, &cmd->cmd[iter->cmds_iter], iter);
+		{
+			if (parse_redir_and_filename(exec, cmd, iter))
+				return (1);
+		}
 		iter->cmds_iter = iter->cmds_iter + 1;
 		if (ft_realloc_array(&cmd->cmd, iter->cmds_iter + 1))
 			ft_error(exec, "malloc error", MALLOC_ERROR);
@@ -52,12 +57,13 @@ static void	parser_loop( t_exec *exec, t_cmd *cmd, t_iterator *iter)
 	}
 	else
 		iter->token_iter = iter->token_iter + 1;
+	return (0);
 }
 
 /* 
 	iterates through the token array 
 	and create simple command array splits on pipe	*/
-void	parse(t_exec *exec)
+int	parse(t_exec *exec)
 {
 	t_iterator	iter;
 
@@ -74,7 +80,8 @@ void	parse(t_exec *exec)
 			ft_error(exec, "malloc error", MALLOC_ERROR);
 		while (exec->token[iter.token_iter].type != EOL_TOKEN
 			&& exec->token[iter.token_iter].type != PIPE_TOKEN)
-			parser_loop(exec, &exec->cmd[iter.cmd_count], &iter);
+			if (parser_loop(exec, &exec->cmd[iter.cmd_count], &iter))
+				return (1);
 		exec->cmd[iter.cmd_count].cmd[iter.cmds_iter] = NULL;
 		exec->cmd[iter.cmd_count].redir[iter.redir_iter] = NULL;
 		if (exec->token[iter.token_iter].type == PIPE_TOKEN)
@@ -82,4 +89,5 @@ void	parse(t_exec *exec)
 	}
 	exec->cmd[iter.cmd_count].cmd = NULL;
 	exec->cmd[iter.cmd_count].redir = NULL;
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 10:23:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/15 15:21:09 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/21 09:05:08 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,8 @@ int	run_export(t_exec *exec, char *exp_arg, size_t len)
 
 	tmp = ft_substr(exp_arg, 0, len);
 	if (!tmp)
-		return (MALLOC_ERROR);
+		ft_error(exec, "Malloc error\n", MALLOC_ERROR);
 	c = -1;
-	printf("envp\n");
-	print_array(exec->envp);
 	while (exec->envp[++c])
 	{
 		if (ft_strnstr(exec->envp[c], tmp, len) != NULL)
@@ -32,6 +30,8 @@ int	run_export(t_exec *exec, char *exp_arg, size_t len)
 			free(env);
 			free(tmp);
 			exec->envp[c] = ft_strdup(exp_arg);
+			if (!exec->envp[c])
+				ft_error(exec, "Malloc error\n", MALLOC_ERROR);
 			return (1);
 		}
 	}
@@ -57,7 +57,7 @@ int	rd_export_arg(t_exec *exec, char *exp_arg)
 			exit (1);
 		}
 		if (exp_arg[c] == '=')
-			len = c;
+			len = c + 1;
 	}
 	return (run_export(exec, exp_arg, len));
 }
@@ -110,6 +110,5 @@ void	builtin(t_exec *exec)
 	// 	ft_env(exec->envp);
 	// else if (!ft_strncmp(exec->cmd->cmd[0], "exit", 5))
 	// 	ft_exit(&exec->cmd);
-	
 	return ;
 }
