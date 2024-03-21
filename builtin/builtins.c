@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:18:54 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/21 12:59:38 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/21 14:00:16 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,29 @@ void	ft_pwd()
 	ft_putendl_fd(buffer, STDOUT_FILENO);
 }
 
-void	check_builtins(char **cmd, char **envp)
+int	check_builtins(char **cmd, char **envp)
 {
 	if (!ft_strncmp(cmd[0], "env", 4))
+	{
 		ft_env(envp);
+		return (1);
+	}
 	else if (!ft_strncmp(cmd[0], "pwd", 4))
+	{
 		ft_pwd();
+		return (1);
+	}
 	else if (!ft_strncmp(cmd[0], "echo", 5))
+	{
 		ft_echo(cmd);
+		return (1);
+	}
 	else if (!ft_strncmp(cmd[0], "cd", 3))
 	{
 		ft_cd(cmd, envp);
 		exit(0);
 	}
+	return (0);
 	// else if (!ft_strncmp(cmd[0], "unset", 6))
 	// 	ft_unset(cmd, envp);
 }

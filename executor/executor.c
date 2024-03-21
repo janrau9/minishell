@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/21 13:04:56 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/21 13:59:21 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,8 @@ void	execute_cmd(t_cmd parsed_cmd, char **envp)
 	char	*path;
 
 	check_redirections(parsed_cmd);
-	check_builtins(parsed_cmd.cmd, envp);
+	if (check_builtins(parsed_cmd.cmd, envp))
+		return ;
 	if (!parsed_cmd.cmd[0])
 		error_exit(CMD_NOT_FOUND, NULL);
 	if (!ft_strrchr(parsed_cmd.cmd[0], '/'))
