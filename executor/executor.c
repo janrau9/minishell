@@ -6,20 +6,11 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/14 15:24:33 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/21 14:55:00 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void	error_free_exit(char **cmd)
-{
-	ft_putstr_fd("pipex: ", STDERR_FILENO);
-	ft_putstr_fd("command not found: ", STDERR_FILENO);
-	ft_putendl_fd(*cmd, STDERR_FILENO);
-	free_arr(cmd);
-	exit(127);
-}
 
 void	free_arr(char **arr)
 {
@@ -68,7 +59,8 @@ void	execute_cmd(t_cmd parsed_cmd, char **envp)
 	char	*path;
 
 	check_redirections(parsed_cmd);
-	check_buildins(parsed_cmd.cmd, envp);
+	if (check_builtins(parsed_cmd.cmd, envp))
+		return ;
 	if (!parsed_cmd.cmd[0])
 		error_exit(CMD_NOT_FOUND, NULL);
 	if (!ft_strrchr(parsed_cmd.cmd[0], '/'))
@@ -137,20 +129,19 @@ void	dup_child(size_t i, t_exec *exec, int *fd)
 	close(fd[0]);
 }
 
-
-/*get the command from parser and create pipes and child process*/
-void	executor(t_exec *exec)
+void	child_process(t_exec *exec, int *fd)
 {
-	int		fd[2];
 	size_t	i;
-	size_t	j;
-	int		status;
 
 	i = 0;
 	exec->pid = malloc(sizeof(int) * (exec->cmd_count));
-	printf("%zu\n", exec->cmd_count);
 	while (i < exec->cmd_count)
 	{
+		if (check_builtins(exec->cmd[i].cmd, exec->envp))
+		{
+			i++;
+			continue ;
+		}
 		if (exec->cmd[i + 1].cmd != NULL)
 			pipe(fd);
 		exec->pid[i] = fork();
@@ -168,10 +159,25 @@ void	executor(t_exec *exec)
 			close(fd[0]);
 		i++;
 	}
-	j = -1;
-	while (++j < i)
-		waitpid(exec->pid[j], NULL, 0);
-	waitpid(exec->pid[j], &status, 0);
+}
+
+
+/*get the command from parser and create pipes and child process*/
+void	executor(t_exec *exec)
+{
+	int		fd[2];
+	size_t	i;
+	int		status;
+
+	// printf("%s\n", exec->cmd[0].cmd[0]);
+	if (!ft_strncmp(exec->cmd[0].cmd[0], "unset", 6))
+		ft_unset(exec);
+	// printf("%zu\n", exec->cmd_count); //
+	child_process(exec, fd);
+	i = -1;
+	while (++i < exec->cmd_count)
+		waitpid(exec->pid[i], NULL, 0);
+	waitpid(exec->pid[i], &status, 0);
 	if (WIFEXITED(status))
 		exec->exit_code = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
