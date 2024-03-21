@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   buildins.c                                         :+:      :+:    :+:   */
+/*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:18:54 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/15 09:27:30 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/21 14:00:16 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,12 @@ void	ft_echo(char **cmd)
 
 	i = 1;
 	nl = 1;
-	if (ft_strncmp(cmd[i], "-n", 3))
+	if (!ft_strncmp(cmd[i], "-n", 3))
 	{
 		nl = 0;
 		i++;
 	}
+
 	while (cmd[i])
 		ft_putstr_fd(cmd[i++], STDOUT_FILENO);
 	if (nl)
@@ -43,7 +44,7 @@ void	ft_env(char **envp)
 	}
 }
 
-void	ft_pwd(void)
+void	ft_pwd()
 {
 	char	buffer[1024];
 
@@ -51,12 +52,29 @@ void	ft_pwd(void)
 	ft_putendl_fd(buffer, STDOUT_FILENO);
 }
 
-void	check_buildins(char **cmd, char **envp)
+int	check_builtins(char **cmd, char **envp)
 {
 	if (!ft_strncmp(cmd[0], "env", 4))
+	{
 		ft_env(envp);
-	if (!ft_strncmp(cmd[0], "pwd", 4))
+		return (1);
+	}
+	else if (!ft_strncmp(cmd[0], "pwd", 4))
+	{
 		ft_pwd();
-	if (!ft_strncmp(cmd[0], "echo", 5))
+		return (1);
+	}
+	else if (!ft_strncmp(cmd[0], "echo", 5))
+	{
 		ft_echo(cmd);
+		return (1);
+	}
+	else if (!ft_strncmp(cmd[0], "cd", 3))
+	{
+		ft_cd(cmd, envp);
+		exit(0);
+	}
+	return (0);
+	// else if (!ft_strncmp(cmd[0], "unset", 6))
+	// 	ft_unset(cmd, envp);
 }

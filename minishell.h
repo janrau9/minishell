@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/21 10:40:17 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/21 14:43:21 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,11 +95,8 @@ void	enablerawmode(void);
 void	togglesignal(int mode);
 void	signal_handler(int signum);
 
-
-
 /* token */
 void	tokenizer(t_exec *exec);
-
 
 /* parser */
 int		parse(t_exec *exec);
@@ -135,7 +132,9 @@ void	error_exit(t_error error, char *s);
 void	free_arr(char **arr);
 void	error_free_exit(char **s);
 void	check_redirections(t_cmd parsed_cmd);
-void	check_buildins(char **cmd, char **envp);
+int		check_builtins(char **cmd, char **envp);
+void	ft_unset(t_exec *exec);
+void	ft_cd(char **cmd, char **envp);
 
 
 /*debug*/
