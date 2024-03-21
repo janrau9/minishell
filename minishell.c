@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/21 14:46:29 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/21 15:13:38 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	prompt(t_exec *exec)
 	if (!exec->read_line || !ft_strncmp(exec->read_line, "exit", 5))
 	{
 		ft_freearr(&exec->envp);
-		printf("Exiting minishell\n");
+		//printf("Exiting minishell\n");
 		exit (0);
 	}
 	if (*exec->read_line != '\0')
@@ -60,6 +60,9 @@ void	prompt(t_exec *exec)
 		{
 			if (parse(exec) == 0)
 			{
+				if (exec->cmd_count == 1 && builtin)
+				else
+					executor(exec);
 				//builtin(exec);
 				//print_cmd(&exec->cmd);
 				//print_array(exec->envp);
