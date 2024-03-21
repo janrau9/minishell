@@ -16,13 +16,8 @@ static int	re_promt(t_exec *exec)
 {
 	char	*read_line_new;
 	char	*rd_space;
-	//int 	fda;
 	int 	fd_og = dup(STDIN_FILENO);
 
-/* 	open("a.txt", O_CREAT | O_RDONLY);
-	fda = open ("a.txt", O_CREAT | O_EXCL);
-	if (fda == -1)
-		close (STDIN_FILENO); */
 	read_line_new = readline("> ");
 	if (!read_line_new && g_in_reprompt)
 	{
