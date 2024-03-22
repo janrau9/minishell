@@ -19,18 +19,26 @@ void	create_pipes(t_exec *exec)
 {
 	size_t	i;
 
+	exec->pipes = (int **)malloc(sizeof(int *) * (exec->cmd_count - 1));
+	if (!exec->pipes)
+		error_exit(PIPE_FAIL, NULL);	
 	i = 0;
-	exec->pipes = (int **)malloc(sizeof(int [2]) * (exec->cmd_count + 1));
-	while (i < exec->cmd_count + 1)
+	while (i < exec->cmd_count)
+	{
+		exec->pipes[i] = (int *)malloc(sizeof(int) * 2);
+		if (!exec->pipes[i])
+			error_exit(PIPE_FAIL, NULL);
+		i++;
+	}
+	i = 0;
+	while (i < exec->cmd_count)
 	{
 		if (pipe(exec->pipes[i]) == -1)
 		{
 			printf("Error with creating pipe\n");
 			exit(1);
 		}
-		printf("pipe created\n");
 		i++;
-	
 	}
 	
 }
@@ -43,25 +51,44 @@ void	route_child_pipe(t_exec *exec, size_t i)
 	if (i == 0)
 	{
 		j = 0;
-		while (++j < exec->cmd_count + 1)
+		while (j < exec->cmd_count)
 		{
 			if (i != j)
+				close(exec->pipes[j][WR]);
+			close(exec->pipes[j][RD]);
+			j++;
+		}
+		dup2(exec->pipes[i][WR], STDOUT_FILENO);
+		close(exec->pipes[i][WR]);
+	}
+	else if (i == exec->cmd_count - 1)
+	{
+		j = 0;
+		while (j < exec->cmd_count)
+		{
+			if (i - 1 != j)
 				close(exec->pipes[j][RD]);
 			close(exec->pipes[j][WR]);
 			j++;
 		}
+		dup2(exec->pipes[i - 1][RD], STDIN_FILENO);
+		close(exec->pipes[i - 1][RD]);
 	}
 	else
 	{
 		j = 0;
-		while (++j < exec->cmd_count + 1)
+		while (j < exec->cmd_count)
 		{
-			if (i != j)
-				close(exec->pipes[j][RD]);
 			if (i - 1 != j)
+				close(exec->pipes[j][RD]);
+			if (i != j)
 				close(exec->pipes[j][WR]);
 			j++;
 		}
+		dup2(exec->pipes[i - 1][RD], STDIN_FILENO);
+		dup2(exec->pipes[i][WR], STDOUT_FILENO);
+		close(exec->pipes[i - 1][RD]);
+		close(exec->pipes[i][WR]);
 	}
 }
 
@@ -153,9 +180,9 @@ void	execute_cmd(t_exec *exec, t_cmd parsed_cmd, char **envp)
 {
 	char	*path;
 
-	// check_redirections(parsed_cmd);
-	// if (check_builtins(exec, parsed_cmd.cmd))
-	// 	return ;
+	check_redirections(parsed_cmd);
+	if (check_builtins(exec, parsed_cmd.cmd))
+	 	return ;
 	(void)exec;
 	if (!parsed_cmd.cmd[0])
 		error_exit(CMD_NOT_FOUND, NULL);
@@ -241,16 +268,12 @@ void	child_process(t_exec *exec)
 		if (exec->pid[i] == 0)
 		{
 			route_child_pipe(exec, i);
-			dup2(exec->pipes[i][RD], STDIN_FILENO);
-			dup2(exec->pipes[i + 1][WR], STDOUT_FILENO);
-			close(exec->pipes[i][RD]);
-			close(exec->pipes[i + 1][WR]);
 			execute_cmd(exec, exec->cmd[i], exec->envp);
 		}
 		i++;
 	}
 	i = -1;
-	while (++i < exec->cmd_count + 1)
+	while (++i < exec->cmd_count)
 	{
 		close(exec->pipes[i][RD]);
 		close(exec->pipes[i][WR]);
