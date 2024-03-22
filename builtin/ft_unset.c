@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
+/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 17:14:56 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/18 13:19:21 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/22 10:16:09 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,14 @@ int	is_in_arr(char **envp, char *var)
 // 	return (i);
 // }
 
-void	ft_unset(t_exec *exec)
+int	ft_unset(t_exec *exec, char **cmd)
 {
 	int	i;
 	int	j;
 	int	rm;
 	int	len;
 
+	(void)cmd;
 	i = 1;
 	j = -1;
 	rm = 0;
@@ -66,7 +67,7 @@ void	ft_unset(t_exec *exec)
 	}
 	printf("%d", len);
 	if (!exec->cmd[0].cmd[i])
-		return ;
+		return (0);
 	while (exec->cmd[0].cmd[i])
 	{
 		j = is_in_arr(exec->envp, exec->cmd[0].cmd[i]);
@@ -80,4 +81,5 @@ void	ft_unset(t_exec *exec)
 		}
 		i++;
 	}
+	return (0);
 }

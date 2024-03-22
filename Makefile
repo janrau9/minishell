@@ -6,7 +6,7 @@
 #    By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/07 11:38:23 by jberay            #+#    #+#              #
-#    Updated: 2024/03/21 14:40:39 by jberay           ###   ########.fr        #
+#    Updated: 2024/03/22 09:57:40 by jberay           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,6 @@ SRCS 			=	minishell.c \
 					parser_utils.c \
 					parser_token.c \
 					signals.c \
-					builtin.c \
 					array_utils.c \
 					errors.c \
 					frees.c \
@@ -43,6 +42,9 @@ SRCS 			=	minishell.c \
 					builtin/builtins.c \
 					builtin/ft_cd.c \
 					builtin/ft_unset.c \
+					builtin/ft_export.c \
+					builtin/ft_exit.c \
+					parent_builtins.c \
 					debug.c
 					
 						

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
+/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/21 13:59:21 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/22 09:58:51 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,12 @@ char	*find_path(char *cmd, char **envp)
 }
 
 /*find the command and execute it*/
-void	execute_cmd(t_cmd parsed_cmd, char **envp)
+void	execute_cmd(t_exec *exec, t_cmd parsed_cmd, char **envp)
 {
 	char	*path;
 
 	check_redirections(parsed_cmd);
-	if (check_builtins(parsed_cmd.cmd, envp))
+	if (check_builtins(exec, parsed_cmd.cmd))
 		return ;
 	if (!parsed_cmd.cmd[0])
 		error_exit(CMD_NOT_FOUND, NULL);
@@ -146,7 +146,7 @@ void	child_process(t_exec *exec, int *fd)
 		{
 			if (exec->cmd_count > 1)
 				dup_child(i, exec, fd);
-			execute_cmd(exec->cmd[i], exec->envp);
+			execute_cmd(exec, exec->cmd[i], exec->envp);
 		}
 		if (exec->cmd_count > 1 && i == 0)
 			close(fd[1]);
@@ -165,8 +165,8 @@ void	executor(t_exec *exec)
 	int		status;
 
 	// printf("%s\n", exec->cmd[0].cmd[0]);
-	if (!ft_strncmp(exec->cmd[0].cmd[0], "unset", 6))
-		ft_unset(exec);
+	// if (!ft_strncmp(exec->cmd[0].cmd[0], "unset", 6))
+	// 	ft_unset(exec);
 	// printf("%zu\n", exec->cmd_count); //
 	child_process(exec, fd);
 	i = -1;

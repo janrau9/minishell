@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/21 15:13:38 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/22 09:57:53 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,23 +52,20 @@ void	prompt(t_exec *exec)
 	if (*exec->read_line != '\0')
 	{
 		add_history(exec->read_line);
-		exec->exit_code = check_command(exec);
+		check_command(exec);
 		tokenizer(exec);
-		//token_print(exec->token);
-		exec->exit_code = check_syntax(exec->token);
-		if (exec->exit_code == 0)
+		check_syntax(exec->token);
+		if (parse(exec) == 0)
 		{
-			if (parse(exec) == 0)
-			{
-				if (exec->cmd_count == 1 && builtin)
-				else
-					executor(exec);
-				//builtin(exec);
-				//print_cmd(&exec->cmd);
-				//print_array(exec->envp);
+			if (exec->cmd_count == 1)
+				run_builtin(exec, exec->cmd[0].cmd);
+			else
 				executor(exec);
-				g.in_reprompt = 0;
-			}
+			//builtin(exec);
+			//print_cmd(&exec->cmd);
+			//print_array(exec->envp);
+			
+			g.in_reprompt = 0;
 		}
 	}
 	prep_for_promt(exec);

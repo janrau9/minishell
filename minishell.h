@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/21 14:43:21 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/22 10:07:53 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,13 @@ typedef struct s_exec
 	int		*pid;
 }	t_exec;
 
-/* typedef struct s_exec
+typedef int	(*t_builtin)(t_exec *, char **);
+
+typedef struct s_command_entry
 {
-	char	*read_line;
-	t_token	*token;
-	t_exec	exec;
-	// size_t	token_iter;
-	// size_t	cmds_iter;
-	// size_t	redir_iter;
-}	t_exec; */
+	char		*name;
+	t_builtin	builtin;
+}	t_command_entry;
 
 typedef enum e_error_code
 {
@@ -110,9 +108,6 @@ void	init_data(t_exec *exec, t_iterator *iter);
 /*parser utils*/
 bool	is_redir(t_token *token);
 
-void	builtin(t_exec *exec);
-int		ft_export(t_exec *exec);
-
 /*Array utils*/
 size_t	ft_arrlen(char **arr);
 int		ft_arrdup(char ***dst_add, char **src);
@@ -132,9 +127,18 @@ void	error_exit(t_error error, char *s);
 void	free_arr(char **arr);
 void	error_free_exit(char **s);
 void	check_redirections(t_cmd parsed_cmd);
-int		check_builtins(char **cmd, char **envp);
-void	ft_unset(t_exec *exec);
-void	ft_cd(char **cmd, char **envp);
+int		check_builtins(t_exec *exec, char **cmd);
+
+
+int		run_builtin(t_exec *exec, char **cmd);
+
+int		ft_unset(t_exec *exec, char **cmd);
+int		ft_cd(t_exec *exec, char **cmd);
+int		ft_export(t_exec *exec, char **cmd);
+int		ft_exit(t_exec *exec, char **cmd);
+int		ft_pwd(t_exec *exec, char **cmd);
+int		ft_env(t_exec *exec, char **cmd);
+int		ft_echo(t_exec *exec, char **cmd);
 
 
 /*debug*/
