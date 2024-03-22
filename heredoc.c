@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:06:14 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/21 10:27:16 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/22 12:49:15 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ static int	run_heredoc(t_exec *exec, int fd, char *delimiter, int is_expand)
 	heredoc_child = fork();
 	if (heredoc_child == -1)
 		ft_error(exec, "fork error", FORK_ERROR);
-	g.in_heredoc = 1;
 	if (heredoc_child == 0)
 	{
 		togglesignal(0);
@@ -29,7 +28,6 @@ static int	run_heredoc(t_exec *exec, int fd, char *delimiter, int is_expand)
 		exit(0);
 	}
 	waitpid(heredoc_child, &status, 0);
-	g.in_heredoc = 0;
 	if (status == SIGINT)
 		return (2);
 	return (0);

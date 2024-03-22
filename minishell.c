@@ -6,11 +6,13 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/22 09:57:53 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/22 15:30:07 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+unsigned int	g_prompt;
 
 void	initialize_exec(t_exec *exec)
 {
@@ -18,6 +20,7 @@ void	initialize_exec(t_exec *exec)
 	exec->token = NULL;
 	exec->cmd = NULL;
 	exec->pid = NULL;
+	exec->pipes = NULL;
 	exec->cmd_count = 0;
 }
 
@@ -42,30 +45,32 @@ void	prep_for_promt(t_exec *exec)
 
 void	prompt(t_exec *exec)
 {
+	int	status;
+
+	status = -1;
 	exec->read_line = readline ("jjsh-1.0$ ");
-	if (!exec->read_line || !ft_strncmp(exec->read_line, "exit", 5))
+	if (!exec->read_line)
 	{
 		ft_freearr(&exec->envp);
-		//printf("Exiting minishell\n");
 		exit (0);
 	}
 	if (*exec->read_line != '\0')
 	{
 		add_history(exec->read_line);
-		check_command(exec);
-		tokenizer(exec);
-		check_syntax(exec->token);
-		if (parse(exec) == 0)
+		if (check_command(exec))
+			exec->exit_code = SYNTAX_ERROR;
+		else
 		{
-			if (exec->cmd_count == 1)
-				run_builtin(exec, exec->cmd[0].cmd);
-			else
-				executor(exec);
-			//builtin(exec);
-			//print_cmd(&exec->cmd);
-			//print_array(exec->envp);
-			
-			g.in_reprompt = 0;
+			if (parse(exec) == 0)
+			{
+				if (exec->cmd_count == 1 && exec->cmd[0].cmd[0])
+					status = run_builtin(exec, exec->cmd[0].cmd);
+				if (status == -1)
+					executor(exec);
+				else
+					exec->exit_code = status;
+				g_prompt = 0;
+			}
 		}
 	}
 	prep_for_promt(exec);

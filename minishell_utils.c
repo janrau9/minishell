@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 08:54:07 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/21 12:32:02 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/22 14:33:45 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,16 @@ static int	re_promt(t_exec *exec)
 
 	fd_stdin = dup(STDIN_FILENO);
 	read_line_new = readline("> ");
-	if (!read_line_new && g.in_reprompt)
+	if (!read_line_new && g_prompt)
 	{
 		dup2(fd_stdin, STDIN_FILENO);
-		return (UNEXPECTED_EOF);
+		return (SYNTAX_ERROR);
 	}
 	if (!read_line_new)
 	{
-		g.in_reprompt = 1;
-		return (UNEXPECTED_EOF);
+		g_prompt = 1;
+		ft_putendl_fd("jjsh-1.0: syntax error: unexpected end of file", 2);
+		return (SYNTAX_ERROR);
 	}
 	if (!*read_line_new)
 		return (0);
@@ -61,6 +62,9 @@ int	check_command(t_exec *exec)
 	cmd_flag = 0;
 	while (cmd_flag == 0)
 	{
+		tokenizer(exec);
+		if (check_syntax(exec->token))
+			return (SYNTAX_ERROR);
 		i = ft_strlen(exec->read_line);
 		if (i == 1)
 			return (0);
@@ -72,7 +76,7 @@ int	check_command(t_exec *exec)
 		if (cmd_flag == 0)
 		{
 			if (re_promt(exec))
-				return (UNEXPECTED_EOF);
+				return (SYNTAX_ERROR);
 		}
 	}
 	return (0);

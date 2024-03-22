@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 10:23:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/22 10:35:15 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/22 11:07:03 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	run_export(t_exec *exec, char *exp_arg, size_t len)
 			exec->envp[c] = ft_strdup(exp_arg);
 			if (!exec->envp[c])
 				ft_error(exec, "Malloc error\n", MALLOC_ERROR);
-			return (1);
+			return (0);
 		}
 	}
 	free(tmp);
@@ -42,26 +42,26 @@ int	run_export(t_exec *exec, char *exp_arg, size_t len)
 int	rd_export_arg(t_exec *exec, char *exp_arg)
 {
 	size_t	c;
-	size_t	len;
 
 	c = -1;
-	len = 0;
 	while (exp_arg[++c])
 	{
-		if (ft_isalnum(exp_arg[c]) == 0
-			&& exp_arg[c] != '_'
-			&& exp_arg[c] != '='
-			&& ft_isdigit(exp_arg[c]))
+		if ((ft_isalnum(exp_arg[c]) == 0 && exp_arg[c] != '_' \
+			&& exp_arg[c] != '=') || ft_isdigit(exp_arg[0])
+			|| (exp_arg[0] == '='))
 		{
 			ft_putstr_fd("jjsh-1.0$ export: `", 2);
 			ft_putstr_fd(exp_arg, 2);
 			ft_putstr_fd("': not a valid identifier\n", 2);
-			exit (1);
+			return (1);
 		}
 		if (exp_arg[c] == '=')
-			len = c + 1;
+		{
+			c++;
+			break ;
+		}
 	}
-	return (run_export(exec, exp_arg, len));
+	return (run_export(exec, exp_arg, c));
 }
 
 int	ft_export(t_exec *exec, char **cmd)

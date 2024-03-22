@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 09:28:19 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/22 09:56:00 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/22 14:10:55 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	run_builtin(t_exec *exec, char **cmd)
 {
-	t_command_entry	command_table[8];
+	t_command_entry	command_table[7];
 	int				i;
 
 	command_table[0] = (t_command_entry){"cd", ft_cd};
@@ -24,14 +24,13 @@ int	run_builtin(t_exec *exec, char **cmd)
 	command_table[4] = (t_command_entry){"pwd", ft_pwd};
 	command_table[5] = (t_command_entry){"unset", ft_unset};
 	command_table[6] = (t_command_entry){"exit", ft_exit};
-	command_table[7] = (t_command_entry){NULL, NULL};
 	i = 0;
-
-	while (command_table[i].name)
+	while (i < 7)
 	{
 		if (!ft_strncmp(cmd[0], command_table[i].name, \
 		ft_strlen(command_table[i].name) + 1))
 		{
+			
 			return (command_table[i].builtin(exec, cmd));
 		}
 		i++;

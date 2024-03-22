@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:10:55 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/21 12:48:13 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/22 12:16:36 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ void	tokenizer_loop(t_token *token, t_char_iter *iter, int *d_flag)
 		take_space(iter, token);
 	else if (iter->start[0] == '"')
 		take_dquote(iter, token, d_flag);
-	else if (iter->start[0] == '$' &&
-		(iter->start[1] == '\0' || iter->start[1] == '?'))
+	else if (iter->start[0] == '$'
+		&& (iter->start[1] == '\0' || iter->start[1] == '?'))
 		take_just_dollar(iter, token);
 	else if (iter->start[0] == '$' && iter->start[1] != '?'
 		&& iter->start[1] != '\0')

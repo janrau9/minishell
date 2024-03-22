@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/22 10:07:53 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/22 15:29:58 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@
 # include <signal.h>
 # include <termios.h>
 
+ #define RD 0
+ #define WR 1
+
+
 
 typedef struct s_cmd
 {
@@ -47,6 +51,7 @@ typedef struct s_exec
 	char	**envp;
 	int		exit_code;
 	int		*pid;
+	int		**pipes;
 }	t_exec;
 
 typedef int	(*t_builtin)(t_exec *, char **);
@@ -64,16 +69,9 @@ typedef enum e_error_code
 	MALLOC_ERROR = -1,
 	NULL_ERROR = -2,
 	SYNTAX_ERROR = 258,
-	UNEXPECTED_EOF = 258,
 }	t_error_code;
 
-typedef struct s_global
-{
-	int	in_heredoc;
-	int	in_reprompt;
-}	t_global;
-
-t_global	g;
+extern unsigned int	g_prompt;
 
 /*minishell*/
 int		heredoc(t_exec *exec, char **dst, t_iterator *iter, bool is_expand);

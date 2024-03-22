@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 13:48:54 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/21 12:50:09 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/22 13:05:19 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,10 @@ static int	parse_redir_and_filename(t_exec *exec, t_cmd *cmd, t_iterator *iter)
 		is_expand = false;
 	parse_dquote(exec, &cmd->redir[iter->redir_iter], iter, false);
 	if (ft_strncmp(cmd->redir[iter->redir_iter - 1], "<<", 3) == 0)
+	{
 		if (heredoc(exec, &cmd->redir[iter->redir_iter], iter, is_expand))
 			return (1);
+	}
 	iter->redir_iter = iter->redir_iter + 1;
 	iter->cmds_iter = iter->cmds_iter - 1;
 	return (0);
