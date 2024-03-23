@@ -12,10 +12,32 @@
 
 #include "../minishell.h"
 
+/*
+exit at LONG MAX = -1
+exit at LONG MIN = 0
+*/
+
+static void	is_overflow(t_exec *exec, char *cmd, int ato)
+{
+	if (ato == 0 && ft_strncmp(cmd, "0", 2) == 0)
+		return ;
+	else if (ato == 0 && ft_strncmp(cmd, "-9223372036854775808", 21) == 0)
+		return ;
+	else if (ato == -1 && ft_strncmp(cmd, "-1", 3) == 0)
+		return ;
+	else if (ato == -1 && ft_strncmp(cmd, "9223372036854775807", 20) == 0)
+		return ;
+	ft_putstr_fd("jjsh-1.0$ exit: ", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(": numeric argument required\n", 2);
+	ft_freeall(exec);
+	exec->exit_code = 2;
+	exit (2);
+}
+
 int    ft_exit(t_exec *exec, char **cmd)
 {
 	int	tmp;
-	//int	i;
 
 	if (cmd[1])
 	{
@@ -27,16 +49,8 @@ int    ft_exit(t_exec *exec, char **cmd)
 			exit (1);
 		}
 		tmp = ft_atoi(cmd[1]);
-		//printf("tmp: %d\n", tmp);
-		if (tmp == 0 && cmd[1][0] != '0')
-		{
-			ft_putstr_fd("jjsh-1.0$ exit: ", 2);
-			ft_putstr_fd(cmd[1], 2);
-			ft_putstr_fd(": numeric argument required\n", 2);
-			ft_freeall(exec);
-			exec->exit_code = 2;
-			exit (2);
-		}
+		if (tmp == 0  || tmp == -1)
+			is_overflow(exec, cmd[1], tmp);
 		exec->exit_code = tmp;
 		if (tmp < 0)
 			exec->exit_code = 256 + tmp;
