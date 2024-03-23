@@ -107,11 +107,13 @@ void	parse_dollar(t_exec *exec, char **dst, t_iterator *iter, bool is_expand)
 		ft_error(exec, "malloc error", MALLOC_ERROR);
 	if (ft_strncmp(env_str, "?", 2) == 0)
 		expand_str = ft_itoa(exec->exit_code);
+	else if (iter->cmds_iter > 0 && ft_strncmp(exec->cmd[iter->cmd_count].cmd[iter->cmds_iter - 1], "unset", 6) == 0)
+		expand_str = env_str;
 	else
 	{
 		expand_str = ft_getenv(exec, env_str);
 		if (!expand_str)
-			expand_str = "";
+			expand_str = ft_strdup("");
 	}
 	*dst = expand_str;
 	iter->token_iter = iter->token_iter + 1;

@@ -21,12 +21,12 @@ int	is_in_arr(char **envp, char *var)
 	var_equal = ft_strjoin(var, "=");
 	while (envp[i])
 	{
-		if (ft_strnstr(envp[i], var, ft_strlen(var) + 1))
+		if (ft_strnstr(envp[i], var_equal, ft_strlen(var_equal) + 1))
 		{
 			free(var_equal);
 			return (i);
 		}
-		if (ft_strnstr(envp[i], var_equal, ft_strlen(var_equal)))
+		if (ft_strnstr(envp[i], var, ft_strlen(var) + 1) && ft_strlen(envp[i]) == ft_strlen(var))
 		{
 			free(var_equal);
 			return (i);
@@ -65,14 +65,17 @@ int	ft_unset(t_exec *exec, char **cmd)
 	}
 	if (!exec->cmd[0].cmd[i])
 		return (0);
-	while (exec->cmd[0].cmd[i])
+ 	while (exec->cmd[0].cmd[i])
 	{
 		j = is_in_arr(exec->envp, exec->cmd[0].cmd[i]);
-		if (j >= 0)
+ 		if (j >= 0)
 		{
 			free(exec->envp[j]);
 			while (j < len)
+			{
 				exec->envp[j] = exec->envp[j + 1];
+				j++;
+			}
 			exec->envp[len - 1 - rm] = NULL;
 			rm++;
 		}

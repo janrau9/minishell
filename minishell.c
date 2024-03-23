@@ -63,7 +63,7 @@ void	prompt(t_exec *exec)
 		{
 			if (parse(exec) == 0)
 			{
-				if (exec->cmd_count == 1 && exec->cmd[0].cmd[0])
+				if (exec->cmd_count == 1 && exec->cmd[0].cmd[0] && exec->cmd[0].redir[0] == 0)
 					status = run_builtin(exec, exec->cmd[0].cmd);
 				if (status == -1)
 					executor(exec);

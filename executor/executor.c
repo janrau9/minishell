@@ -151,9 +151,8 @@ char	*find_path(char *cmd, char **envp)
 	char	*path_cmd;
 	char	*temp;
 	int		i;
+	struct stat	buf;
 
-	if (access(cmd, F_OK | X_OK) == 0)
-		return (cmd);
 	while (*envp && !ft_strnstr(*envp, "PATH=", 5))
 		envp++;
 	if (!*envp)
@@ -172,6 +171,21 @@ char	*find_path(char *cmd, char **envp)
 		free(path_cmd);
 	}
 	free_arr(path);
+
+	if (access(cmd, F_OK) != 0)
+		error_exit(CMD_NOT_FOUND, cmd);
+	if (stat(cmd, &buf) == 0)
+	{
+        if (S_ISREG(buf.st_mode))
+			error_exit(CMD_NOT_FOUND, cmd);
+    	else if (S_ISDIR(buf.st_mode))
+            error_exit(NO_PATH, cmd);
+    } 
+	else 
+	{
+        error_exit(STAT_FAIL, cmd);
+    }
+	
 	return (0);
 }
 
@@ -179,6 +193,7 @@ char	*find_path(char *cmd, char **envp)
 void	execute_cmd(t_exec *exec, t_cmd parsed_cmd, char **envp)
 {
 	char	*path;
+	struct stat	buf;
 
 	check_redirections(parsed_cmd);
 	if (check_builtins(exec, parsed_cmd.cmd))
@@ -194,6 +209,15 @@ void	execute_cmd(t_exec *exec, t_cmd parsed_cmd, char **envp)
 			error_exit(NO_PATH, parsed_cmd.cmd[0]);
 		if (access(parsed_cmd.cmd[0], X_OK) != 0)
 			error_exit(EXECVE_FAIL, parsed_cmd.cmd[0]);
+		if (stat(parsed_cmd.cmd[0], &buf) == 0)
+		{
+			if (S_ISREG(buf.st_mode))
+				error_exit(CMD_NOT_FOUND, parsed_cmd.cmd[0]);
+			else if (S_ISDIR(buf.st_mode))
+				error_exit(IS_DIR, parsed_cmd.cmd[0]);
+		} 
+		else 
+			error_exit(STAT_FAIL, parsed_cmd.cmd[0]);
 		path = parsed_cmd.cmd[0];
 	}
 	// if (!path)
@@ -209,6 +233,7 @@ void	error_exit(t_error error, char *s)
 	if (error == CMD_NOT_FOUND)
 	{
 		ft_putendl_fd("command not found: ", STDERR_FILENO);
+		ft_putendl_fd(s, STDERR_FILENO);
 		exit(127);
 	}
 	if (error == NO_PATH)
@@ -216,6 +241,12 @@ void	error_exit(t_error error, char *s)
 		ft_putstr_fd("No such file or directory: ", STDERR_FILENO);
 		ft_putendl_fd(s, STDERR_FILENO);
 		exit(127);
+	}
+	if (error == IS_DIR)
+	{
+		ft_putstr_fd("No such file or directory: ", STDERR_FILENO);
+		ft_putendl_fd(s, STDERR_FILENO);
+		exit(126);
 	}
 	if (error == EXECVE_FAIL)
 	{
@@ -267,7 +298,8 @@ void	child_process(t_exec *exec)
 			error_exit(FORK_FAIL, NULL); //
 		if (exec->pid[i] == 0)
 		{
-			route_child_pipe(exec, i);
+			if (exec->cmd_count > 1)
+				route_child_pipe(exec, i);
 			execute_cmd(exec, exec->cmd[i], exec->envp);
 		}
 		i++;

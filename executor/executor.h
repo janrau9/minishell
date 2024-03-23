@@ -39,11 +39,13 @@ typedef enum s_error
 	DUP_FAIL,
 	OPEN_FAIL,
 	MALLOC_FAIL,
+	STAT_FAIL,
 	WRONG_FILE,
 	CMD_NOT_FOUND,
 	NO_PATH,
 	NO_PERMISSION,
-	EXECVE_FAIL
+	EXECVE_FAIL,
+	IS_DIR,
 }	t_error;
 
 // void	executor(t_cmd *parsed_cmd, t_util *util, char **envp);
