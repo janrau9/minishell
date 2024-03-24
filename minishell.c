@@ -38,7 +38,7 @@ void	make_envp(t_exec *exec, char **envp)
 
 void	prep_for_promt(t_exec *exec)
 {
-	ft_freeall_n_envp(exec);
+	//ft_freeall_n_envp(exec);
 	initialize_exec(exec);
 	prompt(exec);
 }

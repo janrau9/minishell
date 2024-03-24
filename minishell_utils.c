@@ -35,9 +35,10 @@ static int	re_promt(t_exec *exec)
 	char	*read_line_new;
 	int		fd_stdin;
 
+	g_prompt = 2;
 	fd_stdin = dup(STDIN_FILENO);
 	read_line_new = readline("> ");
-	if (!read_line_new && g_prompt)
+	if (!read_line_new && g_prompt == 1)
 	{
 		dup2(fd_stdin, STDIN_FILENO);
 		return (SYNTAX_ERROR);

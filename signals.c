@@ -16,7 +16,9 @@ void	signal_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
-		if (ft_strncmp(rl_prompt, "> ", 3) == 0)
+		if (g_prompt == 3)
+			return ;
+		if (g_prompt == 2)
 		{
 			g_prompt = 1;
 			printf("\n");

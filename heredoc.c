@@ -17,6 +17,7 @@ static int	run_heredoc(t_exec *exec, int fd, char *delimiter, int is_expand)
 	int		heredoc_child;
 	int		status;
 
+	g_prompt = 3;
 	heredoc_child = fork();
 	if (heredoc_child == -1)
 		ft_error(exec, "fork error", FORK_ERROR);
@@ -28,8 +29,13 @@ static int	run_heredoc(t_exec *exec, int fd, char *delimiter, int is_expand)
 		exit(0);
 	}
 	waitpid(heredoc_child, &status, 0);
+	g_prompt = 0;
 	if (status == SIGINT)
-		return (2);
+	{
+		printf("\n");
+		return (1);
+	}
+		
 	return (0);
 }
 
