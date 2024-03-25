@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:32:17 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/18 10:37:16 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/25 13:20:12 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@
 // 	int		pipes;
 // 	int		exit_code;
 // }	t_util;
+
+# define RD 0
+# define WR 1
 
 typedef enum s_error
 {

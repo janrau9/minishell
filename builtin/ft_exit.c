@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 09:00:40 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/25 07:55:23 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/25 11:02:10 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	is_overflow(t_exec *exec, char *cmd, int ato)
 	exit (255);
 }
 
-int    ft_exit(t_exec *exec, char **cmd)
+int	ft_exit(t_exec *exec, char **cmd)
 {
 	int	tmp;
 
@@ -49,7 +49,7 @@ int    ft_exit(t_exec *exec, char **cmd)
 			exit (1);
 		}
 		tmp = ft_atoi(cmd[1]);
-		if (tmp == 0  || tmp == -1)
+		if (tmp == 0 || tmp == -1)
 			is_overflow(exec, cmd[1], tmp);
 		exec->exit_code = tmp;
 		if (tmp < 0)
@@ -60,5 +60,4 @@ int    ft_exit(t_exec *exec, char **cmd)
 	ft_freeall(exec);
 	exec->exit_code = 0;
 	exit (0);
-	return (0);
 }
