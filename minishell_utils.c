@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 08:54:07 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/25 13:04:18 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/25 15:17:55 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ static void	join_prompt(t_exec *exec, char *old)
 	tmp = exec->read_line;
 	if (!rd_space)
 		ft_error(exec, "Malloc error\n", MALLOC_ERROR);
-	printf("new: %s\n", exec->read_line);
-	printf("rd_space: %s\n", rd_space);
 	ft_strjoin_custom(&read_line_new, rd_space, tmp);
 	if (!read_line_new)
 	{
@@ -49,9 +47,7 @@ static void	join_prompt(t_exec *exec, char *old)
 		free(tmp);
 		ft_error(exec, "Malloc error\n", MALLOC_ERROR);
 	}
-	printf("aexec->read_line: %s\n", read_line_new);
 	exec->read_line = read_line_new;
-	add_history(exec->read_line);
 }
 
 // static int	re_promt(t_exec *exec)
@@ -100,12 +96,12 @@ int	check_command(t_exec *exec)
 		}
 		if (*exec->read_line != '\0')
 		{
-			tokenizer(exec);
-			if (check_syntax(exec->token))
-				return (SYNTAX_ERROR);
 			i = ft_strlen(exec->read_line);
 			if (i == 1)
-				return (0);
+			{
+				add_history(exec->read_line);
+				break ;
+			}
 			while (exec->read_line[--i] != '|' && i > 0)
 			{
 				if (exec->read_line[i] != ' ' && exec->read_line[i] != '|')
@@ -113,6 +109,7 @@ int	check_command(t_exec *exec)
 					cmd_flag = 1;
 					if (join > 0)
 						join_prompt(exec, old);
+					break ;
 				}
 			}
 			if (cmd_flag == 0)
@@ -122,11 +119,12 @@ int	check_command(t_exec *exec)
 					join_prompt(exec, old);
 				old = exec->read_line;
 				join++;
-				printf("old: %s\n", old);
-				printf("read_line: %s\n", exec->read_line);
 			}
-			add_history(exec->read_line);
 		}
 	}
+	add_history(exec->read_line);
+	tokenizer(exec);
+	if (check_syntax(exec->token))
+		return (SYNTAX_ERROR);
 	return (0);
 }
