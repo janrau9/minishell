@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/21 14:55:00 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/25 13:02:47 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	execute_cmd(t_cmd parsed_cmd, char **envp)
 
 	check_redirections(parsed_cmd);
 	if (check_builtins(parsed_cmd.cmd, envp))
-		return ;
+		exit (0);
 	if (!parsed_cmd.cmd[0])
 		error_exit(CMD_NOT_FOUND, NULL);
 	if (!ft_strrchr(parsed_cmd.cmd[0], '/'))
@@ -106,74 +106,110 @@ void	error_exit(t_error error, char *s)
 	exit(EXIT_FAILURE);
 }
 
-void	dup_child(size_t i, t_exec *exec, int *fd)
-{
-	if (i == 0)
-	{
-		if (dup2(fd[1], STDOUT_FILENO) < 0)
-			error_exit(DUP_FAIL, NULL);
-		//close(fd[1]);
-	}
-	else if (i == exec->cmd_count - 1)
-	{
-		if (dup2(fd[0], STDIN_FILENO) < 0)
-			error_exit(DUP_FAIL, NULL);
-		//close(fd[0]);
-	}
-	else
-	{
-		if (dup2(fd[0], STDIN_FILENO) < 0 || dup2(fd[1], STDOUT_FILENO) < 0)
-			error_exit(DUP_FAIL, NULL);
-	}
-	close(fd[1]);
-	close(fd[0]);
-}
-
-void	child_process(t_exec *exec, int *fd)
+void	close_pipes(t_exec *exec)
 {
 	size_t	i;
 
 	i = 0;
+	while (i < exec->cmd_count - 1)
+	{
+		close(exec->pipes[i][RD]);
+		close(exec->pipes[i][WR]);
+		i++;
+	}
+}
+
+void	dup_child(size_t i, t_exec *exec)
+{
+	if (i == 0)
+	{
+		if (dup2(exec->pipes[i][WR], STDOUT_FILENO) < 0)
+			error_exit(DUP_FAIL, NULL);
+	}
+	else if (i == exec->cmd_count - 1)
+	{
+		if (dup2(exec->pipes[i - 1][RD], STDIN_FILENO) < 0)
+			error_exit(DUP_FAIL, NULL);
+	}
+	else
+	{
+		if (dup2(exec->pipes[i - 1][RD], STDIN_FILENO) < 0 || dup2(exec->pipes[i][WR], STDOUT_FILENO) < 0)
+			error_exit(DUP_FAIL, NULL);
+	}
+	close_pipes(exec);
+}
+
+void	create_pipes(t_exec *exec)
+{
+	size_t	i;
+
+	exec->pipes = (int **)malloc(sizeof(int *) * (exec->cmd_count - 1));
+	if (!exec->pipes)
+		error_exit(MALLOC_FAIL, NULL);
+	i = 0;
+	while (i < exec->cmd_count - 1)
+	{
+		exec->pipes[i] = (int *)malloc(sizeof(int) * 2);
+		if (!exec->pipes[i])
+			error_exit(MALLOC_FAIL, NULL);
+		i++;
+	}
+	i = 0;
+	while (i < exec->cmd_count - 1)
+	{
+		if (pipe(exec->pipes[i]) == -1)
+			error_exit(PIPE_FAIL, NULL);
+		i++;
+	}
+}
+
+void	child_process(t_exec *exec)
+{
+	size_t	i;
+
+	i = 0;
+	if (exec->cmd_count > 1)
+		create_pipes(exec);
 	exec->pid = malloc(sizeof(int) * (exec->cmd_count));
 	while (i < exec->cmd_count)
 	{
-		if (check_builtins(exec->cmd[i].cmd, exec->envp))
-		{
-			i++;
-			continue ;
-		}
-		if (exec->cmd[i + 1].cmd != NULL)
-			pipe(fd);
+		// if (check_builtins(exec->cmd[i].cmd, exec->envp))
+		// {
+		// 	i++;
+		// 	continue ;
+		// }
+		// if (exec->cmd[i + 1].cmd != NULL)
+		// 	pipe(exec->pipes[i]);
 		exec->pid[i] = fork();
 		if (exec->pid[i] < 0)
 			error_exit(FORK_FAIL, NULL); //
 		if (exec->pid[i] == 0)
 		{
 			if (exec->cmd_count > 1)
-				dup_child(i, exec, fd);
+				dup_child(i, exec);
 			execute_cmd(exec->cmd[i], exec->envp);
 		}
-		if (exec->cmd_count > 1 && i == 0)
-			close(fd[1]);
-		if (exec->cmd_count > 1 && i == exec->cmd_count - 1)
-			close(fd[0]);
+		// if (exec->cmd_count > 1 && i == 0)
+		// 	close(exec-> pipes[i][WR]);
+		// if (exec->cmd_count > 1 && i == exec->cmd_count - 1)
+		// 	close(fd[RD]);
 		i++;
 	}
+	close_pipes(exec);
 }
 
 
 /*get the command from parser and create pipes and child process*/
 void	executor(t_exec *exec)
 {
-	int		fd[2];
 	size_t	i;
 	int		status;
 
 	// printf("%s\n", exec->cmd[0].cmd[0]);
-	if (!ft_strncmp(exec->cmd[0].cmd[0], "unset", 6))
-		ft_unset(exec);
+	// if (!ft_strncmp(exec->cmd[0].cmd[0], "unset", 6))
+	// 	ft_unset(exec);
 	// printf("%zu\n", exec->cmd_count); //
-	child_process(exec, fd);
+	child_process(exec);
 	i = -1;
 	while (++i < exec->cmd_count)
 		waitpid(exec->pid[i], NULL, 0);
