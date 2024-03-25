@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:09:55 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/25 10:12:26 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/25 10:25:49 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,10 @@ void	ft_freestruct(t_cmd **cmd)
 	while (tmp[i].cmd != NULL
 		|| tmp[i].redir != NULL)
 	{
-		ft_freearr(&tmp[i].cmd);
-		ft_freearr(&tmp[i].redir);
+		if (tmp[i].cmd)
+			ft_freearr(&tmp[i].cmd);
+		if (tmp[i].redir)
+			ft_freearr(&tmp[i].redir);
 		i++;
 	}
 	free(tmp);
