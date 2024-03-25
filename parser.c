@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 13:48:54 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/22 13:05:19 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/25 09:25:22 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ static int	parser_loop( t_exec *exec, t_cmd *cmd, t_iterator *iter)
 {
 	if (exec->token[iter->token_iter].type != SPACE_TOKEN)
 	{
-		// if (exec->token[iter->token_iter].type == DOLLAR_TOKEN)
-		// 	parse_dollar(exec, &cmd->cmd[iter->cmds_iter], iter, true);
 		if (exec->token[iter->token_iter].type == OPEN_DQUOTE_TOKEN
 			|| exec->token[iter->token_iter].type == SQUOTE_TOKEN
 			|| exec->token[iter->token_iter].type == STRING_TOKEN

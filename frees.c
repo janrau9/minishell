@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:09:55 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/21 10:48:46 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/25 10:12:26 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	ft_freeall(t_exec *exec)
 	if (exec->pid)
 		free(exec->pid);
 	if (exec->cmd)
-		ft_freestruct(&exec->cmd);
+	 	ft_freestruct(&exec->cmd);
 	if (exec->envp)
 		ft_freearr(&exec->envp);
 }
@@ -78,5 +78,5 @@ void	ft_freeall_n_envp(t_exec *exec)
 	if (exec->pid)
 		free(exec->pid);
 	if (exec->cmd)
-		ft_freestruct(&exec->cmd);
+	 	ft_freestruct(&exec->cmd);
 }

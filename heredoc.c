@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:06:14 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/22 12:49:15 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/25 07:57:56 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ static int	run_heredoc(t_exec *exec, int fd, char *delimiter, int is_expand)
 		printf("\n");
 		return (1);
 	}
-		
 	return (0);
 }
 

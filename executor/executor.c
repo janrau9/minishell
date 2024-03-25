@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/22 15:34:47 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/25 09:11:41 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void	create_pipes(t_exec *exec)
 		}
 		i++;
 	}
-	
 }
 
 /*route child pipe and close unused pipes*/
@@ -147,10 +146,10 @@ void	free_arr(char **arr)
 /*find the path of the command*/
 char	*find_path(char *cmd, char **envp)
 {
-	char	**path;
-	char	*path_cmd;
-	char	*temp;
-	int		i;
+	char		**path;
+	char		*path_cmd;
+	char		*temp;
+	int			i;
 	struct stat	buf;
 
 	while (*envp && !ft_strnstr(*envp, "PATH=", 5))
@@ -171,34 +170,54 @@ char	*find_path(char *cmd, char **envp)
 		free(path_cmd);
 	}
 	free_arr(path);
-
 	if (access(cmd, F_OK) != 0)
 		error_exit(CMD_NOT_FOUND, cmd);
 	if (stat(cmd, &buf) == 0)
 	{
-        if (S_ISREG(buf.st_mode))
+		if (S_ISREG(buf.st_mode))
 			error_exit(CMD_NOT_FOUND, cmd);
-    	else if (S_ISDIR(buf.st_mode))
-            error_exit(NO_PATH, cmd);
-    } 
-	else 
-	{
-        error_exit(STAT_FAIL, cmd);
-    }
-	
+		else if (S_ISDIR(buf.st_mode))
+			error_exit(CMD_NOT_FOUND, cmd);
+	}
+	else
+		error_exit(STAT_FAIL, cmd);
 	return (0);
+}
+void	remove_first_empty_cmd(t_cmd *parsed_cmd)
+{
+	int		i;
+	char	*temp;
+
+	i = 0;
+	while (parsed_cmd->cmd[i])
+	{
+		if (parsed_cmd->cmd[0][0] == '\0')
+			temp = parsed_cmd->cmd[i];
+		i++;
+		parsed_cmd->cmd[i - 1] = parsed_cmd->cmd[i];
+	}
+	parsed_cmd->cmd[i - 1] = NULL;
+	free(temp);
 }
 
 /*find the command and execute it*/
 void	execute_cmd(t_exec *exec, t_cmd parsed_cmd, char **envp)
 {
-	char	*path;
+	char		*path;
+	int			builtin_status;
 	struct stat	buf;
 
 	check_redirections(parsed_cmd);
-	if (check_builtins(exec, parsed_cmd.cmd))
-	 	return ;
-	(void)exec;
+	if (parsed_cmd.cmd[0][0] == '\0' && parsed_cmd.cmd[1] == NULL)
+		exit(0);
+	if (parsed_cmd.cmd[0][0] == '\0' && parsed_cmd.cmd[1] != NULL)
+		remove_first_empty_cmd(&parsed_cmd);
+	builtin_status = run_builtin(exec, parsed_cmd.cmd);
+	if (builtin_status != -1)
+	{
+		exec->exit_code = builtin_status;
+		exit(builtin_status);
+	}
 	if (!parsed_cmd.cmd[0])
 		error_exit(CMD_NOT_FOUND, NULL);
 	if (!ft_strrchr(parsed_cmd.cmd[0], '/'))
@@ -215,8 +234,8 @@ void	execute_cmd(t_exec *exec, t_cmd parsed_cmd, char **envp)
 				error_exit(CMD_NOT_FOUND, parsed_cmd.cmd[0]);
 			else if (S_ISDIR(buf.st_mode))
 				error_exit(IS_DIR, parsed_cmd.cmd[0]);
-		} 
-		else 
+		}
+		else
 			error_exit(STAT_FAIL, parsed_cmd.cmd[0]);
 		path = parsed_cmd.cmd[0];
 	}
@@ -232,28 +251,32 @@ void	error_exit(t_error error, char *s)
 	ft_putstr_fd("jjsh-1.0: ", STDERR_FILENO);
 	if (error == CMD_NOT_FOUND)
 	{
-		ft_putendl_fd("command not found: ", STDERR_FILENO);
-		ft_putendl_fd(s, STDERR_FILENO);
+		ft_putstr_fd(s, STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+		ft_putendl_fd("command not found", STDERR_FILENO);
 		exit(127);
 	}
 	if (error == NO_PATH)
 	{
-		ft_putstr_fd("No such file or directory: ", STDERR_FILENO);
-		ft_putendl_fd(s, STDERR_FILENO);
+		ft_putstr_fd(s, STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+		ft_putendl_fd("No such file or directory", STDERR_FILENO);
 		exit(127);
 	}
 	if (error == IS_DIR)
 	{
-		ft_putstr_fd("No such file or directory: ", STDERR_FILENO);
-		ft_putendl_fd(s, STDERR_FILENO);
+		ft_putstr_fd(s, STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+		ft_putendl_fd("is a directory", STDERR_FILENO);
 		exit(126);
 	}
 	if (error == EXECVE_FAIL)
 	{
-		ft_putstr_fd("permission denied: ", STDERR_FILENO);
 		if (!s)
 			s = "\n";
-		ft_putendl_fd(s, STDERR_FILENO);
+		ft_putstr_fd(s, STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+		ft_putendl_fd("Permission denied", STDERR_FILENO);
 		exit(126);
 	}
 	perror(s);

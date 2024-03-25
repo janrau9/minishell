@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 10:23:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/22 11:07:03 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/25 09:33:22 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,16 @@ int	rd_export_arg(t_exec *exec, char *exp_arg)
 int	ft_export(t_exec *exec, char **cmd)
 {
 	size_t	size;
+	size_t	i;
 	char	**env;
 
+	if (!cmd[1])
+	{
+		i = -1;
+		while (exec->envp[++i])
+			ft_putendl_fd(exec->envp[i], STDOUT_FILENO);
+		return (0);
+	}
 	if (rd_export_arg(exec, cmd[1]))
 		return (1);
 	size = ft_arrlen(exec->envp);

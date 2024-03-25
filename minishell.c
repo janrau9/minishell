@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/22 15:30:07 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/25 09:51:23 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,20 @@ void	make_envp(t_exec *exec, char **envp)
 
 void	prep_for_promt(t_exec *exec)
 {
-	//ft_freeall_n_envp(exec);
+	ft_freeall_n_envp(exec);
 	initialize_exec(exec);
 	prompt(exec);
 }
 
 void	prompt(t_exec *exec)
 {
-	int	status;
+	int	builtin_status;
 
-	status = -1;
+	builtin_status = -1;
 	exec->read_line = readline ("jjsh-1.0$ ");
 	if (!exec->read_line)
 	{
-		ft_freearr(&exec->envp);
+		ft_freeall(exec);
 		exit (0);
 	}
 	if (*exec->read_line != '\0')
@@ -63,12 +63,13 @@ void	prompt(t_exec *exec)
 		{
 			if (parse(exec) == 0)
 			{
-				if (exec->cmd_count == 1 && exec->cmd[0].cmd[0] && exec->cmd[0].redir[0] == 0)
-					status = run_builtin(exec, exec->cmd[0].cmd);
-				if (status == -1)
+				if (exec->cmd_count == 1 && exec->cmd[0].cmd[0]
+					&& exec->cmd[0].redir[0] == 0)
+					builtin_status = run_builtin(exec, exec->cmd[0].cmd);
+				if (builtin_status == -1)
 					executor(exec);
 				else
-					exec->exit_code = status;
+					exec->exit_code = builtin_status;
 				g_prompt = 0;
 			}
 		}

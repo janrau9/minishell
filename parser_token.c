@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:13:00 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/21 12:51:47 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/25 08:11:55 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,8 @@ void	parse_dollar(t_exec *exec, char **dst, t_iterator *iter, bool is_expand)
 		ft_error(exec, "malloc error", MALLOC_ERROR);
 	if (ft_strncmp(env_str, "?", 2) == 0)
 		expand_str = ft_itoa(exec->exit_code);
-	else if (iter->cmds_iter > 0 && ft_strncmp(exec->cmd[iter->cmd_count].cmd[iter->cmds_iter - 1], "unset", 6) == 0)
+	else if (iter->cmds_iter > 0
+		&& !ft_strncmp(exec->cmd[iter->cmd_count].cmd[iter->cmds_iter - 1], "unset", 6))
 		expand_str = env_str;
 	else
 	{

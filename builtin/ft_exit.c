@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 09:00:40 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/22 12:29:26 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/25 07:55:23 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ static void	is_overflow(t_exec *exec, char *cmd, int ato)
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": numeric argument required\n", 2);
 	ft_freeall(exec);
-	exec->exit_code = 2;
-	exit (2);
+	exec->exit_code = 255;
+	exit (255);
 }
 
 int    ft_exit(t_exec *exec, char **cmd)
