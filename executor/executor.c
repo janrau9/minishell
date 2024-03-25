@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/25 13:02:47 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/25 13:20:34 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,21 +85,29 @@ void	error_exit(t_error error, char *s)
 	ft_putstr_fd("jjsh-1.0: ", STDERR_FILENO);
 	if (error == CMD_NOT_FOUND)
 	{
-		ft_putendl_fd("command not found: ", STDERR_FILENO);
+		ft_putstr_fd(s, STDERR_FILENO);
+		ft_putendl_fd(": command not found", STDERR_FILENO);
 		exit(127);
 	}
 	if (error == NO_PATH)
 	{
-		ft_putstr_fd("No such file or directory: ", STDERR_FILENO);
-		ft_putendl_fd(s, STDERR_FILENO);
+		ft_putstr_fd(s, STDERR_FILENO);
+		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
 		exit(127);
+	}
+	if (error == IS_DIR)
+	{
+		ft_putstr_fd(s, STDERR_FILENO);
+		ft_putendl_fd(": is a directory", STDERR_FILENO);
+		exit(126);
 	}
 	if (error == EXECVE_FAIL)
 	{
-		ft_putstr_fd("permission denied: ", STDERR_FILENO);
 		if (!s)
 			s = "\n";
-		ft_putendl_fd(s, STDERR_FILENO);
+		ft_putstr_fd(s, STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+		ft_putendl_fd("Permission denied", STDERR_FILENO);
 		exit(126);
 	}
 	perror(s);

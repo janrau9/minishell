@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:32:17 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/25 10:52:53 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/25 13:20:12 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,13 @@ typedef enum s_error
 	DUP_FAIL,
 	OPEN_FAIL,
 	MALLOC_FAIL,
+	STAT_FAIL,
 	WRONG_FILE,
 	CMD_NOT_FOUND,
 	NO_PATH,
 	NO_PERMISSION,
-	EXECVE_FAIL
+	EXECVE_FAIL,
+	IS_DIR,
 }	t_error;
 
 // void	executor(t_cmd *parsed_cmd, t_util *util, char **envp);
