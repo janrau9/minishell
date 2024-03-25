@@ -62,9 +62,9 @@ int	heredoc(t_exec *exec, char **dst, t_iterator *iter, bool is_expand)
 	char	*heredoc_name;
 	char	*delimiter;
 
-	create_heredoc_name(exec, &heredoc_name, iter->redir_iter);
+	create_heredoc_name(exec, &heredoc_name, iter->cmd_count);
 	fd = open(heredoc_name, O_TRUNC | O_CREAT | O_RDWR, 0644);
-	delimiter = ft_strdup(exec->cmd->redir[iter->redir_iter]);
+	delimiter = ft_strdup(exec->cmd[iter->cmd_count].redir[iter->redir_iter]);
 	if (!delimiter)
 		ft_error(exec, "malloc error", MALLOC_ERROR);
 	if (run_heredoc(exec, fd, delimiter, is_expand))

@@ -19,19 +19,24 @@ int	ft_realloc_array(char ***args, size_t size)
 	size_t	i;
 
 	tmp = *args;
-
 	new = ft_calloc(size, sizeof(char *));
 	if (!new)
 	{
-		i = -1;
-		while (tmp[++i])
+		i = 0;
+		while (tmp[i])
+		{
 			free(tmp[i]);
+			i++;
+		}
 		free(tmp);
 		return (MALLOC_ERROR);
 	}
-	i = -1;
-	while (++i < size - 1)
+	i = 0;
+	while (i < size - 1)
+	{
 		new[i] = tmp[i];
+		i++;
+	}
 	free(tmp);
 	*args = new;
 	return (0);

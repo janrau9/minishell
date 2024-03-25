@@ -38,7 +38,7 @@ void	togglesignal(int mode)
 {
 	if (mode == 1)
 	{
-		signal(SIGQUIT, signal_handler);
+		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, signal_handler);
 	}
 	else
@@ -46,7 +46,6 @@ void	togglesignal(int mode)
 		signal(SIGQUIT, SIG_DFL);
 		signal(SIGINT, SIG_DFL);
 	}
-
 }
 
 void	enablerawmode(void)

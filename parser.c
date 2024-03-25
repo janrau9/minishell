@@ -18,12 +18,12 @@ static int	parse_redir_and_filename(t_exec *exec, t_cmd *cmd, t_iterator *iter)
 
 	is_expand = true;
 	parse_redir(exec, &cmd->redir[iter->redir_iter], iter);
-	if (ft_realloc_array(&cmd->redir, iter->redir_iter + 1))
+	if (ft_realloc_array(&cmd->redir, iter->redir_iter + 2))
 		ft_error(exec, "malloc error", MALLOC_ERROR);
 	if (exec->token[iter->token_iter].type == SPACE_TOKEN)
 		iter->token_iter = iter->token_iter + 1;
 	if (exec->token[iter->token_iter].type == OPEN_DQUOTE_TOKEN
-		&& ft_strncmp(cmd->redir[iter->redir_iter], "<<", 3) != 0)
+		&& ft_strncmp(cmd->redir[iter->redir_iter - 1], "<<", 3) == 0)
 		is_expand = false;
 	parse_dquote(exec, &cmd->redir[iter->redir_iter], iter, is_expand);
 	if (ft_strncmp(cmd->redir[iter->redir_iter - 1], "<<", 3) == 0)
@@ -51,9 +51,7 @@ static int	parser_loop( t_exec *exec, t_cmd *cmd, t_iterator *iter)
 				return (1);
 		}
 		iter->cmds_iter = iter->cmds_iter + 1;
-		if (ft_realloc_array(&cmd->cmd, iter->cmds_iter + 1))
-			ft_error(exec, "malloc error", MALLOC_ERROR);
-		if (ft_realloc_array(&cmd->redir, iter->redir_iter + 1))
+		if (ft_realloc_array(&cmd->cmd, iter->cmds_iter + 2))
 			ft_error(exec, "malloc error", MALLOC_ERROR);
 	}
 	else
@@ -76,15 +74,15 @@ int	parse(t_exec *exec)
 		exec->cmd[iter.cmd_count].redir = ft_calloc(2, sizeof(char *));
 		if (exec->cmd[iter.cmd_count].redir == NULL)
 			ft_error(exec, "malloc error", MALLOC_ERROR);
-		exec->cmd[iter.cmd_count].cmd = ft_calloc(1, sizeof(char *));
+		exec->cmd[iter.cmd_count].cmd = ft_calloc(2, sizeof(char *));
 		if (exec->cmd[iter.cmd_count].cmd == NULL)
 			ft_error(exec, "malloc error", MALLOC_ERROR);
 		while (exec->token[iter.token_iter].type != EOL_TOKEN
 			&& exec->token[iter.token_iter].type != PIPE_TOKEN)
 			if (parser_loop(exec, &exec->cmd[iter.cmd_count], &iter))
 				return (1);
-		exec->cmd[iter.cmd_count].cmd[iter.cmds_iter] = NULL;
-		exec->cmd[iter.cmd_count].redir[iter.redir_iter] = NULL;
+/* 		exec->cmd[iter.cmd_count].cmd[iter.cmds_iter] = NULL;
+		exec->cmd[iter.cmd_count].redir[iter.redir_iter] = NULL; */
 		if (exec->token[iter.token_iter].type == PIPE_TOKEN)
 			iter.token_iter = iter.token_iter + 1;
 	}
