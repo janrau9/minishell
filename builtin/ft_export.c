@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 10:23:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/25 11:17:56 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 11:21:40 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,31 +64,43 @@ int	rd_export_arg(t_exec *exec, char *exp_arg)
 	return (run_export(exec, exp_arg, c));
 }
 
+int	print_export(t_exec *exec)
+{
+	size_t	i;
+
+	i = -1;
+	while (exec->envp[++i])
+	{
+		ft_putstr_fd("declare -x ", STDOUT_FILENO);
+		ft_putendl_fd(exec->envp[i], STDOUT_FILENO);
+	}
+	return (0);
+}
+
 int	ft_export(t_exec *exec, char **cmd)
 {
 	size_t	size;
-	size_t	i;
 	char	**env;
+	size_t	i;
 
 	if (!cmd[1])
+		return (print_export(exec));
+	i = 0;
+	while (cmd[++i])
 	{
-		i = -1;
-		while (exec->envp[++i])
-			ft_putendl_fd(exec->envp[i], STDOUT_FILENO);
-		return (0);
+		if (rd_export_arg(exec, cmd[i]))
+			return (1);
+		size = ft_arrlen(exec->envp);
+		env = ft_calloc(size + 2, sizeof(char *));
+		if (!env)
+			ft_error(exec, "Malloc error\n", MALLOC_ERROR);
+		ft_arrcpy(&env, exec->envp);
+		free(exec->envp);
+		env[size] = ft_strdup(cmd[i]);
+		if (!env[size])
+			ft_error(exec, "Malloc error\n", MALLOC_ERROR);
+		env[size + 1] = NULL;
+		exec->envp = env;
 	}
-	if (rd_export_arg(exec, cmd[1]))
-		return (1);
-	size = ft_arrlen(exec->envp);
-	env = ft_calloc(size + 2, sizeof(char *));
-	if (!env)
-		ft_error(exec, "Malloc error\n", MALLOC_ERROR);
-	ft_arrcpy(&env, exec->envp);
-	free(exec->envp);
-	env[size] = ft_strdup(cmd[1]);
-	if (!env[size])
-		ft_error(exec, "Malloc error\n", MALLOC_ERROR);
-	env[size + 1] = NULL;
-	exec->envp = env;
 	return (0);
 }

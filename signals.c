@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 09:38:47 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/25 11:44:23 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 12:16:24 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,43 +16,45 @@ void	signal_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
-		if (g_prompt == 3)
-			return ;
-		if (g_prompt == 2)
-		{
-			g_prompt = 1;
-			printf("\n");
-			close (STDIN_FILENO);
-		}
-		if (g_prompt == 0)
-			printf("\n");
+		write(STDOUT_FILENO, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
-	if (signum == SIGQUIT)
-		rl_redisplay();
 }
 
-void	togglesignal(int mode)
+void	togglesignal(t_signal mode)
 {
-	if (mode == 1)
-	{
-		signal(SIGQUIT, SIG_IGN);
-		signal(SIGINT, signal_handler);
-	}
-	else
+	if (mode == DEFAULT)
 	{
 		signal(SIGQUIT, SIG_DFL);
 		signal(SIGINT, SIG_DFL);
 	}
+	else if (mode == HANDLER)
+	{
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, signal_handler);
+	}
+	else if (mode == HEREDOC)
+	{
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, SIG_DFL);
+	}
+	else
+	{
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, SIG_IGN);
+	}
 }
 
-void	enablerawmode(void)
+void	togglerawmode(int mode)
 {
 	struct termios	raw;
 
 	tcgetattr(STDIN_FILENO, &raw);
-	raw.c_lflag &= ~(ECHOCTL);
+	if (mode)
+		raw.c_lflag &= ~ECHOCTL;
+	else
+		raw.c_lflag |= ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSANOW, &raw);
 }

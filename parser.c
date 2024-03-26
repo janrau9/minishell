@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 13:48:54 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/25 15:41:43 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 10:28:21 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,6 @@ int	parse(t_exec *exec)
 			&& exec->token[iter.token_iter].type != PIPE_TOKEN)
 			if (parser_loop(exec, &exec->cmd[iter.cmd_count], &iter))
 				return (1);
-/* 		exec->cmd[iter.cmd_count].cmd[iter.cmds_iter] = NULL;
-		exec->cmd[iter.cmd_count].redir[iter.redir_iter] = NULL; */
 		if (exec->token[iter.token_iter].type == PIPE_TOKEN)
 			iter.token_iter = iter.token_iter + 1;
 	}

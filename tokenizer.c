@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:10:55 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/22 12:16:36 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 10:00:48 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ void	tokenizer_loop(t_token *token, t_char_iter *iter, int *d_flag)
 		take_pipe(iter, token);
 	else
 		take_string(iter, token, d_flag);
-
 }
 
 /*

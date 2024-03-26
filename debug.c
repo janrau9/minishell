@@ -58,3 +58,27 @@ void	token_print(t_token *token)
 		i++;
 	}
 }
+
+
+/* ~ = $HOME
+	~+ = $PWD
+	~- = $OLDPWD */
+/* char	*ft_expand_tilde(t_exec *exec, char *key)
+{
+	char	*tmp;
+
+	if (ft_strncmp(key, "~", 1) == 0)
+	{
+		tmp = key;
+		if (ft_strlen(key) == 1)
+			key = ft_strdup("HOME=");
+		else if (ft_strlen(key) == 2 && key[1] == '+')
+			key = ft_strdup("PWD=");
+		else if (ft_strlen(key) == 2 && key[1] == '-')
+			key = ft_strdup("OLDPWD=");
+		free(tmp);
+		if (!key)
+			ft_error(exec, "malloc error", MALLOC_ERROR);
+	}
+	return (key);
+} */

@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:11:18 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/14 08:45:14 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 10:35:05 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,18 @@ void	take_pipe(t_char_iter *iter, t_token *token)
 	token->location.start = char_iter_cursor(iter);
 	token->location.len = 1;
 	char_iter_next(iter);
+}
+
+char	*char_find_dq(t_char_iter *self)
+{
+	size_t	len;
+
+	len = 1;
+	while (*(self->end - len) != '"')
+	{
+		len++;
+	}
+	return (self->end - len);
 }
 
 /*error token representing syntax error*/

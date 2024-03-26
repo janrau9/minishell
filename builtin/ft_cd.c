@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 15:56:50 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/25 08:56:24 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 11:48:03 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,15 @@ char	*find_home(char **envp)
 int	ft_cd(t_exec *exec, char **cmd)
 {
 	struct stat	buf;
+	char		buffer[1024];
+	char		*old[3];
 
+	getcwd(buffer, 1024);
+	old[0] = "export";
+	old[1] = ft_strjoin("OLDPWD=", buffer);
+	if (!old[1])
+		ft_error(exec, "malloc error", MALLOC_ERROR);
+	old[2] = NULL;
 	if (ft_arrlen(cmd) > 2)
 		return (0);
 	if (!ft_strncmp(cmd[1], "~", 2))
@@ -41,5 +49,6 @@ int	ft_cd(t_exec *exec, char **cmd)
 	}
 	else
 		error_exit(STAT_FAIL, cmd[1]);
+	ft_export(exec, old);
 	return (0);
 }

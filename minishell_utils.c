@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 08:54:07 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/25 15:17:55 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 11:17:53 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,15 @@ static int	re_promt(t_exec *exec)
 	char	*read_line_new;
 	int		fd_stdin;
 
-	g_prompt = 2;
 	fd_stdin = dup(STDIN_FILENO);
 	read_line_new = readline("> ");
-	if (!read_line_new && g_prompt == 1)
+	if (!read_line_new)
 	{
 		dup2(fd_stdin, STDIN_FILENO);
 		return (SYNTAX_ERROR);
 	}
 	if (!read_line_new)
 	{
-		g_prompt = 1;
 		ft_putendl_fd("jjsh-1.0: syntax error: unexpected end of file", 2);
 		return (SYNTAX_ERROR);
 	}

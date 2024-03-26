@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:06:14 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/25 10:18:41 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 12:20:20 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,20 @@ static int	run_heredoc(t_exec *exec, int fd, char *delimiter, int is_expand)
 	int		heredoc_child;
 	int		status;
 
-	g_prompt = 3;
 	heredoc_child = fork();
+	togglesignal(IGNORE);
 	if (heredoc_child == -1)
 		ft_error(exec, "fork error", FORK_ERROR);
 	if (heredoc_child == 0)
 	{
-		togglesignal(0);
+		togglesignal(HEREDOC);
 		write_to_heredoc(exec, fd, delimiter, is_expand);
-		togglesignal(1);
+		togglesignal(HANDLER);
 		exit(0);
 	}
 	waitpid(heredoc_child, &status, 0);
-	g_prompt = 0;
+	togglesignal(HANDLER);
+	free(delimiter);
 	if (status == SIGINT)
 	{
 		printf("\n");
@@ -64,11 +65,14 @@ int	heredoc(t_exec *exec, char **dst, t_iterator *iter, bool is_expand)
 
 	create_heredoc_name(exec, &heredoc_name, iter->cmd_count);
 	fd = open(heredoc_name, O_TRUNC | O_CREAT | O_RDWR, 0644);
+	if (fd == -1)
+		ft_error(exec, "open error", MALLOC_ERROR);
 	delimiter = ft_strdup(exec->cmd[iter->cmd_count].redir[iter->redir_iter]);
 	if (!delimiter)
 		ft_error(exec, "malloc error", MALLOC_ERROR);
 	if (run_heredoc(exec, fd, delimiter, is_expand))
 		return (1);
+	free(*dst);
 	*dst = heredoc_name;
 	close(fd);
 	return (0);

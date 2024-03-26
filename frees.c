@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:09:55 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/25 10:25:49 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 10:37:19 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,11 @@ void	ft_freearr(char ***array)
 	free(tmp);
 	*array = NULL;
 }
+
 void	ft_freepipes(t_exec *exec)
 {
 	size_t	i;
-	int	**tmp;
+	int		**tmp;
 
 	tmp = exec->pipes;
 	i = 0;
@@ -62,7 +63,7 @@ void	ft_freestruct(t_cmd **cmd)
 	{
 		if (tmp[i].cmd)
 			ft_freearr(&tmp[i].cmd);
-	 	if (tmp[i].redir)
+		if (tmp[i].redir)
 			ft_freearr(&tmp[i].redir);
 		i++;
 	}
@@ -79,11 +80,12 @@ void	ft_freeall(t_exec *exec)
 	if (exec->pid)
 		free(exec->pid);
 	if (exec->cmd)
-	 	ft_freestruct(&exec->cmd);
+		ft_freestruct(&exec->cmd);
 	if (exec->envp)
 		ft_freearr(&exec->envp);
 	if (exec->pipes)
 		ft_freepipes(exec);
+	close(exec->history_fd);
 }
 
 void	ft_freeall_n_envp(t_exec *exec)
@@ -95,7 +97,7 @@ void	ft_freeall_n_envp(t_exec *exec)
 	if (exec->pid)
 		free(exec->pid);
 	if (exec->cmd)
-	 	ft_freestruct(&exec->cmd);
+		ft_freestruct(&exec->cmd);
 	if (exec->pipes)
 		ft_freepipes(exec);
 }

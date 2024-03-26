@@ -6,13 +6,11 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/25 15:43:40 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 12:31:11 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-unsigned int	g_prompt;
 
 void	initialize_exec(t_exec *exec)
 {
@@ -24,20 +22,9 @@ void	initialize_exec(t_exec *exec)
 	exec->cmd_count = 0;
 }
 
-void	make_envp(t_exec *exec, char **envp)
-{
-	int	envp_status;
-
-	envp_status = ft_arrdup(&exec->envp, envp);
-	if (envp_status == MALLOC_ERROR)
-		exit (MALLOC_ERROR);
-	else if (envp_status == NULL_ERROR)
-		exec->envp = NULL;
-	exec->exit_code = 0;
-}
-
 void	prep_for_promt(t_exec *exec)
 {
+	togglerawmode(HANDLER);
 	ft_freeall_n_envp(exec);
 	initialize_exec(exec);
 	prompt(exec);
@@ -55,7 +42,6 @@ void	run_cmd(t_exec *exec)
 		executor(exec);
 	else
 		exec->exit_code = builtin_status;
-	g_prompt = 0;
 }
 
 void	prompt(t_exec *exec)
@@ -63,18 +49,23 @@ void	prompt(t_exec *exec)
 	exec->read_line = readline ("jjsh-1.0$ ");
 	if (!exec->read_line)
 	{
+		if (isatty(0))
+			write(2, "exit\n", 5);
 		ft_freeall(exec);
 		exit (0);
 	}
 	if (*exec->read_line != '\0')
 	{
-		add_history(exec->read_line);
-		if (check_command(exec))
-			exec->exit_code = SYNTAX_ERROR;
-		else
+		if (ft_addhistory(exec) == 0)
 		{
-			if (parse(exec) == 0)
-				run_cmd(exec);
+			if (check_command(exec))
+				exec->exit_code = SYNTAX_ERROR;
+			else
+			{
+				if (parse(exec) == 0)
+					run_cmd(exec);
+				print_cmd(&exec->cmd);
+			}
 		}
 	}
 	prep_for_promt(exec);
@@ -84,14 +75,15 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_exec	exec;
 
-	(void)argc;
-	(void)argv;
-	(void)envp;
-
-	enablerawmode();
-	togglesignal(1);
+	if (argc != 1 || argv[1])
+	{
+		write(2, "jjsh-1.0: too many arguments\n", 29);
+		exit (127);
+	}
+	togglesignal(HANDLER);
 	initialize_exec(&exec);
 	make_envp(&exec, envp);
+	//make_history(&exec);
 	prompt(&exec);
 	exit (0);
 }

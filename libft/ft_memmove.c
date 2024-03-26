@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
+/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 14:48:13 by jtu               #+#    #+#             */
-/*   Updated: 2023/11/14 18:59:40 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/26 09:58:30 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	*ft_memmove(void *dst, const void *src, size_t n)
 		ft_memcpy(dst2, src2, n);
 	else
 	{
-		while (n--> 0)
+		while (n-- > 0)
 		{
 			dst2[n] = src2[n];
 		}

@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 09:35:34 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/25 10:17:47 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 11:58:01 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,14 @@ static int	handle_null_emp(t_exec *exec, int fd, char *delimiter)
 	if (!exec->read_line)
 	{
 		close(fd);
+		free(delimiter);
 		ft_freeall(exec);
-		printf("unexpected eof\n");
 		return (1);
 	}
 	if (ft_strncmp(exec->read_line, delimiter, \
 	ft_strlen(delimiter) + 1) == 0)
 	{
+		free(delimiter);
 		ft_freeall(exec);
 		return (1);
 	}
@@ -83,7 +84,7 @@ char *delimiter, int is_expand)
 		ft_freeall_n_envp(exec);
 		initialize_exec(exec);
 		iter.token_iter = 0;
-		exec->read_line = readline("heredoc> ");
+		exec->read_line = readline("> ");
 		if (handle_null_emp(exec, fd, delimiter))
 			return ;
 		tokenizer(exec);

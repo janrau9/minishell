@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/25 14:33:45 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 12:17:39 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,8 +227,11 @@ void	child_process(t_exec *exec)
 		exec->pid[i] = fork();
 		if (exec->pid[i] < 0)
 			error_exit(FORK_FAIL, NULL); //
+		togglesignal(IGNORE);
 		if (exec->pid[i] == 0)
 		{
+			togglesignal(DEFAULT);
+			togglerawmode(0);
 			if (exec->cmd_count > 1)
 				dup_child(i, exec);
 			execute_cmd(exec, exec->cmd[i], exec->envp);
@@ -253,6 +256,7 @@ void	executor(t_exec *exec)
 	i = -1;
 	while (++i < exec->cmd_count)
 		waitpid(exec->pid[i], &status, 0);
+	togglesignal(HANDLER);
 	exec->exit_code = WEXITSTATUS(status);
 
 }

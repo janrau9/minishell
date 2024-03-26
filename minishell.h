@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/22 15:29:58 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 12:18:38 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <fcntl.h>
 # include <unistd.h>
 # include <sys/wait.h>
-#include <sys/stat.h>
+# include <sys/stat.h>
 
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -29,14 +29,11 @@
 # include "char_iter.h"
 # include "executor/executor.h"
 
-
 # include <signal.h>
 # include <termios.h>
 
- #define RD 0
- #define WR 1
-
-
+# define RD 0
+# define WR 1
 
 typedef struct s_cmd
 {
@@ -54,9 +51,12 @@ typedef struct s_exec
 	int		exit_code;
 	int		*pid;
 	int		**pipes;
+	int		history_fd;
 }	t_exec;
 
 typedef int	(*t_builtin)(t_exec *, char **);
+
+//extern int	g_prompt;
 
 typedef struct s_command_entry
 {
@@ -73,9 +73,18 @@ typedef enum e_error_code
 	SYNTAX_ERROR = 258,
 }	t_error_code;
 
-extern unsigned int	g_prompt;
+typedef enum e_signal
+{
+	DEFAULT,
+	HANDLER,
+	HEREDOC,
+	IGNORE
+}	t_signal;
 
 /*minishell*/
+void	make_envp(t_exec *exec, char **envp);
+void	make_history(t_exec *exec);
+int		ft_addhistory(t_exec *exec);
 int		heredoc(t_exec *exec, char **dst, t_iterator *iter, bool is_expand);
 void	write_to_heredoc(t_exec *exec, int fd, \
 char *delimiter, int is_expand);
@@ -89,8 +98,8 @@ void	initialize_exec(t_exec *exec);
 int		check_command(t_exec *exec);
 
 /*signals*/
-void	enablerawmode(void);
-void	togglesignal(int mode);
+void	togglerawmode(int mode);
+void	togglesignal(t_signal mode);
 void	signal_handler(int signum);
 
 /* token */
@@ -105,14 +114,17 @@ t_iterator *iter, bool is_expand);
 void	parse_dquote(t_exec *exec, char **dst, \
 t_iterator *iter, bool is_expand);
 void	init_data(t_exec *exec, t_iterator *iter);
+
 /*parser utils*/
 bool	is_redir(t_token *token);
+char	*ft_getenv(t_exec *exec, char *key);
 
 /*Array utils*/
 size_t	ft_arrlen(char **arr);
 int		ft_arrdup(char ***dst_add, char **src);
 void	ft_arrcpy(char ***dst_add, char **src);
 int		ft_realloc_array(char ***dst_add, size_t size);
+
 /*frees*/
 void	ft_freearr(char ***array_add);
 void	ft_freestruct(t_cmd **cmd);
@@ -129,9 +141,8 @@ void	error_free_exit(char **s);
 void	check_redirections(t_cmd parsed_cmd);
 int		check_builtins(t_exec *exec, char **cmd);
 
-
+/*builtins*/
 int		run_builtin(t_exec *exec, char **cmd);
-
 int		ft_unset(t_exec *exec, char **cmd);
 int		ft_cd(t_exec *exec, char **cmd);
 int		ft_export(t_exec *exec, char **cmd);
@@ -139,7 +150,6 @@ int		ft_exit(t_exec *exec, char **cmd);
 int		ft_pwd(t_exec *exec, char **cmd);
 int		ft_env(t_exec *exec, char **cmd);
 int		ft_echo(t_exec *exec, char **cmd);
-
 
 /*debug*/
 void	token_print(t_token *token);
