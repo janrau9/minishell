@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 17:14:56 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/26 12:26:20 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 12:56:26 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ int	ft_unset(t_exec *exec, char **cmd)
 	j = -1;
 	rm = 0;
 	len = 0;
-	len = ft_arrlen(exec->envp);
+	while (exec->envp[len] != NULL)
+		len++;
 	if (!cmd[i])
 		return (0);
 	while (cmd[i])

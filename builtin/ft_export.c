@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 10:23:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 12:47:47 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 13:05:27 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	run_export(t_exec *exec, char *exp_arg, size_t len)
 			exec->envp[c] = ft_strdup(exp_arg);
 			if (!exec->envp[c])
 				ft_error(exec, "Malloc error\n", MALLOC_ERROR);
-			return (0);
+			return (2);
 		}
 	}
 	free(tmp);
@@ -82,14 +82,18 @@ int	ft_export(t_exec *exec, char **cmd)
 	size_t	size;
 	char	**env;
 	size_t	i;
+	int		ret;
 
 	if (!cmd[1])
 		return (print_export(exec));
 	i = 0;
 	while (cmd[++i])
 	{
-		if (rd_export_arg(exec, cmd[i]))
+		ret = rd_export_arg(exec, cmd[i]);
+		if (ret == 1)
 			return (1);
+		if (ret == 2)
+			continue ;
 		size = ft_arrlen(exec->envp);
 		env = ft_calloc(size + 2, sizeof(char *));
 		if (!env)
