@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 10:23:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 11:21:40 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 12:47:47 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	run_export(t_exec *exec, char *exp_arg, size_t len)
 			exec->envp[c] = ft_strdup(exp_arg);
 			if (!exec->envp[c])
 				ft_error(exec, "Malloc error\n", MALLOC_ERROR);
-			return (1);
+			return (0);
 		}
 	}
 	free(tmp);

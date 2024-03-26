@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 11:51:16 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 11:54:54 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 12:45:40 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ char	*ft_getenv(t_exec *exec, char *key)
 {
 	size_t	i;
 	char	*tmp;
+	char	*value;
 
 	tmp = key;
 	key = ft_strjoin(tmp, "=");
@@ -42,7 +43,11 @@ char	*ft_getenv(t_exec *exec, char *key)
 	free(tmp);
 	i = -1;
 	while (exec->envp[++i])
-		return (ft_getenv_loop(exec, key, i));
+	{
+		value = ft_getenv_loop(exec, key, i);
+		if (value)
+			return (value);
+	}
 	free(key);
 	return (NULL);
 }

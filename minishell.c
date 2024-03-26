@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 12:31:11 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 12:46:03 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ void	prompt(t_exec *exec)
 			{
 				if (parse(exec) == 0)
 					run_cmd(exec);
-				print_cmd(&exec->cmd);
 			}
 		}
 	}
