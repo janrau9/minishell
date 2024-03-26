@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
+/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 17:14:56 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/18 13:19:21 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/26 12:26:20 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,13 @@ int	is_in_arr(char **envp, char *var)
 	var_equal = ft_strjoin(var, "=");
 	while (envp[i])
 	{
-		if (ft_strnstr(envp[i], var, ft_strlen(var) + 1))
+		if (ft_strnstr(envp[i], var_equal, ft_strlen(var_equal) + 1))
 		{
 			free(var_equal);
 			return (i);
 		}
-		if (ft_strnstr(envp[i], var_equal, ft_strlen(var_equal)))
+		if (ft_strnstr(envp[i], var, ft_strlen(var) + 1)
+			&& ft_strlen(envp[i]) == ft_strlen(var))
 		{
 			free(var_equal);
 			return (i);
@@ -47,37 +48,36 @@ int	is_in_arr(char **envp, char *var)
 // 	return (i);
 // }
 
-void	ft_unset(t_exec *exec)
+int	ft_unset(t_exec *exec, char **cmd)
 {
 	int	i;
 	int	j;
 	int	rm;
 	int	len;
 
+	(void)cmd;
 	i = 1;
 	j = -1;
 	rm = 0;
 	len = 0;
-	printf("%s", exec->envp[0]);
-	while (exec->envp[len] != NULL)
+	len = ft_arrlen(exec->envp);
+	if (!cmd[i])
+		return (0);
+	while (cmd[i])
 	{
-		len++;
-		printf("%d", len);
-	}
-	printf("%d", len);
-	if (!exec->cmd[0].cmd[i])
-		return ;
-	while (exec->cmd[0].cmd[i])
-	{
-		j = is_in_arr(exec->envp, exec->cmd[0].cmd[i]);
+		j = is_in_arr(exec->envp, cmd[i]);
 		if (j >= 0)
 		{
 			free(exec->envp[j]);
 			while (j < len)
+			{
 				exec->envp[j] = exec->envp[j + 1];
+				j++;
+			}
 			exec->envp[len - 1 - rm] = NULL;
 			rm++;
 		}
 		i++;
 	}
+	return (0);
 }
