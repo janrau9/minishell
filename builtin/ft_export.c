@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 10:23:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 13:05:27 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 14:19:11 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,26 @@ int	print_export(t_exec *exec)
 	return (0);
 }
 
-int	ft_export(t_exec *exec, char **cmd)
+void	call_export(t_exec *exec, char *cmd)
 {
 	size_t	size;
 	char	**env;
+
+	size = ft_arrlen(exec->envp);
+	env = ft_calloc(size + 2, sizeof(char *));
+	if (!env)
+		ft_error(exec, "Malloc error\n", MALLOC_ERROR);
+	ft_arrcpy(&env, exec->envp);
+	free(exec->envp);
+	env[size] = ft_strdup(cmd);
+	if (!env[size])
+		ft_error(exec, "Malloc error\n", MALLOC_ERROR);
+	env[size + 1] = NULL;
+	exec->envp = env;
+}
+
+int	ft_export(t_exec *exec, char **cmd)
+{
 	size_t	i;
 	int		ret;
 
@@ -94,17 +110,7 @@ int	ft_export(t_exec *exec, char **cmd)
 			return (1);
 		if (ret == 2)
 			continue ;
-		size = ft_arrlen(exec->envp);
-		env = ft_calloc(size + 2, sizeof(char *));
-		if (!env)
-			ft_error(exec, "Malloc error\n", MALLOC_ERROR);
-		ft_arrcpy(&env, exec->envp);
-		free(exec->envp);
-		env[size] = ft_strdup(cmd[i]);
-		if (!env[size])
-			ft_error(exec, "Malloc error\n", MALLOC_ERROR);
-		env[size + 1] = NULL;
-		exec->envp = env;
+		call_export(exec, cmd[i]);
 	}
 	return (0);
 }

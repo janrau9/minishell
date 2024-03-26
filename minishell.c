@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 12:58:23 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/26 14:23:46 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	main(int argc, char **argv, char **envp)
 	togglesignal(HANDLER);
 	initialize_exec(&exec);
 	make_envp(&exec, envp);
-	//make_history(&exec);
+	make_history(&exec);
 	prompt(&exec);
 	exit (0);
 }
