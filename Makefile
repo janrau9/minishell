@@ -6,7 +6,7 @@
 #    By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/07 11:38:23 by jberay            #+#    #+#              #
-#    Updated: 2024/03/26 11:53:52 by jberay           ###   ########.fr        #
+#    Updated: 2024/03/27 11:13:01 by jberay           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,6 +41,7 @@ SRCS 			=	minishell.c \
 					frees.c \
 					executor/executor.c \
 					executor/redirections.c \
+					executor/error_exit.c \
 					builtin/builtins.c \
 					builtin/ft_cd.c \
 					builtin/ft_unset.c \

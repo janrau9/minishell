@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 12:18:38 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/27 11:12:42 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ void	free_arr(char **arr);
 void	error_free_exit(char **s);
 void	check_redirections(t_cmd parsed_cmd);
 int		check_builtins(t_exec *exec, char **cmd);
+void	error_exit(t_error error, char *s);
 
 /*builtins*/
 int		run_builtin(t_exec *exec, char **cmd);

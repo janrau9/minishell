@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 15:56:50 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/26 11:48:03 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/27 11:30:05 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,6 @@ int	ft_cd(t_exec *exec, char **cmd)
 	else
 		error_exit(STAT_FAIL, cmd[1]);
 	ft_export(exec, old);
+	free(old[1]);
 	return (0);
 }

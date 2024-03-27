@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:32:17 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/25 13:20:12 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/26 20:43:59 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "../libft/libft.h"
 // # include "../minishell.h"
 # include <fcntl.h>
+# include <errno.h>
 
 // typedef struct s_cmd
 // {
