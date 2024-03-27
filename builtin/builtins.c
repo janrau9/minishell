@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:18:54 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/26 09:53:43 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/27 15:23:46 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,19 @@ int	ft_env(t_exec *exec, char **cmd)
 int	ft_pwd(t_exec *exec, char **cmd)
 {
 	char	buffer[1024];
+	char	*buf;
 
 	(void)cmd;
 	(void)exec;
-	getcwd(buffer, 1024);
+	char *stat = getcwd(buffer, 1024);
+	if (!stat)
+	{
+		char *p = ft_strdup("PWD");
+		buf = ft_getenv(exec, p);
+		ft_putendl_fd(buf, STDOUT_FILENO);
+		free(buf);
+		return (0);
+	}
 	ft_putendl_fd(buffer, STDOUT_FILENO);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 14:23:46 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/27 15:03:42 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	initialize_exec(t_exec *exec)
 	exec->pid = NULL;
 	exec->pipes = NULL;
 	exec->cmd_count = 0;
+	exec->parent = 0;
 }
 
 void	prep_for_promt(t_exec *exec)
@@ -35,9 +36,10 @@ void	run_cmd(t_exec *exec)
 	int	builtin_status;
 
 	builtin_status = -1;
-	if (exec->cmd_count == 1 && exec->cmd[0].cmd[0]
-		&& exec->cmd[0].redir[0] == 0)
+	if (exec->cmd_count == 1 && exec->cmd[0].cmd[0])
+	{
 		builtin_status = run_builtin(exec, exec->cmd[0].cmd);
+	}
 	if (builtin_status == -1)
 		executor(exec);
 	else

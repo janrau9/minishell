@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
+/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 12:31:06 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/14 13:06:33 by jtu              ###   ########.fr       */
+/*   Updated: 2024/03/27 14:14:47 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	handle_outfile(char *redir, char *file)
+void	handle_outfile(t_exec *exec, char *redir, char *file)
 {
 	int	fd_out;
 
@@ -21,25 +21,25 @@ void	handle_outfile(char *redir, char *file)
 	else
 		fd_out = open(file, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	if (fd_out < 0)
-		error_exit(OPEN_FAIL, file);
+		error_exit(exec, OPEN_FAIL, file);
 	if (dup2(fd_out, STDOUT_FILENO) < 0)
-		error_exit(DUP_FAIL, NULL);
+		error_exit(exec, DUP_FAIL, NULL);
 	close(fd_out);
 }
 
-void	handle_infile(char *file)
+void	handle_infile(t_exec *exec, char *file)
 {
 	int	fd_in;
 
 	fd_in = open(file, O_RDONLY);
 	if (fd_in < 0)
-		error_exit(OPEN_FAIL, file);
+		error_exit(exec, OPEN_FAIL, file);
 	if (dup2(fd_in, STDIN_FILENO) < 0)
-		error_exit(DUP_FAIL, NULL);
+		error_exit(exec, DUP_FAIL, NULL);
 	close(fd_in);
 }
 
-void	check_redirections(t_cmd parsed_cmd)
+void	check_redirections(t_exec *exec, t_cmd parsed_cmd)
 {
 	int	i;
 
@@ -52,12 +52,12 @@ void	check_redirections(t_cmd parsed_cmd)
 		if (!ft_strncmp(parsed_cmd.redir[i], "<", 2) || !ft_strncmp(parsed_cmd.redir[i], "<<", 3))
 		{
 			// ft_putendl_fd("infile", STDERR_FILENO);
-			handle_infile(parsed_cmd.redir[i + 1]);
+			handle_infile(exec, parsed_cmd.redir[i + 1]);
 		}
 		if (!ft_strncmp(parsed_cmd.redir[i], ">", 2) || !ft_strncmp(parsed_cmd.redir[i], ">>", 3))
 		{
 			// ft_putendl_fd("outfile", STDERR_FILENO);
-			handle_outfile(parsed_cmd.redir[i], parsed_cmd.redir[i + 1]);
+			handle_outfile(exec, parsed_cmd.redir[i], parsed_cmd.redir[i + 1]);
 		}
 		i++;
 	}

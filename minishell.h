@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/27 11:12:42 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/27 14:15:19 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_exec
 	int		*pid;
 	int		**pipes;
 	int		history_fd;
+	int		parent;
 }	t_exec;
 
 typedef int	(*t_builtin)(t_exec *, char **);
@@ -135,12 +136,12 @@ int		ft_error(t_exec *exec, char *msg, int return_code);
 
 //exector
 void	executor(t_exec *exec);
-void	error_exit(t_error error, char *s);
+int		error_exit(t_exec *exec, t_error error, char *s);
 void	free_arr(char **arr);
 void	error_free_exit(char **s);
-void	check_redirections(t_cmd parsed_cmd);
+void	check_redirections(t_exec *exec, t_cmd parsed_cmd);
 int		check_builtins(t_exec *exec, char **cmd);
-void	error_exit(t_error error, char *s);
+// void	error_exit(t_error error, char *s);
 
 /*builtins*/
 int		run_builtin(t_exec *exec, char **cmd);
