@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 09:28:19 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/27 14:57:51 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/28 15:22:14 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ int	run_builtin(t_exec *exec, char **cmd)
 		if (!ft_strncmp(cmd[0], command_table[i].name, \
 		ft_strlen(command_table[i].name) + 1))
 		{
-			exec->parent = 1;
 			check_redirections(exec, exec->cmd[0]);
 			return (command_table[i].builtin(exec, cmd));
 		}

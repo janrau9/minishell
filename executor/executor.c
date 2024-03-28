@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/28 10:04:22 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/28 15:23:03 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,14 +82,11 @@ void	execute_cmd(t_exec *exec, t_cmd parsed_cmd, char **envp)
 		exit(0);
 	if (parsed_cmd.cmd[0][0] == '\0' && parsed_cmd.cmd[1] != NULL)
 		remove_first_empty_cmd(&parsed_cmd);
-	if (exec->parent == 0)
+	builtin_status = run_builtin(exec, parsed_cmd.cmd);
+	if (builtin_status != -1)
 	{
-		builtin_status = run_builtin(exec, parsed_cmd.cmd);
-		if (builtin_status != -1)
-		{
-			exec->exit_code = builtin_status;
-			exit(builtin_status);
-		}
+		exec->exit_code = builtin_status;
+		exit(builtin_status);
 	}
 	if (!parsed_cmd.cmd[0])
 		error_exit(exec, CMD_NOT_FOUND, NULL);

@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/27 14:15:19 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/28 15:22:32 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ typedef struct s_exec
 	int		*pid;
 	int		**pipes;
 	int		history_fd;
-	int		parent;
 }	t_exec;
 
 typedef int	(*t_builtin)(t_exec *, char **);

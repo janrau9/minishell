@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:10:55 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/27 12:43:34 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/28 11:23:18 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	tokenizer_loop(t_token *token, t_char_iter *iter, int *d_flag)
 		take_redir_out(iter, token);
 	else if (iter->start[0] == '\'' && *d_flag % 2 == 0)
 		take_squote(iter, token);
-	else if (iter->start[0] == ' ' && *d_flag % 2 == 0)
+	else if ((iter->start[0] == ' ' || iter->start[0] == '\t') && *d_flag % 2 == 0)
 		take_space(iter, token);
 	else if (iter->start[0] == '"')
 		take_dquote(iter, token, d_flag);

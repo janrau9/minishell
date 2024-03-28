@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 09:02:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/25 15:27:16 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/28 11:26:01 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <string.h>
 # include <stdio.h>
 
-# define DELIMITER "|<>\"\'$ "
+# define DELIMITER "|<>\"\'$ '\t'"
 
 typedef enum e_token_type
 {

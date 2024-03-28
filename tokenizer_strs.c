@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 09:48:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/27 12:49:25 by jberay           ###   ########.fr       */
+/*   Updated: 2024/03/28 11:55:26 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ void	take_space(t_char_iter *iter, t_token *token)
 	token->location.start = char_iter_cursor(iter);
 	token->location.len = 0;
 	while (char_iter_cursor(iter) != iter->end
-		&& char_iter_peek(iter) == ' ')
+		&& (char_iter_peek(iter) == ' '
+			|| char_iter_peek(iter) == '\t'))
 	{
 		char_iter_next(iter);
 		token->location.len++;

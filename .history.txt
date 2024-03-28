@@ -373,3 +373,38 @@ cd .
 pwd
 chmod 777 .
 exit
+echo			 hi
+echo			 hi
+echo			 hi
+echo			 hi
+echo			 hi
+echo			 hi
+echo "tab	tab""tab	tab"
+export IN="in"
+env
+export IN="<in"
+env
+cat $IN
+touch in
+cat $IN
+$IN cat
+export LS=ls
+env
+$LS
+make
+env
+exit
+env
+$LS
+export LS=ls
+$LS
+<< jan
+<< jan
+< haha echo hi
+<< LIM > a > b > a >> b | << LIM > c
+ls
+<< LIM > a > b > a >> b | << LIM > c
+ls
+rm a b c
+<< LIM > a > b > a >> b | << LIM > c
+< haha echo hi
