@@ -308,3 +308,68 @@ cd .
 cd ..
 pwd
 pwd
+cd test
+pwd
+chmod 000 .
+pwd
+ls
+cd .
+pwd
+cd test/
+pwd
+chmod 000 .
+pwd
+cd .
+pwd
+cd ..
+pwd
+cd test/
+pwd
+chmod 000 .
+pwd
+cd ..
+pwd
+chmod 777 test
+cd test/
+pwd
+ls
+chmod 000 .
+ls
+pwd
+cd ..
+echo $?
+cd test/
+pwd
+chmod 000 .
+pwd
+cd ..
+cd test/
+pwd
+chmod 000 .
+cd ..
+echo ?
+echo $?
+cd test
+chmod 000 .
+cd ..
+echo $?
+exit
+exit
+pwd
+cd test
+exit
+cd test
+pwd
+chmod 000 .
+pwd
+cd .
+cd test
+pwd
+chmod 000 .
+pwd
+cd ..
+pwd
+cd .
+pwd
+chmod 777 .
+exit
