@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 09:06:14 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 12:20:20 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/05 08:56:18 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static void	create_heredoc_name(t_exec *exec, char **heredoc_name, int id)
 	tmp = ft_itoa(id);
 	if (!tmp)
 		ft_error(exec, "malloc error", MALLOC_ERROR);
-	*heredoc_name = ft_strjoin(".heredoc_", tmp);
+	*heredoc_name = ft_strjoin("/tmp/heredoc_", tmp);
 	if (!*heredoc_name)
 	{
 		free(tmp);

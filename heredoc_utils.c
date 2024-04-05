@@ -6,13 +6,13 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 09:35:34 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 11:58:01 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/03 11:04:49 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	set_start_len(t_exec *exec, t_iterator *iter)
+void	set_start_len(t_exec *exec, t_iterator *iter)
 {
 	if (exec->token[iter->token_iter].type == OPEN_DQUOTE_TOKEN)
 	{

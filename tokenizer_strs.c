@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 09:48:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/28 11:55:26 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/04 11:47:58 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	take_dollar(t_char_iter *iter, t_token *token, int *d_flag)
 		&& !ft_strchr(DELIMITER, char_iter_peek(iter))
 		&& char_iter_peek(iter) != '/'
 		&& char_iter_peek(iter) != ':'
+		&& char_iter_peek(iter) != '@'
 		&& char_iter_peek(iter) != '=')
 	{
 		char_iter_next(iter);

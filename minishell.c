@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/27 15:03:42 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/05 10:23:53 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void	initialize_exec(t_exec *exec)
 	exec->pid = NULL;
 	exec->pipes = NULL;
 	exec->cmd_count = 0;
-	exec->parent = 0;
 }
 
 void	prep_for_promt(t_exec *exec)
@@ -34,16 +33,26 @@ void	prep_for_promt(t_exec *exec)
 void	run_cmd(t_exec *exec)
 {
 	int	builtin_status;
+	int	std_in;
+	int	std_out;
 
 	builtin_status = -1;
+	std_in = dup(STDIN_FILENO);
+	std_out = dup(STDOUT_FILENO);
 	if (exec->cmd_count == 1 && exec->cmd[0].cmd[0])
-	{
 		builtin_status = run_builtin(exec, exec->cmd[0].cmd);
-	}
 	if (builtin_status == -1)
+	{
+		close(std_in);
+		close(std_out);
 		executor(exec);
+	}
 	else
 		exec->exit_code = builtin_status;
+	dup2(std_in, STDIN_FILENO);
+	dup2(std_out, STDOUT_FILENO);
+	close (std_in);
+	close(std_out);
 }
 
 void	prompt(t_exec *exec)
@@ -60,12 +69,14 @@ void	prompt(t_exec *exec)
 	{
 		if (ft_addhistory(exec) == 0)
 		{
-			if (check_command(exec))
-				exec->exit_code = SYNTAX_ERROR;
-			else
+			expander(exec);
+			if (exec->read_line[0] != '\0')
 			{
-				if (parse(exec) == 0)
-					run_cmd(exec);
+				if (check_command(exec))
+					exec->exit_code = SYNTAX_ERROR;
+				else
+					if (parse(exec) == 0)
+						run_cmd(exec);
 			}
 		}
 	}
@@ -84,7 +95,8 @@ int	main(int argc, char **argv, char **envp)
 	togglesignal(HANDLER);
 	initialize_exec(&exec);
 	make_envp(&exec, envp);
-	make_history(&exec);
+	if (isatty(0))
+		make_history(&exec);
 	prompt(&exec);
 	exit (0);
 }

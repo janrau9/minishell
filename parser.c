@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 13:48:54 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 10:28:21 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/05 15:20:02 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ static int	parse_redir_and_filename(t_exec *exec, t_cmd *cmd, t_iterator *iter)
 		ft_error(exec, "malloc error", MALLOC_ERROR);
 	if (exec->token[iter->token_iter].type == SPACE_TOKEN)
 		iter->token_iter = iter->token_iter + 1;
-	if (exec->token[iter->token_iter].type == OPEN_DQUOTE_TOKEN
-		&& ft_strncmp(cmd->redir[iter->redir_iter - 1], "<<", 3) == 0)
+	printf("redir: %s\n", cmd->redir[iter->redir_iter - 1]);
+	if (ft_strncmp(cmd->redir[iter->redir_iter - 1], "<<", 3) == 0)
 		is_expand = false;
 	parse_dquote(exec, &cmd->redir[iter->redir_iter], iter, is_expand);
 	if (ft_strncmp(cmd->redir[iter->redir_iter - 1], "<<", 3) == 0)

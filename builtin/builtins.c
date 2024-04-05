@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:18:54 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/27 15:23:46 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/05 10:42:12 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,14 +57,15 @@ int	ft_env(t_exec *exec, char **cmd)
 int	ft_pwd(t_exec *exec, char **cmd)
 {
 	char	buffer[1024];
+	char	*stat;
 	char	*buf;
+	char	*p;
 
 	(void)cmd;
-	(void)exec;
-	char *stat = getcwd(buffer, 1024);
+	stat = getcwd(buffer, 1024);
 	if (!stat)
 	{
-		char *p = ft_strdup("PWD");
+		p = ft_strdup("PWD");
 		buf = ft_getenv(exec, p);
 		ft_putendl_fd(buf, STDOUT_FILENO);
 		free(buf);
@@ -72,4 +73,33 @@ int	ft_pwd(t_exec *exec, char **cmd)
 	}
 	ft_putendl_fd(buffer, STDOUT_FILENO);
 	return (0);
+}
+
+int	run_builtin(t_exec *exec, char **cmd)
+{
+	t_command_entry	command_table[7];
+	int				i;
+
+	command_table[0] = (t_command_entry){"cd", ft_cd};
+	command_table[1] = (t_command_entry){"echo", ft_echo};
+	command_table[2] = (t_command_entry){"env", ft_env};
+	command_table[3] = (t_command_entry){"export", ft_export};
+	command_table[4] = (t_command_entry){"pwd", ft_pwd};
+	command_table[5] = (t_command_entry){"unset", ft_unset};
+	command_table[6] = (t_command_entry){"exit", ft_exit};
+	i = -1;
+	while (++i < 7)
+	{
+		if (!ft_strncmp(cmd[0], command_table[i].name, \
+		ft_strlen(command_table[i].name) + 1))
+		{
+			if (exec->cmd_count == 1)
+			{
+				if (check_redirections(exec, exec->cmd[0], false))
+					return (1);
+			}
+			return (command_table[i].builtin(exec, cmd));
+		}
+	}
+	return (-1);
 }

@@ -6,11 +6,17 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 08:54:07 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 11:17:53 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/05 09:20:09 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	malloc_guard(t_exec *exec, void *ptr)
+{
+	if (!ptr)
+		ft_error(exec, "Malloc error\n", MALLOC_ERROR);
+}
 
 static void	join_prompt(t_exec *exec, char *read_line_new)
 {
@@ -61,6 +67,9 @@ int	check_command(t_exec *exec)
 	cmd_flag = 0;
 	while (cmd_flag == 0)
 	{
+		tokenizer(exec);
+		if (check_syntax(exec->token))
+			return (SYNTAX_ERROR);
 		i = ft_strlen(exec->read_line);
 		if (i == 1)
 			break ;
@@ -75,8 +84,5 @@ int	check_command(t_exec *exec)
 				return (SYNTAX_ERROR);
 		}
 	}
-	tokenizer(exec);
-	if (check_syntax(exec->token))
-		return (SYNTAX_ERROR);
 	return (0);
 }

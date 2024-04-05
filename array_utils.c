@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   array_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 08:32:34 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 10:35:58 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/05 11:28:52 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	ft_arrdup(char ***dst_add, char **src)
 	}
 	dst[i] = NULL;
 	*dst_add = dst;
-	return (NO_ERROR);
+	return (NO_ERR);
 }
 
 void	ft_arrcpy(char ***dst_add, char **src)

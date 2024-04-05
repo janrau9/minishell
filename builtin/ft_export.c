@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 10:23:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 14:19:11 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/04 08:21:38 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,14 @@ int	rd_export_arg(t_exec *exec, char *exp_arg)
 {
 	size_t	c;
 
-	c = -1;
-	while (exp_arg[++c])
+	c = 0;
+	while (1)
 	{
-		if ((ft_isalnum(exp_arg[c]) == 0 && exp_arg[c] != '_' \
-			&& exp_arg[c] != '=') || ft_isdigit(exp_arg[0])
-			|| (exp_arg[0] == '='))
+		if ((ft_isalnum(exp_arg[c]) == 0 && exp_arg[c] != '_'
+				&& exp_arg[c] != '=') || ft_isdigit(exp_arg[0])
+			|| exp_arg[0] == '=' || exp_arg[0] == '\0')
 		{
-			ft_putstr_fd("jjsh-1.0$ export: `", 2);
+			ft_putstr_fd("jjsh: export: `", 2);
 			ft_putstr_fd(exp_arg, 2);
 			ft_putstr_fd("': not a valid identifier\n", 2);
 			return (1);
@@ -60,6 +60,9 @@ int	rd_export_arg(t_exec *exec, char *exp_arg)
 			c++;
 			break ;
 		}
+		c++;
+		if (exp_arg[c] == '\0')
+			break ;
 	}
 	return (run_export(exec, exp_arg, c));
 }

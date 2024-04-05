@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 14:10:55 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/28 11:23:18 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/05 11:26:49 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,15 @@ void	tokenizer_loop(t_token *token, t_char_iter *iter, int *d_flag)
 		take_redir_out(iter, token);
 	else if (iter->start[0] == '\'' && *d_flag % 2 == 0)
 		take_squote(iter, token);
-	else if ((iter->start[0] == ' ' || iter->start[0] == '\t') && *d_flag % 2 == 0)
+	else if ((iter->start[0] == ' ' || iter->start[0] == '\t')
+		&& *d_flag % 2 == 0)
 		take_space(iter, token);
 	else if (iter->start[0] == '"')
 		take_dquote(iter, token, d_flag);
 	else if (iter->start[0] == '$'
-		&& (iter->start[1] == '\0' || iter->start[1] == '?'))
+		&& (iter->start[1] == '\0' || iter->start[1] == '?'
+			|| iter->start[1] == '=' || ft_isdigit(iter->start[1])
+			|| iter->start[1] == '$' || iter->start[1] == ' '))
 		take_just_dollar(iter, token);
 	else if (iter->start[0] == '$' && iter->start[1] != '?'
 		&& iter->start[1] != '\0')

@@ -6,31 +6,91 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 09:54:13 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 11:36:18 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/05 09:29:56 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+/*
+if overflow int max and int min and negative return 0
+
+export 999
+bash
+return ""
+bash
+return 1
+export 999
+bash
+return ""
+exit
+return 999
+
+1000 > x < 2147483647 return 1
+
+bash-3.2$ bash
+bash: warning: shell level (2147483647) too high, resetting to 1
+*/
+
+int	is_shlvl_overflow(char *shlvl, int lvl)
+{
+	if (lvl > INT_MAX && lvl < 0)
+		return (0);
+	else if (lvl > 1000 && lvl < 2147483647)
+	{
+		ft_putstr_fd("jjsh: warning: shell level (", 2);
+		ft_putstr_fd(shlvl, 2);
+		ft_putstr_fd(") too high, resetting to 1\n", 2);
+		return (1);
+	}
+	else
+		return (lvl);
+}
+
+int	ft_isstrdigit(char *str)
+{
+	int	i;
+
+	i = -1;
+	while ((str[++i]))
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+	}
+	return (1);
+}
+
+char	*make_shlvl(t_exec *exec, char *shlvl)
+{
+	char	*tmp;
+	char	*join;
+	int		lvl;
+
+	if (!shlvl || !ft_isstrdigit(shlvl))
+	{
+		tmp = ft_strdup("SHLVL=1");
+		malloc_guard(exec, tmp);
+		return (tmp);
+	}
+	lvl = ft_atoi(shlvl);
+	lvl = is_shlvl_overflow(shlvl, ++lvl);
+	join = ft_itoa(lvl);
+	malloc_guard(exec, join);
+	tmp = ft_strjoin("SHLVL=", join);
+	free(join);
+	malloc_guard(exec, tmp);
+	return (tmp);
+}
 
 void	update_shlvl(t_exec *exec)
 {
-	char	*tmp;
 	char	*shlvl;
-	int		lvl;
 	char	*cmd[3];
 
-	shlvl = getenv("SHLVL");
-	lvl = ft_atoi(shlvl);
-	tmp = ft_itoa(++lvl);
-	if (!tmp)
-		ft_error(exec, "malloc error", MALLOC_ERROR);
 	cmd[0] = "export";
-	cmd[1] = ft_strjoin("SHLVL=", tmp);
-	if (!cmd[1])
-		ft_error(exec, "malloc error", MALLOC_ERROR);
 	cmd[2] = NULL;
+	shlvl = getenv("SHLVL");
+	cmd[1] = make_shlvl(exec, shlvl);
 	ft_export(exec, cmd);
-	free(tmp);
 	free(cmd[1]);
 }
 
@@ -51,43 +111,4 @@ void	make_envp(t_exec *exec, char **envp)
 	update_shlvl(exec);
 	if (isatty(0))
 		ft_unset(exec, old);
-}
-
-void	make_history(t_exec *exec)
-{
-	char	*history;
-	char	*tmp;
-
-	exec->history_fd = open(".history.txt", O_CREAT | O_RDWR, 0644);
-	if (exec->history_fd == -1)
-		ft_error(exec, "history file error", MALLOC_ERROR);
-	history = get_next_line(exec->history_fd);
-	while (history)
-	{
-		tmp = ft_strtrim(history, "\n");
-		if (!tmp)
-			ft_error(exec, "malloc error", MALLOC_ERROR);
-		add_history(tmp);
-		free(history);
-		free(tmp);
-		history = get_next_line(exec->history_fd);
-	}
-}
-
-int	ft_addhistory(t_exec *exec)
-{
-	char	*tmp;
-
-	tmp = exec->read_line;
-	write(exec->history_fd, exec->read_line, \
-	ft_strlen(exec->read_line));
-	write(exec->history_fd, "\n", 1);
-	add_history(exec->read_line);
-	exec->read_line = ft_strtrim(tmp, " ");
-	if (!exec->read_line)
-		ft_error(exec, "malloc error", MALLOC_ERROR);
-	free(tmp);
-	if (!*exec->read_line)
-		return (1);
-	return (0);
 }

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 12:31:06 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/27 14:14:47 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/03 15:38:28 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	handle_outfile(t_exec *exec, char *redir, char *file)
+static int	handle_outfile(t_exec *exec, char *redir, char *file, bool quit)
 {
 	int	fd_out;
 
@@ -21,44 +21,51 @@ void	handle_outfile(t_exec *exec, char *redir, char *file)
 	else
 		fd_out = open(file, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	if (fd_out < 0)
-		error_exit(exec, OPEN_FAIL, file);
+		return (error_exit(exec, error_msg(file, \
+			strerror(errno), false), 1, quit));
 	if (dup2(fd_out, STDOUT_FILENO) < 0)
-		error_exit(exec, DUP_FAIL, NULL);
+		return (error_exit(exec, error_msg(NULL, \
+			strerror(errno), false), 1, quit));
 	close(fd_out);
+	return (0);
 }
 
-void	handle_infile(t_exec *exec, char *file)
+static int	handle_infile(t_exec *exec, char *file, bool quit)
 {
 	int	fd_in;
 
 	fd_in = open(file, O_RDONLY);
 	if (fd_in < 0)
-		error_exit(exec, OPEN_FAIL, file);
+		return (error_exit(exec, error_msg(file, \
+			strerror(errno), false), 1, quit));
 	if (dup2(fd_in, STDIN_FILENO) < 0)
-		error_exit(exec, DUP_FAIL, NULL);
+		return (error_exit(exec, error_msg(NULL, \
+			strerror(errno), false), 1, quit));
 	close(fd_in);
+	return (0);
 }
 
-void	check_redirections(t_exec *exec, t_cmd parsed_cmd)
+int	check_redirections(t_exec *exec, t_cmd parsed_cmd, bool quit)
 {
 	int	i;
 
 	i = 0;
-	// ft_putendl_fd(parsed_cmd.redir[i], STDERR_FILENO);
-	// if(!ft_strncmp(parsed_cmd.redir[i], "<", 2))
-	// 	ft_putendl_fd("no difference", STDERR_FILENO);
 	while (parsed_cmd.redir[i] != NULL)
 	{
-		if (!ft_strncmp(parsed_cmd.redir[i], "<", 2) || !ft_strncmp(parsed_cmd.redir[i], "<<", 3))
+		if (!ft_strncmp(parsed_cmd.redir[i], "<", 2) || \
+			!ft_strncmp(parsed_cmd.redir[i], "<<", 3))
 		{
-			// ft_putendl_fd("infile", STDERR_FILENO);
-			handle_infile(exec, parsed_cmd.redir[i + 1]);
+			if (handle_infile(exec, parsed_cmd.redir[i + 1], quit) == 1)
+				return (1);
 		}
-		if (!ft_strncmp(parsed_cmd.redir[i], ">", 2) || !ft_strncmp(parsed_cmd.redir[i], ">>", 3))
+		if (!ft_strncmp(parsed_cmd.redir[i], ">", 2) || \
+			!ft_strncmp(parsed_cmd.redir[i], ">>", 3))
 		{
-			// ft_putendl_fd("outfile", STDERR_FILENO);
-			handle_outfile(exec, parsed_cmd.redir[i], parsed_cmd.redir[i + 1]);
+			if (handle_outfile(exec, parsed_cmd.redir[i], \
+			parsed_cmd.redir[i + 1], quit) == 1)
+				return (1);
 		}
-		i++;
+		i = i + 2;
 	}
+	return (0);
 }

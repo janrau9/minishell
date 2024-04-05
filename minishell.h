@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/28 15:22:32 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/05 11:30:10 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <unistd.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
+# include <errno.h>
 
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -27,7 +28,6 @@
 # include "token.h"
 # include "parser.h"
 # include "char_iter.h"
-# include "executor/executor.h"
 
 # include <signal.h>
 # include <termios.h>
@@ -55,8 +55,6 @@ typedef struct s_exec
 }	t_exec;
 
 typedef int	(*t_builtin)(t_exec *, char **);
-
-//extern int	g_prompt;
 
 typedef struct s_command_entry
 {
@@ -92,10 +90,12 @@ char *delimiter, int is_expand);
 /*minishell utils*/
 void	prep_for_promt(t_exec *exec);
 void	prompt(t_exec *exec);
-
 void	rl_replace_line(const char *text, int clear_undo);
 void	initialize_exec(t_exec *exec);
 int		check_command(t_exec *exec);
+int		expander(t_exec *exec);
+void	set_start_len(t_exec *exec, t_iterator *iter);
+void	malloc_guard(t_exec *exec, void *ptr);
 
 /*signals*/
 void	togglerawmode(int mode);
@@ -133,14 +133,20 @@ void	ft_freeall_n_envp(t_exec *exec);
 
 int		ft_error(t_exec *exec, char *msg, int return_code);
 
-//exector
+/*exector*/
 void	executor(t_exec *exec);
-int		error_exit(t_exec *exec, t_error error, char *s);
+int		error_exit(t_exec *exec, char *err_msg, int code, bool quit);
+char	*error_msg(char *s, char *msg, bool cd);
+
 void	free_arr(char **arr);
 void	error_free_exit(char **s);
-void	check_redirections(t_exec *exec, t_cmd parsed_cmd);
-int		check_builtins(t_exec *exec, char **cmd);
-// void	error_exit(t_error error, char *s);
+char	*ft_strjoin_3(char const *s1, char const *s2, char const *s3);
+int		check_redirections(t_exec *exec, t_cmd parsed_cmd, bool quit);
+void	close_pipes(t_exec *exec);
+void	pipe_dup(size_t i, t_exec *exec);
+void	create_pipes(t_exec *exec);
+void	check_cmd1(t_exec *exec, char *cmd);
+void	check_cmd2(t_exec *exec, char *cmd);
 
 /*builtins*/
 int		run_builtin(t_exec *exec, char **cmd);
@@ -151,6 +157,7 @@ int		ft_exit(t_exec *exec, char **cmd);
 int		ft_pwd(t_exec *exec, char **cmd);
 int		ft_env(t_exec *exec, char **cmd);
 int		ft_echo(t_exec *exec, char **cmd);
+int		rd_export_arg(t_exec *exec, char *exp_arg);
 
 /*debug*/
 void	token_print(t_token *token);

@@ -6,7 +6,7 @@
 /*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 15:44:40 by jtu               #+#    #+#             */
-/*   Updated: 2023/11/14 14:42:41 by jtu              ###   ########.fr       */
+/*   Updated: 2024/04/03 15:41:07 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	char	*sub_s;
 	size_t	i;
 
+	if (!s)
+		return (NULL);
 	if (start > ft_strlen(s))
 		start = ft_strlen(s);
 	if (len > ft_strlen(s) - start)

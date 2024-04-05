@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 11:51:16 by jberay            #+#    #+#             */
-/*   Updated: 2024/03/26 12:45:40 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/05 15:33:48 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,7 @@ char	*ft_getenv(t_exec *exec, char *key)
 
 	tmp = key;
 	key = ft_strjoin(tmp, "=");
-	if (!tmp)
-		ft_error(exec, "malloc error", MALLOC_ERROR);
+	malloc_guard(exec, key);
 	free(tmp);
 	i = -1;
 	while (exec->envp[++i])
@@ -63,9 +62,8 @@ static void	not_exp(t_exec *exec, char **dst, t_iterator *iter)
 void	parse_dollar(t_exec *exec, char **dst, t_iterator *iter, bool is_expand)
 {
 	char	*env_str;
-	char	*expand_str;
 
-	if (is_expand == 0)
+	if (is_expand == false)
 		return (not_exp(exec, dst, iter));
 	ft_substr_custom(&env_str, exec->read_line, \
 	exec->token[iter->token_iter].location.start, \
@@ -73,17 +71,16 @@ void	parse_dollar(t_exec *exec, char **dst, t_iterator *iter, bool is_expand)
 	if (!env_str)
 		ft_error(exec, "malloc error", MALLOC_ERROR);
 	if (ft_strncmp(env_str, "?", 2) == 0)
-		expand_str = ft_itoa(exec->exit_code);
-	else if (iter->cmds_iter > 0
-		&& !ft_strncmp(exec->cmd[iter->cmd_count].cmd[iter->cmds_iter - 1], \
-		"unset", 6))
-		expand_str = env_str;
+	{
+		*dst = ft_itoa(exec->exit_code);
+		free(env_str);
+	}
 	else
 	{
-		expand_str = ft_getenv(exec, env_str);
-		if (!expand_str)
-			expand_str = ft_strdup("");
+		*dst = ft_getenv(exec, env_str);
+		if (!*dst)
+			*dst = ft_strdup("");
 	}
-	*dst = expand_str;
+	printf("dst: %s\n", *dst);
 	iter->token_iter = iter->token_iter + 1;
 }

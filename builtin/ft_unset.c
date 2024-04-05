@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 17:14:56 by jtu               #+#    #+#             */
-/*   Updated: 2024/03/26 12:56:26 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/03 15:12:10 by jtu              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,33 @@ int	is_in_arr(char **envp, char *var)
 	return (-1);
 }
 
-// int	ft_arrlen(char **arr)
-// {
-// 	int	i;
+int	check_invalid(char *cmd)
+{
+	int	i;
 
-// 	i = 0;
-// 	while (arr[i])
-// 		i++;
-// 	return (i);
-// }
+	i = 0;
+	if ((ft_isalnum(cmd[i]) == 0 && cmd[i] != '_' \
+		&& cmd[i] != '=') || ft_isdigit(cmd[0])
+		|| (cmd[0] == '='))
+	{
+		ft_putstr_fd("jjsh: unset: `", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd("': not a valid identifier\n", 2);
+		return (1);
+	}
+	return (0);
+}
+
+void	env_rpc(t_exec *exec, int len, int j, int rm)
+{
+	free(exec->envp[j]);
+	while (j < len)
+	{
+		exec->envp[j] = exec->envp[j + 1];
+		j++;
+	}
+	exec->envp[len - 1 - rm] = NULL;
+}
 
 int	ft_unset(t_exec *exec, char **cmd)
 {
@@ -55,8 +73,7 @@ int	ft_unset(t_exec *exec, char **cmd)
 	int	rm;
 	int	len;
 
-	(void)cmd;
-	i = 1;
+	i = 0;
 	j = -1;
 	rm = 0;
 	len = 0;
@@ -64,21 +81,16 @@ int	ft_unset(t_exec *exec, char **cmd)
 		len++;
 	if (!cmd[i])
 		return (0);
-	while (cmd[i])
+	while (cmd[++i])
 	{
+		if (check_invalid(cmd[i]))
+			return (1);
 		j = is_in_arr(exec->envp, cmd[i]);
 		if (j >= 0)
 		{
-			free(exec->envp[j]);
-			while (j < len)
-			{
-				exec->envp[j] = exec->envp[j + 1];
-				j++;
-			}
-			exec->envp[len - 1 - rm] = NULL;
+			env_rpc(exec, len, j, rm);
 			rm++;
 		}
-		i++;
 	}
 	return (0);
 }
