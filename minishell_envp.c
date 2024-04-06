@@ -11,22 +11,9 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 /*
 if overflow int max and int min and negative return 0
-
-export 999
-bash
-return ""
-bash
-return 1
-export 999
-bash
-return ""
-exit
-return 999
-
-1000 > x < 2147483647 return 1
-
 bash-3.2$ bash
 bash: warning: shell level (2147483647) too high, resetting to 1
 */

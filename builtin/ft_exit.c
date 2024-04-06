@@ -31,6 +31,7 @@ static void	is_overflow(t_exec *exec, char *cmd, int ato)
 		return ;
 	msg = ft_strjoin_3("exit\njjsh: exit: ", \
 		cmd, ": numeric argument required\n");
+	malloc_guard(exec, msg);
 	write(2, msg, ft_strlen(msg));
 	free(msg);
 	ft_freeall(exec);
@@ -60,7 +61,7 @@ int	ft_exit(t_exec *exec, char **cmd)
 			exec->exit_code = 256 + tmp;
 	}
 	ft_freeall(exec);
-	if (isatty(0) && exec->cmd_count == 1)
+	if (exec->cmd_count == 1)
 		write(2, "exit\n", 5);
 	exit (exec->exit_code);
 }

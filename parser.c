@@ -15,20 +15,24 @@
 static int	parse_redir_and_filename(t_exec *exec, t_cmd *cmd, t_iterator *iter)
 {
 	bool	is_expand;
+	bool	is_heredoc_exp;
 
 	is_expand = true;
+	is_heredoc_exp = true;
 	parse_redir(exec, &cmd->redir[iter->redir_iter], iter);
 	if (ft_realloc_array(&cmd->redir, iter->redir_iter + 2))
 		ft_error(exec, "malloc error", MALLOC_ERROR);
 	if (exec->token[iter->token_iter].type == SPACE_TOKEN)
 		iter->token_iter = iter->token_iter + 1;
-	printf("redir: %s\n", cmd->redir[iter->redir_iter - 1]);
 	if (ft_strncmp(cmd->redir[iter->redir_iter - 1], "<<", 3) == 0)
 		is_expand = false;
+	if (exec->token[iter->token_iter].type == OPEN_DQUOTE_TOKEN
+		|| exec->token[iter->token_iter].type == SQUOTE_TOKEN)
+		is_heredoc_exp = false;
 	parse_dquote(exec, &cmd->redir[iter->redir_iter], iter, is_expand);
 	if (ft_strncmp(cmd->redir[iter->redir_iter - 1], "<<", 3) == 0)
 	{
-		if (heredoc(exec, &cmd->redir[iter->redir_iter], iter, is_expand))
+		if (heredoc(exec, &cmd->redir[iter->redir_iter], iter, is_heredoc_exp))
 			return (1);
 	}
 	iter->redir_iter = iter->redir_iter + 1;

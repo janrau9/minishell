@@ -24,9 +24,9 @@ t_iterator *iter, bool is_expand)
 	{
 		if (exec->token[iter->token_iter].type == REDIR_HEREDOC_TOKEN)
 			is_expand = false;
-		else
+		else if (exec->token[iter->token_iter].type == STRING_TOKEN
+			|| exec->token[iter->token_iter].type == SQUOTE_TOKEN)
 			is_expand = true;
-		printf("str[0]: %s\n", str[0]);
 		str[2] = str[0];
 		if (exec->token[iter->token_iter].type == DOLLAR_TOKEN)
 			parse_dollar(exec, &str[1], iter, is_expand);
@@ -57,5 +57,8 @@ int	expander(t_exec *exec)
 	exec->token = NULL;
 	free(exec->read_line);
 	exec->read_line = expanded;
+	tokenizer(exec);
+	if (check_syntax(exec->token))
+		return (SYNTAX_ERROR);
 	return (0);
 }

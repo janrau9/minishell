@@ -50,7 +50,8 @@ static int	pipe_syntax(t_token *token, size_t i)
 	if (token[i + 1].type == SPACE_TOKEN)
 		i++;
 	if (token[i + 1].type == PIPE_TOKEN
-		|| token[i + 1].type == SPACE_TOKEN)
+		|| token[i + 1].type == SPACE_TOKEN
+		|| token[i + 1].type == EOL_TOKEN)
 		return (1);
 	return (0);
 }

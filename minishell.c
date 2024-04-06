@@ -69,14 +69,12 @@ void	prompt(t_exec *exec)
 	{
 		if (ft_addhistory(exec) == 0)
 		{
-			expander(exec);
-			if (exec->read_line[0] != '\0')
+			if (expander(exec))
+				exec->exit_code = SYNTAX_ERROR;
+			else
 			{
-				if (check_command(exec))
-					exec->exit_code = SYNTAX_ERROR;
-				else
-					if (parse(exec) == 0)
-						run_cmd(exec);
+				if (parse(exec) == 0)
+					run_cmd(exec);
 			}
 		}
 	}

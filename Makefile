@@ -15,7 +15,7 @@ GREEN = \033[0;92m
 NAME			=	minishell
 
 CC				=	cc
-CFLAGS			=	-Wall -Wextra -Werror
+CFLAGS			=	-Wall -Wextra -Werror  -L/home/linuxbrew/.linuxbrew/opt/readline/lib -I/home/linuxbrew/.linuxbrew/opt/readline/include -I./includes -I./libft/includes
 RM				=	rm -rf
 READLINE_HEADER = ~/.brew/opt/readline/include
 READLINE_LIB = ~/.brew/opt/readline/lib
@@ -26,6 +26,7 @@ SRCS 			=	minishell.c \
 					minishell_history.c \
 					heredoc.c \
 					heredoc_utils.c \
+					heredoc_tokenizer.c \
 					char_iter.c \
 					expander.c \
 					tokenizer.c \

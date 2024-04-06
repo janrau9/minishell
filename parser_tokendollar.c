@@ -81,6 +81,5 @@ void	parse_dollar(t_exec *exec, char **dst, t_iterator *iter, bool is_expand)
 		if (!*dst)
 			*dst = ft_strdup("");
 	}
-	printf("dst: %s\n", *dst);
 	iter->token_iter = iter->token_iter + 1;
 }

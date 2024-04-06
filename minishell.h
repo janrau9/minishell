@@ -86,6 +86,7 @@ int		ft_addhistory(t_exec *exec);
 int		heredoc(t_exec *exec, char **dst, t_iterator *iter, bool is_expand);
 void	write_to_heredoc(t_exec *exec, int fd, \
 char *delimiter, int is_expand);
+void	heredoc_tokenizer(t_exec *exec);
 
 /*minishell utils*/
 void	prep_for_promt(t_exec *exec);
@@ -157,7 +158,7 @@ int		ft_exit(t_exec *exec, char **cmd);
 int		ft_pwd(t_exec *exec, char **cmd);
 int		ft_env(t_exec *exec, char **cmd);
 int		ft_echo(t_exec *exec, char **cmd);
-int		rd_export_arg(t_exec *exec, char *exp_arg);
+int		validate_key(t_exec *exec, char *exp_arg, size_t c);
 
 /*debug*/
 void	token_print(t_token *token);

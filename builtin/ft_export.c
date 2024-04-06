@@ -12,75 +12,71 @@
 
 #include "../minishell.h"
 
-int	run_export(t_exec *exec, char *exp_arg, size_t len)
+static int	replace_env(t_exec *exec, char *exp_arg, int i, bool value)
 {
-	char	*tmp;
 	char	*env;
-	size_t	c;
 
-	tmp = ft_substr(exp_arg, 0, len);
-	if (!tmp)
-		ft_error(exec, "Malloc error\n", MALLOC_ERROR);
-	c = -1;
-	while (exec->envp[++c])
+	if (value == false)
+		return (2);
+	env = exec->envp[i];
+	free(env);
+	exec->envp[i] = ft_strdup(exp_arg);
+	malloc_guard(exec, exec->envp[i]);
+	return (2);
+}
+
+static int	run_export(t_exec *exec, char *exp_arg, size_t len, bool value)
+{
+	char	*new;
+	char	*key;
+	int		e;
+	int		i;
+
+	new = ft_substr(exp_arg, 0, len);
+	malloc_guard(exec, new);
+	i = -1;
+	while (exec->envp[++i])
 	{
-		if (ft_strnstr(exec->envp[c], tmp, len) != NULL)
+		e = 0;
+		while (exec->envp[i][e] != '=' && exec->envp[i][e] != '\0')
+			e++;
+		key = ft_substr(exec->envp[i], 0, e);
+		malloc_guard(exec, key);
+		if (ft_strncmp(key, new, ft_strlen(key) + 1) == 0)
 		{
-			env = exec->envp[c];
-			free(env);
-			free(tmp);
-			exec->envp[c] = ft_strdup(exp_arg);
-			if (!exec->envp[c])
-				ft_error(exec, "Malloc error\n", MALLOC_ERROR);
-			return (2);
+			free(new);
+			free(key);
+			return (replace_env(exec, exp_arg, i, value));
 		}
+		free(key);
 	}
-	free(tmp);
+	free(new);
 	return (0);
 }
 
-int	rd_export_arg(t_exec *exec, char *exp_arg)
+static int	read_export_arg(t_exec *exec, char *exp_arg)
 {
 	size_t	c;
+	bool	value;
 
 	c = 0;
 	while (1)
 	{
-		if ((ft_isalnum(exp_arg[c]) == 0 && exp_arg[c] != '_'
-				&& exp_arg[c] != '=') || ft_isdigit(exp_arg[0])
-			|| exp_arg[0] == '=' || exp_arg[0] == '\0')
-		{
-			ft_putstr_fd("jjsh: export: `", 2);
-			ft_putstr_fd(exp_arg, 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
+		if (validate_key(exec, exp_arg, c) == 1)
 			return (1);
-		}
 		if (exp_arg[c] == '=')
 		{
-			c++;
+			value = true;
 			break ;
 		}
 		c++;
 		if (exp_arg[c] == '\0')
 			break ;
 	}
-	return (run_export(exec, exp_arg, c));
+	return (run_export(exec, exp_arg, c, value));
 }
 
-int	print_export(t_exec *exec)
-{
-	size_t	i;
-
-	i = -1;
-	while (exec->envp[++i])
-	{
-		ft_putstr_fd("declare -x ", STDOUT_FILENO);
-		ft_putendl_fd(exec->envp[i], STDOUT_FILENO);
-	}
-	return (0);
-}
-
-void	call_export(t_exec *exec, char *cmd)
+static void	call_export(t_exec *exec, char *cmd)
 {
 	size_t	size;
 	char	**env;
@@ -100,15 +96,20 @@ void	call_export(t_exec *exec, char *cmd)
 
 int	ft_export(t_exec *exec, char **cmd)
 {
-	size_t	i;
-	int		ret;
+	int	i;
+	int	ret;
 
 	if (!cmd[1])
-		return (print_export(exec));
+	{
+		i = -1;
+		while (exec->envp[++i])
+			printf("declare -x %s\n", exec->envp[i]);
+		return (0);
+	}
 	i = 0;
 	while (cmd[++i])
 	{
-		ret = rd_export_arg(exec, cmd[i]);
+		ret = read_export_arg(exec, cmd[i]);
 		if (ret == 1)
 			return (1);
 		if (ret == 2)

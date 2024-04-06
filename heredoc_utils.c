@@ -87,7 +87,7 @@ char *delimiter, int is_expand)
 		exec->read_line = readline("> ");
 		if (handle_null_emp(exec, fd, delimiter))
 			return ;
-		tokenizer(exec);
+		heredoc_tokenizer(exec);
 		parse_heredoc(exec, &heredoc, &iter, is_expand);
 		write(fd, heredoc, ft_strlen(heredoc));
 		write(fd, "\n", 1);

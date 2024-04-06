@@ -12,6 +12,23 @@
 
 #include "../minishell.h"
 
+int	validate_key(t_exec *exec, char *exp_arg, size_t c)
+{
+	char	*msg;
+
+	if ((ft_isalnum(exp_arg[c]) == 0 && exp_arg[c] != '_'
+			&& exp_arg[c] != '=') || ft_isdigit(exp_arg[0])
+		|| exp_arg[0] == '=' || exp_arg[0] == '\0')
+	{
+		msg = ft_strjoin_3("jjsh: export: `", \
+			exp_arg, "': not a valid identifier\n");
+		malloc_guard(exec, msg);
+		write(2, msg, ft_strlen(msg));
+		return (1);
+	}
+	return (0);
+}
+
 int	ft_echo(t_exec *exec, char **cmd)
 {
 	int	i;

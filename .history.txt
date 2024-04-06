@@ -408,3 +408,238 @@ ls
 rm a b c
 << LIM > a > b > a >> b | << LIM > c
 < haha echo hi
+$PWD
+<<$PWD
+|
+echo |
+echo ||
+make clean
+echo |
+echo $PWD
+<<$PWD
+<< ""
+<< jan
+<<$PWD
+<<      $PWD
+<<"   $PWD"
+<<$PWD
+<<'$PWD'
+<<"'$PWD'"
+<<""
+<<
+<<  
+cat <<$PWD
+cat <<"$PWD"
+cat <<"$PWD"
+cat <<"$PWD"
+cat <<"$PWD"
+cat <<"$PWD"
+cat <<$PWD
+cat <<$PWD
+cat << $PWD
+cat << $PWD
+cat <<$PWD
+cat <<"$PWD"
+cat <<'$PWD'
+cat << '$PWD'
+cat << $PWD
+cat << $PWD
+cat << $PWD
+cd $PWD hi
+ls
+make clean
+cd $PWD hi
+pwd
+cd $USER
+cd $HOME
+pwd
+cd
+pwd
+cd
+cd $PWD
+pwd
+cat << $PWD
+cat <<$PWD
+cat <<"$PWD"
+cat <<"$PWD"
+cat <<a
+export a
+export
+export a=b
+export
+export a
+export
+unset a
+export
+export a
+export
+export a
+export
+export a=b
+export
+env
+export
+export a
+env
+export
+export b=a
+export bb
+export
+export b
+export
+export a
+export
+export aa
+export
+export a=b
+export
+export a
+export
+export bb
+export
+export b
+export
+env
+env
+exit
+env
+export
+export a
+expor
+export
+export aa
+export a
+export
+export a=b
+export
+export a
+export
+make
+export a
+export
+export a=b
+export
+export
+export a
+export
+env
+export a
+export
+export a=b
+export
+export a
+export
+export a
+export
+export a=b
+export
+export a
+export
+export a
+export
+export a=b
+export
+export a
+export 
+export a
+export
+export a=b
+export a
+export
+export a=b
+export
+export a
+export a
+export
+export a
+export
+export a=b
+export
+export a
+export
+export a
+export
+export a=b
+export
+export a
+export
+export a
+export
+export a=b
+export
+export a
+export
+export b
+export
+export bb
+export
+export b=aa
+export
+export a=abc
+export
+export a
+export
+export b
+export
+export bb
+export a
+export
+$EMPTY echo hi
+"" echo hi
+export a
+export
+export a=b
+export
+export a
+export
+export aa
+export
+export aaa
+export
+export aa=bb
+export
+export aaa=01
+export
+export aaa1=asd
+export
+export 1aaa=asdf
+unset a
+export
+unset aa
+export
+unset aaa
+export
+unset aaa1
+export
+export a
+export
+export a=a
+export
+export a
+export
+export a
+export
+export aa
+export
+export aa=bb
+export
+export
+export aa
+export
+export aa=123
+export
+export
+unset
+export
+unset a
+export
+unset aa
+export
+exit
+cat << $PWD
+export a
+export
+export a=b
+export
+export a
+exit
