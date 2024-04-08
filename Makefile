@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+         #
+#    By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/07 11:38:23 by jberay            #+#    #+#              #
-#    Updated: 2024/04/05 10:50:54 by jtu              ###   ########.fr        #
+#    Updated: 2024/04/08 09:09:02 by jberay           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ GREEN = \033[0;92m
 NAME			=	minishell
 
 CC				=	cc
-CFLAGS			=	-Wall -Wextra -Werror  -L/home/linuxbrew/.linuxbrew/opt/readline/lib -I/home/linuxbrew/.linuxbrew/opt/readline/include -I./includes -I./libft/includes
+CFLAGS			=	-Wall -Wextra -Werror
 RM				=	rm -rf
 READLINE_HEADER = ~/.brew/opt/readline/include
 READLINE_LIB = ~/.brew/opt/readline/lib

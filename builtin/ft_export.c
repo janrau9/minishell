@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 10:23:45 by jberay            #+#    #+#             */
-/*   Updated: 2024/04/04 08:21:38 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/08 08:47:10 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ static int	read_export_arg(t_exec *exec, char *exp_arg)
 	bool	value;
 
 	c = 0;
+	value = false;
 	while (1)
 	{
 		if (validate_key(exec, exp_arg, c) == 1)

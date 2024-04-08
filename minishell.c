@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/04/05 10:23:53 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/08 09:07:52 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,9 @@ void	prompt(t_exec *exec)
 		{
 			if (expander(exec))
 				exec->exit_code = SYNTAX_ERROR;
-			else
-			{
+			else if (*exec->read_line != '\0')
 				if (parse(exec) == 0)
 					run_cmd(exec);
-			}
 		}
 	}
 	prep_for_promt(exec);
