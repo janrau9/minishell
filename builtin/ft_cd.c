@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
+/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 15:56:50 by jtu               #+#    #+#             */
-/*   Updated: 2024/04/05 10:58:03 by jtu              ###   ########.fr       */
+/*   Updated: 2024/04/08 10:44:42 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,26 @@ void	update_pwd(t_exec *exec, char *buffer)
 	char	*old[3];
 	char	*key;
 	char	*pwd;
+	static int	i = 0;
 
 	old[0] = "export";
-	old[1] = ft_strjoin("OLDPWD=", buffer);
-	if (!old[1])
-		ft_error(exec, "malloc error", MALLOC_ERROR);
 	old[2] = NULL;
-	ft_export(exec, old);
-	free(old[1]);
+	key = ft_strdup("OLDPWD");
+	if (i==0)
+	{
+		pwd = buffer;
+		i++;
+	}
+	else
+		pwd = ft_getenv(exec, key);
+	if (pwd != NULL)
+	{
+		old[1] = ft_strjoin("OLDPWD=", buffer);
+		if (!old[1])
+			ft_error(exec, "malloc error", MALLOC_ERROR);
+		ft_export(exec, old);
+		free(old[1]);
+	}
 	key = ft_strdup("PWD");
 	pwd = ft_getenv(exec, key);
 	if (pwd != NULL)
@@ -95,6 +107,7 @@ int	ft_cd(t_exec *exec, char **cmd)
 		return (1);
 	if (ft_arrlen(cmd) < 2 || !ft_strncmp(cmd[1], "~", 2))
 		free(dir);
+	//update_oldpwd(exec, buffer);
 	update_pwd(exec, buffer);
 	return (0);
 }

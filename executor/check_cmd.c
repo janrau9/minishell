@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
+/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 10:49:34 by jtu               #+#    #+#             */
-/*   Updated: 2024/04/05 10:50:05 by jtu              ###   ########.fr       */
+/*   Updated: 2024/04/08 10:37:28 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	check_cmd1(t_exec *exec, char *cmd)
 				false), 127, true);
 	}
 	else
-		error_exit(exec, error_msg(cmd, "Permission denied", false), 126, true);
+		error_exit(exec, error_msg(cmd, "Stat fail", false), 1, true);
 }
 
 void	check_cmd2(t_exec *exec, char *cmd)
@@ -47,5 +47,5 @@ void	check_cmd2(t_exec *exec, char *cmd)
 				"is a directory", false), 126, true);
 	}
 	else
-		error_exit(exec, error_msg(cmd, "Permission denied", false), 126, true);
+		error_exit(exec, error_msg(cmd, "Stat fail", false), 1, true);
 }
