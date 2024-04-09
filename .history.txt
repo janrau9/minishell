@@ -31,3 +31,153 @@ cat out
 ls " <<abc
 exit
 exit
+export N="echo hi"
+$N
+export N="'"
+echo hi $N
+export N=">out"
+echo hi > $N
+exit
+export N="echo hi"
+$N
+export N="'"
+echo $N
+export N="echo hi"
+$N
+export N="'"
+$N
+export N="echo hi"
+$N
+export N="'"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="'"
+echo hi $N
+export N=">out"
+echo hi >$N
+ls
+export N="> out"
+echo hi >$N
+ls
+exit
+export N='"'
+echo hi $N
+export N="'"
+echo hi $N
+export N="asdf"'""
+export N="asdf"'""'
+env
+echo hi $N
+export N="asdf"'"'"'
+export N="asdf"'"'"'"
+echo hi $N
+env
+export N="asdf"'"'"'"
+export N="asdf"'"'"'
+export N="asdf"'"'"'"
+export N="echo hi"
+export
+export N="echo hi"
+export N=jan
+export N=jan
+exit
+export N=jan
+echo hi
+echo $PWD
+export N="echo hi"
+echo "hi "
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="echo hi"
+$N
+export N="'"
+$N
+export N="echo hi ' "
+$N
+export N="echo hi ' "
+$N
+export N="echo hi ' "
+$N
+export N='echo hi " '
+$N
+export N='echo hi " '
+$N
+export N='echo hi " '
+$N
+export N="echo hi ' "
+$N
+export N='echo hi " ' 
+$N
+export N='echo hi " ' 
+$N
+export N='echo hi " ' 
+$N
+export N='echo hi " ' 
+$N
+export N='echo hi " ' 
+$N
+export N='echo hi " ' 
+$N
+export N='echo hi " ' 
+$N
+export N='echo hi' 
+$N
+export N='echo hi " ' 
+$N
+export N='echo hi " ' 
+$N
+export N="echo hi ' " 
+$N
+export N="> out" 
+$N
+export N="> out" 
+echo hi > $N
+ls
+export N="> hey" 
+echo hi > $N
+ls
+exit
+echo hi > $N
+ls
+exit

@@ -128,3 +128,26 @@ void	take_squote(t_char_iter *iter, t_token *token)
 	else
 		char_iter_next(iter);
 }
+
+void	take_exp(t_char_iter *iter, t_token *token)
+{
+	token->type = SQUOTE_TOKEN;
+	token->location.start = char_iter_cursor(iter) + 1;
+	token->location.len = 0;
+	char_iter_next(iter);
+	while (char_iter_cursor(iter) != iter->end
+		&& char_iter_peek(iter) != 31)
+	{
+		char_iter_next(iter);
+		token->location.len++;
+	}
+	if (char_iter_cursor(iter) == iter->end)
+	{
+		token->type = ERROR_TOKEN;
+		token->location.start--;
+		token->location.len = 1;
+		return ;
+	}
+	else
+		char_iter_next(iter);
+}

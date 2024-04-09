@@ -39,6 +39,8 @@ void	tokenizer_loop(t_token *token, t_char_iter *iter, int *d_flag)
 		take_space(iter, token);
 	else if (iter->start[0] == '"')
 		take_dquote(iter, token, d_flag);
+	else if (iter->start[0] == 31 && *d_flag % 2 == 0)
+		take_exp(iter, token);
 	else if (iter->start[0] == '$'
 		&& (iter->start[1] == '\0' || iter->start[1] == '?'
 			|| iter->start[1] == '=' || ft_isdigit(iter->start[1])

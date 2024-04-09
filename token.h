@@ -61,6 +61,7 @@ void	take_dollar(t_char_iter *iter, t_token *token, int *d_flag);
 void	take_space(t_char_iter *iter, t_token *token);
 void	take_eol(t_char_iter *iter, t_token *token);
 void	take_error(t_char_iter *iter, t_token *token, int d_flag);
+void	take_exp(t_char_iter *iter, t_token *token);
 
 /*utils*/
 int		check_syntax(t_token *token);
