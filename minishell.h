@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
+/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/04/05 11:30:10 by jtu              ###   ########.fr       */
+/*   Updated: 2024/04/09 17:55:46 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,9 @@ void	prep_for_promt(t_exec *exec);
 void	prompt(t_exec *exec);
 void	rl_replace_line(const char *text, int clear_undo);
 void	initialize_exec(t_exec *exec);
-int		check_command(t_exec *exec);
 int		expander(t_exec *exec);
+void	parse_exp_token(t_exec *exec, char **dst, \
+t_iterator *iter, bool is_expand);
 void	set_start_len(t_exec *exec, t_iterator *iter);
 void	malloc_guard(t_exec *exec, void *ptr);
 
