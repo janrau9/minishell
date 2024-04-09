@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 09:23:57 by jberay            #+#    #+#             */
-/*   Updated: 2024/04/09 17:46:54 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/09 17:55:03 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ static void	wrapper_31(t_exec *exec, char **astr)
 	int		j;
 
 	str = *astr;
-	printf("str: %s\n", str);
 	word_count = count_words(str);
 	tmp = ft_calloc(ft_strlen(str) + word_count * 2 + 1, sizeof(char));
 	malloc_guard(exec, tmp);
@@ -71,7 +70,7 @@ static bool	is_expandable(t_exec *exec, t_iterator *iter, bool is_expand)
 	return (is_expand);
 }
 
-bool	is_in_dquote(t_exec *exec, size_t token_iter)
+static bool	is_in_dquote(t_exec *exec, size_t token_iter)
 {
 	while (token_iter >= 0)
 	{
@@ -84,7 +83,7 @@ bool	is_in_dquote(t_exec *exec, size_t token_iter)
 	return (false);
 }
 
-static void	parse_exp_token(t_exec *exec, char **dst, \
+void	parse_exp_token(t_exec *exec, char **dst, \
 t_iterator *iter, bool is_expand)
 {
 	char	*str[3];
@@ -111,25 +110,4 @@ t_iterator *iter, bool is_expand)
 		malloc_guard(exec, str[0]);
 	}
 	*dst = str[0];
-}
-
-int	expander(t_exec *exec)
-{
-	t_iterator	iter;
-	char		*expanded;
-
-	iter.token_iter = 0;
-	iter.cmds_iter = 0;
-	tokenizer(exec);
-	if (check_syntax(exec->token))
-		return (SYNTAX_ERROR);
-	parse_exp_token(exec, &expanded, &iter, true);
-	free(exec->token);
-	exec->token = NULL;
-	free(exec->read_line);
-	exec->read_line = expanded;
-	tokenizer(exec);
-	if (check_syntax(exec->token))
-		return (SYNTAX_ERROR);
-	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 08:54:07 by jberay            #+#    #+#             */
-/*   Updated: 2024/04/05 09:20:09 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/09 17:55:12 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,71 +18,23 @@ void	malloc_guard(t_exec *exec, void *ptr)
 		ft_error(exec, "Malloc error\n", MALLOC_ERROR);
 }
 
-static void	join_prompt(t_exec *exec, char *read_line_new)
+int	expander(t_exec *exec)
 {
-	char	*rd_space;
+	t_iterator	iter;
+	char		*expanded;
 
-	rd_space = ft_strjoin(exec->read_line, " ");
-	if (!rd_space)
-		ft_error(exec, "Malloc error\n", MALLOC_ERROR);
+	iter.token_iter = 0;
+	iter.cmds_iter = 0;
+	tokenizer(exec);
+	if (check_syntax(exec->token))
+		return (SYNTAX_ERROR);
+	parse_exp_token(exec, &expanded, &iter, true);
+	free(exec->token);
+	exec->token = NULL;
 	free(exec->read_line);
-	ft_strjoin_custom(&exec->read_line, rd_space, read_line_new);
-	if (!exec->read_line)
-	{
-		free(rd_space);
-		free(read_line_new);
-		ft_error(exec, "Malloc error\n", MALLOC_ERROR);
-	}
-	add_history(exec->read_line);
-}
-
-static int	re_promt(t_exec *exec)
-{
-	char	*read_line_new;
-	int		fd_stdin;
-
-	fd_stdin = dup(STDIN_FILENO);
-	read_line_new = readline("> ");
-	if (!read_line_new)
-	{
-		dup2(fd_stdin, STDIN_FILENO);
+	exec->read_line = expanded;
+	tokenizer(exec);
+	if (check_syntax(exec->token))
 		return (SYNTAX_ERROR);
-	}
-	if (!read_line_new)
-	{
-		ft_putendl_fd("jjsh-1.0: syntax error: unexpected end of file", 2);
-		return (SYNTAX_ERROR);
-	}
-	if (!*read_line_new)
-		return (0);
-	join_prompt(exec, read_line_new);
-	return (0);
-}
-
-int	check_command(t_exec *exec)
-{
-	size_t	i;
-	int		cmd_flag;
-
-	cmd_flag = 0;
-	while (cmd_flag == 0)
-	{
-		tokenizer(exec);
-		if (check_syntax(exec->token))
-			return (SYNTAX_ERROR);
-		i = ft_strlen(exec->read_line);
-		if (i == 1)
-			break ;
-		while (exec->read_line[--i] != '|' && i > 0)
-		{
-			if (exec->read_line[i] != ' ' && exec->read_line[i] != '|')
-				cmd_flag = 1;
-		}
-		if (cmd_flag == 0)
-		{
-			if (re_promt(exec))
-				return (SYNTAX_ERROR);
-		}
-	}
 	return (0);
 }
