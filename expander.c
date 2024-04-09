@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 09:23:57 by jberay            #+#    #+#             */
-/*   Updated: 2024/04/08 09:06:42 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/09 17:46:54 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ static void	wrapper_31(t_exec *exec, char **astr)
 	int		j;
 
 	str = *astr;
+	printf("str: %s\n", str);
 	word_count = count_words(str);
 	tmp = ft_calloc(ft_strlen(str) + word_count * 2 + 1, sizeof(char));
 	malloc_guard(exec, tmp);
@@ -60,6 +61,29 @@ static void	wrapper_31(t_exec *exec, char **astr)
 	*astr = tmp;
 }
 
+static bool	is_expandable(t_exec *exec, t_iterator *iter, bool is_expand)
+{
+	if (is_redir(&exec->token[iter->token_iter]))
+		is_expand = false;
+	else if (exec->token[iter->token_iter].type == STRING_TOKEN
+		|| exec->token[iter->token_iter].type == SQUOTE_TOKEN)
+		is_expand = true;
+	return (is_expand);
+}
+
+bool	is_in_dquote(t_exec *exec, size_t token_iter)
+{
+	while (token_iter >= 0)
+	{
+		if (exec->token[token_iter].type == OPEN_DQUOTE_TOKEN)
+			return (true);
+		else
+			return (false);
+		token_iter--;
+	}
+	return (false);
+}
+
 static void	parse_exp_token(t_exec *exec, char **dst, \
 t_iterator *iter, bool is_expand)
 {
@@ -69,16 +93,14 @@ t_iterator *iter, bool is_expand)
 	malloc_guard(exec, str[0]);
 	while (exec->token[iter->token_iter].type != EOL_TOKEN)
 	{
-		if (is_redir(&exec->token[iter->token_iter]))
-			is_expand = false;
-		else if (exec->token[iter->token_iter].type == STRING_TOKEN
-			|| exec->token[iter->token_iter].type == SQUOTE_TOKEN)
-			is_expand = true;
+		is_expand = is_expandable(exec, iter, is_expand);
 		str[2] = str[0];
 		if (exec->token[iter->token_iter].type == DOLLAR_TOKEN)
 		{
 			parse_dollar(exec, &str[1], iter, is_expand);
-			wrapper_31(exec, &str[1]);
+			if (is_expand && iter->token_iter > 0
+				&& is_in_dquote(exec, iter->token_iter - 1))
+				wrapper_31(exec, &str[1]);
 		}
 		else
 		{

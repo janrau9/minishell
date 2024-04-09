@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 09:48:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/04/04 11:47:58 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/09 15:33:03 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,29 +114,6 @@ void	take_squote(t_char_iter *iter, t_token *token)
 	char_iter_next(iter);
 	while (char_iter_cursor(iter) != iter->end
 		&& char_iter_peek(iter) != '\'')
-	{
-		char_iter_next(iter);
-		token->location.len++;
-	}
-	if (char_iter_cursor(iter) == iter->end)
-	{
-		token->type = ERROR_TOKEN;
-		token->location.start--;
-		token->location.len = 1;
-		return ;
-	}
-	else
-		char_iter_next(iter);
-}
-
-void	take_exp(t_char_iter *iter, t_token *token)
-{
-	token->type = SQUOTE_TOKEN;
-	token->location.start = char_iter_cursor(iter) + 1;
-	token->location.len = 0;
-	char_iter_next(iter);
-	while (char_iter_cursor(iter) != iter->end
-		&& char_iter_peek(iter) != 31)
 	{
 		char_iter_next(iter);
 		token->location.len++;

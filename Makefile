@@ -6,7 +6,7 @@
 #    By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/07 11:38:23 by jberay            #+#    #+#              #
-#    Updated: 2024/04/08 09:09:02 by jberay           ###   ########.fr        #
+#    Updated: 2024/04/09 17:05:07 by jberay           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ GREEN = \033[0;92m
 NAME			=	minishell
 
 CC				=	cc
-CFLAGS			=	-Wall -Wextra -Werror
+CFLAGS			=	-Wall -Wextra -Werror -fsanitize=address -g
 RM				=	rm -rf
 READLINE_HEADER = ~/.brew/opt/readline/include
 READLINE_LIB = ~/.brew/opt/readline/lib
