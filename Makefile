@@ -6,7 +6,7 @@
 #    By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/07 11:38:23 by jberay            #+#    #+#              #
-#    Updated: 2024/04/09 17:05:07 by jberay           ###   ########.fr        #
+#    Updated: 2024/04/10 08:10:04 by jberay           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,4 +81,4 @@ fclean:				clean
 
 re:					fclean all
 
-.PHONY:				all bonus clean fclean re libft
+.PHONY:				all clean fclean re libft

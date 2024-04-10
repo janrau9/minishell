@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 15:56:50 by jtu               #+#    #+#             */
-/*   Updated: 2024/04/09 15:29:55 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/10 13:05:32 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@ char	*find_home(t_exec *exec, char **envp)
 	home_path = *envp + 5;
 	return (home_path);
 }
+/*
+	oldpwd gets value from pwd env variable
+	if pwd is unset
+	old pwd is set to empty
+	if cd again it gets the pwd getwcd
+*/
 
 void	update_pwd(t_exec *exec, char *buffer)
 {
