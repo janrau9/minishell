@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jtu <jtu@student.hive.fi>                  +#+  +:+       +#+        */
+/*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 14:18:54 by jtu               #+#    #+#             */
-/*   Updated: 2024/04/05 10:42:12 by jtu              ###   ########.fr       */
+/*   Updated: 2024/04/11 13:48:57 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ int	run_builtin(t_exec *exec, char **cmd)
 	t_command_entry	command_table[7];
 	int				i;
 
+	if (!cmd[0])
+		return (-1);
 	command_table[0] = (t_command_entry){"cd", ft_cd};
 	command_table[1] = (t_command_entry){"echo", ft_echo};
 	command_table[2] = (t_command_entry){"env", ft_env};
@@ -111,10 +113,8 @@ int	run_builtin(t_exec *exec, char **cmd)
 		ft_strlen(command_table[i].name) + 1))
 		{
 			if (exec->cmd_count == 1)
-			{
 				if (check_redirections(exec, exec->cmd[0], false))
 					return (1);
-			}
 			return (command_table[i].builtin(exec, cmd));
 		}
 	}

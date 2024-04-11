@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 09:00:40 by jberay            #+#    #+#             */
-/*   Updated: 2024/04/09 17:49:37 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/11 11:56:03 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	is_overflow(t_exec *exec, char *cmd, int ato)
 		return ;
 	else if (ato == -1 && ft_strncmp(cmd, "9223372036854775807", 20) == 0)
 		return ;
-	msg = ft_strjoin_3("exit\njjsh: exit: ", \
+	msg = ft_strjoin_3("jjsh: exit: ", \
 		cmd, ": numeric argument required\n");
 	malloc_guard(exec, msg);
 	write(2, msg, ft_strlen(msg));

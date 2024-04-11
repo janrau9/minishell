@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 09:23:57 by jberay            #+#    #+#             */
-/*   Updated: 2024/04/09 17:55:03 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/11 12:54:27 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,15 @@ t_iterator *iter, bool is_expand)
 		str[2] = str[0];
 		if (exec->token[iter->token_iter].type == DOLLAR_TOKEN)
 		{
+			printf("is_expand: %d\n", is_expand);
 			parse_dollar(exec, &str[1], iter, is_expand);
 			if (is_expand && iter->token_iter > 0
 				&& is_in_dquote(exec, iter->token_iter - 1))
-				wrapper_31(exec, &str[1]);
+				{
+					wrapper_31(exec, &str[1]);
+					printf("wrapper_31: %s\n", str[1]);
+				}
+				
 		}
 		else
 		{
