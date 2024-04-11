@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 14:46:40 by jtu               #+#    #+#             */
-/*   Updated: 2024/04/11 13:55:05 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/11 15:33:10 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,8 @@ char	*find_path(t_exec *exec, char *cmd, char **envp)
 	return (0);
 }
 
-/*find the command and execute it*/
-void	execute_cmd(t_exec *exec, t_cmd parsed_cmd, char **envp)
+static void	run_redir_or_builtin(t_exec *exec, t_cmd parsed_cmd)
 {
-	char		*path;
 	int			builtin_status;
 
 	if (check_redirections(exec, parsed_cmd, true))
@@ -61,6 +59,14 @@ void	execute_cmd(t_exec *exec, t_cmd parsed_cmd, char **envp)
 	if (!parsed_cmd.cmd[0][0])
 		error_exit(exec, error_msg(parsed_cmd.cmd[0], \
 			"command not found", false), 127, true);
+}
+
+/*find the command and execute it*/
+void	execute_cmd(t_exec *exec, t_cmd parsed_cmd, char **envp)
+{
+	char		*path;
+
+	run_redir_or_builtin(exec, parsed_cmd);
 	if (!ft_strrchr(parsed_cmd.cmd[0], '/'))
 		path = find_path(exec, parsed_cmd.cmd[0], envp);
 	else

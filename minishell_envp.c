@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 09:54:13 by jberay            #+#    #+#             */
-/*   Updated: 2024/04/10 14:59:38 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/11 15:34:51 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,4 +103,3 @@ void	make_envp(t_exec *exec, char **envp)
 		ft_export(exec, (char *[]){"export", pwd, NULL});
 	}
 }
-
