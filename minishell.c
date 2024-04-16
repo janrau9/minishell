@@ -6,11 +6,13 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 11:41:38 by jberay            #+#    #+#             */
-/*   Updated: 2024/04/08 09:07:52 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/16 10:54:29 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	g_signal;
 
 void	initialize_exec(t_exec *exec)
 {
@@ -65,6 +67,9 @@ void	prompt(t_exec *exec)
 		ft_freeall(exec);
 		exit (0);
 	}
+	if (g_signal)
+		exec->exit_code = 1;
+	g_signal = 0;
 	if (*exec->read_line != '\0')
 	{
 		if (ft_addhistory(exec) == 0)
@@ -89,6 +94,7 @@ int	main(int argc, char **argv, char **envp)
 		exit (127);
 	}
 	togglesignal(HANDLER);
+	togglerawmode(HANDLER);
 	initialize_exec(&exec);
 	make_envp(&exec, envp);
 	if (isatty(0))

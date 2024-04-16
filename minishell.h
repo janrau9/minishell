@@ -6,7 +6,7 @@
 /*   By: jberay <jberay@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 12:13:23 by jberay            #+#    #+#             */
-/*   Updated: 2024/04/10 12:39:50 by jberay           ###   ########.fr       */
+/*   Updated: 2024/04/16 10:50:25 by jberay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@
 
 # define RD 0
 # define WR 1
+
+extern int	g_signal;
 
 typedef struct s_cmd
 {
