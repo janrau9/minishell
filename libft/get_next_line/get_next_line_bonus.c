@@ -82,7 +82,7 @@ static int	read_to_stash(int fd, char **stash)
 
 char	*get_next_line(int fd)
 {
-	static char	*stash[OPEN_MAX];
+	static char	*stash[1000];
 	char		*line;
 	int			status;
 

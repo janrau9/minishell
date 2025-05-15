@@ -72,15 +72,16 @@ static bool	is_expandable(t_exec *exec, t_iterator *iter, bool is_expand)
 
 static bool	is_in_dquote(t_exec *exec, size_t token_iter)
 {
-	while (token_iter >= 0)
+	while (true)
 	{
 		if (exec->token[token_iter].type == OPEN_DQUOTE_TOKEN)
 			return (true);
 		else
 			return (false);
+		if (token_iter == 0)
+			return (false);
 		token_iter--;
 	}
-	return (false);
 }
 
 void	parse_exp_token(t_exec *exec, char **dst, \
