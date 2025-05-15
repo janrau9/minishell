@@ -84,8 +84,8 @@ void	update_shlvl(t_exec *exec)
 void	make_envp(t_exec *exec, char **envp)
 {
 	int		envp_status;
-	char	buffer[1024];
-	char	*pwd;
+	// char	buffer[1024];
+	// char	*pwd;
 
 	envp_status = ft_arrdup(&exec->envp, envp);
 	if (envp_status == MALLOC_ERROR)
@@ -94,12 +94,12 @@ void	make_envp(t_exec *exec, char **envp)
 		exec->envp = NULL;
 	exec->exit_code = 0;
 	update_shlvl(exec);
-	if (isatty(0))
-	{
-		getcwd(buffer, 1024);
-		ft_unset(exec, (char *[]){"unset", "OLDPWD", NULL});
-		pwd = ft_strjoin("PWD=", buffer);
-		malloc_guard(exec, pwd);
-		ft_export(exec, (char *[]){"export", pwd, NULL});
-	}
+	// if (isatty(0))
+	// {
+	// 	getcwd(buffer, 1024);
+	// 	ft_unset(exec, (char *[]){"unset", "OLDPWD", NULL});
+	// 	pwd = ft_strjoin("PWD=", buffer);
+	// 	malloc_guard(exec, pwd);
+	// 	ft_export(exec, (char *[]){"export", pwd, NULL});
+	// }
 }
